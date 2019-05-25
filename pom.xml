@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.rubber.admin</groupId>
+    <artifactId>rubber-admin</artifactId>
+    <packaging>pom</packaging>
+    <version>${rubber-admin.version}</version>
+
+    <modules>
+        <module>rubber-admin-core</module>
+        <module>rubber-admin-framework</module>
+        <module>springboot-rubber-admin-start</module>
+    </modules>
+
+
+    <properties>
+        <mysql-connector.version>5.1.47</mysql-connector.version>
+        <mybatis-plus.version>3.1.1</mybatis-plus.version>
+        <spring.version>5.1.7.RELEASE</spring.version>
+        <rubber-admin.version>3.1.1-plus</rubber-admin.version>
+    </properties>
+
+</project>
