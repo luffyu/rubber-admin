@@ -1,5 +1,4 @@
-package com.rubber.admin.config;
-
+package com.rubber.admin.test.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by luffyu on 2/4/18.
+ * @author luffyu
+ * Created on 2019-05-25
  */
 @Configuration
 public class JedisClusterConfig {

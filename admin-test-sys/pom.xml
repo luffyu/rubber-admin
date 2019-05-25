@@ -8,10 +8,12 @@
         <version>2.1.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
+
     <groupId>com.rubber.admin.test</groupId>
-    <artifactId>admin-test</artifactId>
+    <artifactId>admin-test-sys</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>admin-test</name>
+    <name>admin-test-sys</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -24,11 +26,7 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -40,6 +38,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.1.4.RELEASE</version>
         </dependency>
+
+
 
 
         <dependency>
@@ -54,6 +54,7 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.1.1</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.alibaba</groupId>

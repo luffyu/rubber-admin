@@ -1,5 +1,9 @@
-package com.rubber.admin.config;
+package com.rubber.admin.test.config;
 
+/**
+ * @author luffyu
+ * Created on 2019-05-25
+ */
 import com.alibaba.druid.pool.DruidDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
