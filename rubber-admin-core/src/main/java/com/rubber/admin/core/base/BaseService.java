@@ -2,6 +2,7 @@ package com.rubber.admin.core.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rubber.admin.core.model.PagerModel;
 
 /**
  * @author luffyu

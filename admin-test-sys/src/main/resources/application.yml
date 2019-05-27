@@ -7,6 +7,8 @@ mybatis-plus:
       id-type: AUTO
       field-strategy: NOT_NULL
       table-underline: true
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # Shiro
 shiro:
@@ -14,7 +16,7 @@ shiro:
   loginUrl: /login
   logOutUrl: /logout
   # 权限认证失败地址
-  unauthorizedUrl: /unauth
+  unauthorizedUrl: /auth-error
   # 首页地址
   successUrl: /index
   # 验证码开关
@@ -75,4 +77,4 @@ spring:
         max-active: 600
         max-idle: 300
 server:
-  port: 8080
+  port: 8081

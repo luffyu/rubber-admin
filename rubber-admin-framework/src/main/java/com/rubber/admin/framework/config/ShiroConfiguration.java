@@ -60,7 +60,7 @@ public class ShiroConfiguration {
         //退出登陆地址 shiro会清楚session
         filterChainDefinitionMap.put(shiroProperties.getLogOutUrl(),"logout");
         //必须要有admin权限
-        filterChainDefinitionMap.put("/sys/**", "roles[user]");
+        filterChainDefinitionMap.put("/sys/**", "roles[admin]");
         //不需要拦截的访问
         if(shiroProperties.getAnonUrl() != null){
             for (String anonUrl:shiroProperties.getAnonUrl()){

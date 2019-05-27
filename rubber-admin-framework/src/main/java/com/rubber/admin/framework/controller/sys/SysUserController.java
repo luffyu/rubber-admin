@@ -1,10 +1,20 @@
 package com.rubber.admin.framework.controller.sys;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.rubber.admin.core.base.BaseController;
+import com.rubber.admin.core.entity.SysUser;
+import com.rubber.admin.core.model.PagerModel;
 import com.rubber.admin.core.model.ResultModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.rubber.admin.core.page.CompareModel;
+import com.rubber.admin.core.service.ISysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author luffyu
@@ -12,12 +22,28 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/sys/u")
-public class SysUserController {
+public class SysUserController extends BaseController {
+
+    @Autowired
+    private ISysUserService sysUserService;
 
 
+    /**
+     * 查询用户到列表信息
+     * @param compareModel 系统到用户信息
+     * @param pagerModel 用户到基本信息
+     * @return
+     */
     @GetMapping("/list")
-    public ResultModel pageList(){
-        return ResultModel.createSuccess();
+    public ResultModel pageList(CompareModel compareModel, PagerModel pagerModel){
+        List<CompareModel> compareModelList = new ArrayList<>();
+        compareModelList.add(compareModel);
+        Page<SysUser> page = creatPager(pagerModel);
+
+        QueryWrapper<SysUser> queryWrapper = creatSearchWrapper(compareModelList,pagerModel,SysUser.class);
+        sysUserService.page(page, queryWrapper);
+
+        return ResultModel.createSuccess(page);
     }
 
 

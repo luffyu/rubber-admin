@@ -1,6 +1,7 @@
 package com.rubber.admin.core.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
 
