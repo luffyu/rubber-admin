@@ -1,4 +1,4 @@
-package com.rubber.admin.framework.config;
+package com.rubber.admin.framework.shiro.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

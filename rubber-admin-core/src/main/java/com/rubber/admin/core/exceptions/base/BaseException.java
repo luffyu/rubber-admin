@@ -37,6 +37,12 @@ public class BaseException extends RuntimeException {
         this.data = data;
     }
 
+
+    public BaseException(MsgCode msgCode) {
+        this.code = msgCode.code;
+        this.msg = msgCode.msg;
+    }
+
     public String getCode() {
         return code;
     }

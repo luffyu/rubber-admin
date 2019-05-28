@@ -16,6 +16,25 @@ import java.util.List;
 public interface ISysUserService extends IService<SysUser> {
 
 
+    /**
+     * 通过登陆名称查询用户的登陆信息
+     * @param loginName 登陆名称
+     * @return 返回用户的登陆信息
+     */
     SysUser getByLoginName(String loginName);
+
+
+    /**
+     * 保存用户的基本信息
+     * @param sysUser 系统的用户信息
+     */
+    void checkAndUpdate(SysUser sysUser);
+
+
+    /**
+     * 注册用户的基本信息
+     * @param sysUser
+     */
+    void register(SysUser sysUser);
 
 }

@@ -10,6 +10,7 @@ public enum CompareType {
      */
     IN("IN"),
     NOT("NOT"),
+
     LIKE("LIKE"),
     /**
      * 等于
@@ -39,7 +40,11 @@ public enum CompareType {
      * null
      */
     IS_NULL("IS NULL"),
-    IS_NOT_NULL("IS NOT NULL")
+    IS_NOT_NULL("IS NOT NULL"),
+
+    ASC("ASC"),
+    DESC("DESC");
+
     ;
 
     public String key;

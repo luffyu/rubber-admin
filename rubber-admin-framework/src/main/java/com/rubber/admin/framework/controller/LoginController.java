@@ -52,7 +52,7 @@ public class LoginController {
     public ResultModel logout( HttpServletRequest request) {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
-        return ResultModel.createSuccess("登陆成功");
+        return ResultModel.createSuccess("退出登陆成功");
     }
 
 }

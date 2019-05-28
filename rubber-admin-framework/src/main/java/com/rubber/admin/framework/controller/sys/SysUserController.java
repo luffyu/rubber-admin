@@ -1,20 +1,17 @@
 package com.rubber.admin.framework.controller.sys;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.rubber.admin.core.base.BaseController;
+import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.entity.SysUser;
 import com.rubber.admin.core.model.PagerModel;
 import com.rubber.admin.core.model.ResultModel;
-import com.rubber.admin.core.page.CompareModel;
+import com.rubber.admin.core.page.SelectModel;
 import com.rubber.admin.core.service.ISysUserService;
+import com.rubber.admin.framework.shiro.PasswordHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author luffyu
@@ -22,7 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sys/u")
-public class SysUserController extends BaseController {
+public class SysUserController extends BaseAdminController {
 
     @Autowired
     private ISysUserService sysUserService;
@@ -35,23 +32,34 @@ public class SysUserController extends BaseController {
      * @return
      */
     @GetMapping("/list")
-    public ResultModel pageList(CompareModel compareModel, PagerModel pagerModel){
-        List<CompareModel> compareModelList = new ArrayList<>();
-        compareModelList.add(compareModel);
+    public ResultModel pageList(SelectModel compareModel, PagerModel pagerModel){
         Page<SysUser> page = creatPager(pagerModel);
-
-        QueryWrapper<SysUser> queryWrapper = creatSearchWrapper(compareModelList,pagerModel,SysUser.class);
+        QueryWrapper<SysUser> queryWrapper = creatSearchWrapper(compareModel,pagerModel,SysUser.class);
         sysUserService.page(page, queryWrapper);
-
         return ResultModel.createSuccess(page);
     }
 
-
-    @PostMapping("/save")
-    public ResultModel save(){
+    /**
+     * 注册用户的信息
+     * @param sysUser 用户的基本信息
+     */
+    @PostMapping("/register")
+    public ResultModel register(SysUser sysUser){
+        PasswordHelper.encryptPassword(sysUser);
+        sysUserService.register(sysUser);
         return ResultModel.createSuccess();
     }
 
+
+    /**
+     * 更新用户的基本信息
+     * @param sysUser 用户的基本信息
+     */
+    @PostMapping("/update")
+    public ResultModel update(SysUser sysUser){
+        sysUserService.checkAndUpdate(sysUser);
+        return ResultModel.createSuccess();
+    }
 
 
     @PostMapping("/del")

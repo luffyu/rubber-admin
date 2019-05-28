@@ -1,4 +1,4 @@
-package com.rubber.admin.framework.config;
+package com.rubber.admin.framework.shiro.config;
 
 import com.rubber.admin.framework.shiro.UserAuthRealm;
 import com.rubber.admin.framework.shiro.session.RedisCacheSessionDao;

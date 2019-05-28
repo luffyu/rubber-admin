@@ -4,11 +4,10 @@ import com.rubber.admin.core.entity.SysMenu;
 import com.rubber.admin.core.entity.SysUser;
 import com.rubber.admin.core.model.ResultModel;
 import com.rubber.admin.core.service.ISysMenuService;
+import com.rubber.admin.framework.serivce.UserLoginService;
 import com.rubber.admin.framework.shiro.UserInfoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +22,9 @@ public class UserController {
 
     @Autowired
     private ISysMenuService sysMenuService;
+
+    @Autowired
+    private UserLoginService loginService;
 
 
     /**
@@ -62,9 +64,9 @@ public class UserController {
     @GetMapping("/change-auth")
     public ResultModel changePassword(String oldPassword,String newPassword,HttpServletRequest request){
         SysUser sysUser = UserInfoUtils.getLoginUser();
-        sysUser.setPassword(null);
-        sysUser.setSalt(null);
-        return ResultModel.createSuccess(sysUser);
+        loginService.changeUserPassword(sysUser,oldPassword,newPassword);
+        UserInfoUtils.getSubject().logout();
+        return ResultModel.createSuccess();
     }
 
 

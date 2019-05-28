@@ -102,7 +102,7 @@ public class UserAuthRealm extends AuthorizingRealm {
      * @param info info信息
      * @throws AuthenticationException
      */
-    @Override
+    /*@Override
     protected void assertCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) throws AuthenticationException {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         String loginName = usernamePasswordToken.getUsername();
@@ -124,7 +124,7 @@ public class UserAuthRealm extends AuthorizingRealm {
 //            throw new AuthenticationException("A CredentialsMatcher must be configured in order to verify credentials during authentication.  If you do not wish for credentials to be examined, you can configure an " + AllowAllCredentialsMatcher.class.getName() + " instance.");
 //        }
     }
-
+*/
 
 
 

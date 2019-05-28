@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @author luffyu
  * Created on 2019-05-27
  */
-public class CompareModel implements Serializable {
+public class SelectModel implements Serializable {
 
     private String field;
 

@@ -1,4 +1,4 @@
-package com.rubber.admin.framework.config;
+package com.rubber.admin.framework.filter;
 
 
 import org.springframework.core.annotation.Order;

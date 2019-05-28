@@ -38,6 +38,20 @@ public class PasswordHelper {
     }
 
 
+    /**
+     * 获取用户的密码
+     * @param password 密码信息
+     * @param salt 研制
+     * @return
+     */
+    public static String encryptPassword(String password,String salt) {
+        RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+        return new SimpleHash(ALGORITHM_NAME, password,
+                ByteSource.Util.bytes(salt), HASH_ITERATIONS).toHex();
+
+    }
+
+
     public static void main(String[] args) {
         String salt = "12345";
         String password = "123456";
