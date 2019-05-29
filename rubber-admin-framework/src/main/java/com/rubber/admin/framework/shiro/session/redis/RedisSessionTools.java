@@ -1,6 +1,9 @@
-package com.rubber.admin.framework.shiro.session;
+package com.rubber.admin.framework.shiro.session.redis;
 
+import com.alibaba.fastjson.JSON;
+import com.rubber.admin.framework.shiro.session.RedisCacheSessionDao;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +34,8 @@ public class RedisSessionTools {
     /**
      * 消息订阅的信息
      */
-    private static final String SESSION_SUB_MESSAGE = "session_msg_top_1";
-
-
     private static final String SESSION_REDIS_CHANNEL = "session_channel_clear";
+
 
     /**
      * 获取 jedis客户端信息
@@ -99,8 +100,33 @@ public class RedisSessionTools {
      */
     public void doDelRedis(Session session){
         if(session != null){
-            getJedisCluster().del(ShiroSessionRedisUtil.serializeKey(SESSION_REDIS_KEY+session.getId()));
+            //getJedisCluster().del(ShiroSessionRedisUtil.serializeKey(SESSION_REDIS_KEY+session.getId()));
+            sendNodeToClearSession(session);
         }
     }
+
+
+    /**
+     * 通知其他的部署节点删除session信息
+     * @param session session信息
+     */
+    public void sendNodeToClearSession(Session session){
+        if(session !=null){
+            byte[] values = ShiroSessionRedisUtil.serializeValue(new SendSessionMsg(session));
+            byte[] key = ShiroSessionRedisUtil.serializeKey(SESSION_REDIS_CHANNEL);
+            getJedisCluster().publish(key,values);
+            logger.info("通过其他节点删除sessionId"+session.getId());
+        }
+    }
+
+
+    /**
+     * 监听session的基本信息
+     */
+    public void listerNodeSessionMsg(RedisCacheSessionDao sessionDAO){
+        byte[] key = ShiroSessionRedisUtil.serializeKey(SESSION_REDIS_CHANNEL);
+        getJedisCluster().subscribe(new RedisSessionPubSub(sessionDAO),key);
+    }
+
 
 }

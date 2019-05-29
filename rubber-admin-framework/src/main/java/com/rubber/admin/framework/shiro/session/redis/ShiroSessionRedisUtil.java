@@ -1,4 +1,4 @@
-package com.rubber.admin.framework.shiro.session;
+package com.rubber.admin.framework.shiro.session.redis;
 
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.SimpleSession;
@@ -21,16 +21,7 @@ public class ShiroSessionRedisUtil {
      * @return 返回当前的session 序列化值
      */
     public static byte[] sessionToByte(Session session){
-        ByteArrayOutputStream bo = new ByteArrayOutputStream();
-        byte[] bytes = null;
-        try {
-            ObjectOutputStream oo = new ObjectOutputStream(bo);
-            oo.writeObject(session);
-            bytes = bo.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bytes;
+        return serializeValue(session);
     }
 
     /**
@@ -39,18 +30,45 @@ public class ShiroSessionRedisUtil {
      * @return 返回当前的session 序列化值
      */
     public static Session byteToSimpleSession(byte[] bytes){
+        Object o = valueDeserialize(bytes);
+        return (SimpleSession)o;
+    }
+
+
+    /**
+     * 序列化value
+     * @param object
+     * @return
+     */
+    public static byte[] serializeValue(Object object){
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        byte[] bytes = null;
+        try {
+            ObjectOutputStream oo = new ObjectOutputStream(bo);
+            oo.writeObject(object);
+            bytes = bo.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bytes;
+    }
+
+    /**
+     * 反序列化value
+     */
+    public static Object valueDeserialize(byte[] bytes){
         ByteArrayInputStream bi = new ByteArrayInputStream(bytes);
         ObjectInputStream in;
-        Session session = null;
+        Object value = null;
         try {
             in = new ObjectInputStream(bi);
-            session = (SimpleSession) in.readObject();
+            value = in.readObject();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return session;
+        return value;
     }
 
 
@@ -69,7 +87,15 @@ public class ShiroSessionRedisUtil {
        return serializeKey(id.toString());
     }
 
-
+    /**
+     * 把byte值转化成String
+     * @param bytes
+     * @return
+     * @throws Exception
+     */
+    public static String keyDeserialize(byte[] bytes){
+        return(bytes == null ? null : new String(bytes, charset));
+    }
 
 
 }

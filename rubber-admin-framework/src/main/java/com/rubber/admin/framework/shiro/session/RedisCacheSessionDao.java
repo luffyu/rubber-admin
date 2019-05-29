@@ -1,12 +1,12 @@
 package com.rubber.admin.framework.shiro.session;
 
+import com.rubber.admin.framework.shiro.session.redis.RedisSessionTools;
 import org.apache.shiro.cache.*;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import redis.clients.jedis.JedisCluster;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -115,6 +115,25 @@ public class RedisCacheSessionDao extends CachingSessionDAO {
 
     public int getSessionTimeOut() {
         return sessionTimeOut;
+    }
+
+
+    /**
+     * 重写一下 uncache 修改方法的访问级别为publish
+     * @param session the session to remove from the cache.
+     */
+    @Override
+    public void uncache(Session session) {
+        super.uncache(session);
+    }
+
+
+
+    /**
+     * 监听是否删除本地session
+     */
+    public void listerToDelLocalSession(){
+        redisSessionTools.listerNodeSessionMsg(this);
     }
 
 }

@@ -8,6 +8,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,9 @@ public class LoginController {
 
     @GetMapping("/login")
     public ResultModel login(String username,String password, HttpServletRequest request) {
+        if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
+            return new ResultModel(MsgCode.PARAM_ERROR);
+        }
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         Subject subject = SecurityUtils.getSubject();
         try {
@@ -48,7 +52,7 @@ public class LoginController {
 
 
 
-    @GetMapping("/logout")
+    @GetMapping("/logouts")
     public ResultModel logout( HttpServletRequest request) {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
