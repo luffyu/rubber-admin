@@ -3,7 +3,7 @@ package com.rubber.admin.core.page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseEntity;
 import com.rubber.admin.core.enums.MsgCode;
-import com.rubber.admin.core.exceptions.base.BaseException;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.util.ReflectionUtils;
 import com.rubber.admin.core.util.StringTools;
 import org.springframework.util.CollectionUtils;
@@ -70,7 +70,7 @@ public class SelectTools {
             return queryWrapper;
         }
         if(!clzFiles.containsKey(selectModel.getField())){
-            throw new BaseException(MsgCode.LOGIN_AUTH_ERROR,selectModel.getField()+"不存在"+clz.getName()+"中");
+            throw new AdminException(MsgCode.LOGIN_AUTH_ERROR,selectModel.getField()+"不存在"+clz.getName()+"中");
         }
         String column = StringTools.underline(selectModel.getField());
         Class<?> aClass = clzFiles.get(selectModel.getField());
@@ -99,7 +99,7 @@ public class SelectTools {
                     queryWrapper.like(column,selectModel.getData());
                     break;
                 }else {
-                    throw new BaseException(MsgCode.PARAM_ERROR,selectModel.getData()+"不是String对象，不是使用like比较");
+                    throw new AdminException(MsgCode.PARAM_ERROR,selectModel.getData()+"不是String对象，不是使用like比较");
                 }
             default:
         }

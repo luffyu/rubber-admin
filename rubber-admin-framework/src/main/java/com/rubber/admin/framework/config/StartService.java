@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 /**
  * @author luffyu
  * Created on 2019-05-29
+ *
+ * 在项目启动的时候 自动订阅删除本地session的消息
+ * 如果接受到了小心 则删除本地缓存的session信息
  */
 @Component
 @Order(value = 1)
@@ -28,8 +31,6 @@ public class StartService implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        logger.info("开始执行首先运行的方法》》》》》》");
-
         redisCacheSessionDao.listerToDelLocalSession();
     }
 }

@@ -75,6 +75,10 @@ public class ResultModel {
     }
 
 
+    public static ResultModel createError(String code,String msg,Object data){
+        return new ResultModel(code,msg,data);
+    }
+
 
 
 

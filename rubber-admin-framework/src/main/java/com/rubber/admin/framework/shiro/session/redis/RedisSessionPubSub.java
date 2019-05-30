@@ -46,7 +46,7 @@ public class RedisSessionPubSub extends BinaryJedisPubSub {
     @Override
     public void onSubscribe(byte[] channel, int subscribedChannels) {
         String channelString = ShiroSessionRedisUtil.keyDeserialize(channel);
-        logger.info("成功订阅渠道{}",channelString);
+        logger.info("成功订阅渠道{}的消息",channelString);
     }
 
     /**

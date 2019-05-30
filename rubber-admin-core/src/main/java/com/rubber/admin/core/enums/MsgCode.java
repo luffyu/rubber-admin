@@ -32,12 +32,10 @@ public enum MsgCode {
     SHIRO_AUTH_ERROR("10204","没有操作权限"),
 
 
+    USER_NOT_LOGIN("20100","用户未登陆"),
     LOGIN_AUTH_ERROR("20101","登陆密码错误"),
     LOGIN_USER_NOT_EXIST("20102","用户不存在"),
     USER_IS_DISABLE("20103","用户已经被禁用"),
-
-
-
     ;
     /**
      * 业务错误码 000000的结构

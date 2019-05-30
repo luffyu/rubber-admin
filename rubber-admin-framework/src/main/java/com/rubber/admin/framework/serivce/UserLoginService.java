@@ -3,8 +3,8 @@ package com.rubber.admin.framework.serivce;
 import com.rubber.admin.core.entity.SysUser;
 import com.rubber.admin.core.enums.MsgCode;
 import com.rubber.admin.core.enums.StatusEnums;
-import com.rubber.admin.core.exceptions.LoginException;
-import com.rubber.admin.core.exceptions.base.BaseException;
+import com.rubber.admin.framework.exception.LoginException;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.service.ISysUserService;
 import com.rubber.admin.framework.shiro.PasswordHelper;
 import org.apache.shiro.authc.DisabledAccountException;
@@ -58,7 +58,7 @@ public class UserLoginService {
     public SysUser changeUserPassword(SysUser sysUser,String oldPassword,String newPassword){
         String createUserPassword = PasswordHelper.encryptPassword(oldPassword,sysUser.getSalt());
         if(!sysUser.getPassword().equalsIgnoreCase(createUserPassword)){
-            throw new BaseException(MsgCode.LOGIN_AUTH_ERROR);
+            throw new AdminException(MsgCode.LOGIN_AUTH_ERROR);
         }
         sysUser.setSalt("123456");
         String password = PasswordHelper.encryptPassword(newPassword, sysUser.getSalt());

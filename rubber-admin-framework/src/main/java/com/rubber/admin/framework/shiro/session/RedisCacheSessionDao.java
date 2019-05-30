@@ -3,7 +3,7 @@ package com.rubber.admin.framework.shiro.session;
 import com.rubber.admin.framework.shiro.session.redis.RedisSessionTools;
 import org.apache.shiro.cache.*;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.SimpleSession;
+import org.apache.shiro.session.mgt.ValidatingSession;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ public class RedisCacheSessionDao extends CachingSessionDAO {
         assignSessionId(session, sessionId);
         //写入到缓存中
         redisSessionTools.doSetRedis(session,getSessionTimeOut() * 60);
-        logger.info("创建session>>>" + session.getId());
+        logger.info("创建session>>>" + session);
         return sessionId;
     }
 
@@ -83,7 +83,7 @@ public class RedisCacheSessionDao extends CachingSessionDAO {
      */
     @Override
     protected Session doReadSession(Serializable sessionId) {
-        logger.info("从redis中读取>>>" + sessionId);
+        logger.info("从redis中读取sessionId为{}的信息", sessionId);
         return redisSessionTools.doGetRedis(sessionId);
     }
 
@@ -95,9 +95,15 @@ public class RedisCacheSessionDao extends CachingSessionDAO {
      */
     @Override
     protected void doUpdate(Session session) {
-        //does nothing - parent class persists to cache.
-        redisSessionTools.doSetRedis(session,getSessionTimeOut() * 60);
-        logger.info("更新session>>>" + session.getId());
+        if (session instanceof ValidatingSession) {
+            if (((ValidatingSession) session).isValid()) {
+                redisSessionTools.doSetRedis(session,getSessionTimeOut() * 60);
+                logger.info("更新redis中的session信息，id为{}",session.getId());
+            } else {
+                redisSessionTools.doDelRedis(session);
+                logger.info("更新redis时,session已经失效,id为{}",session.getId());
+            }
+        }
     }
 
 
@@ -107,10 +113,8 @@ public class RedisCacheSessionDao extends CachingSessionDAO {
      */
     @Override
     protected void doDelete(Session session) {
-        //does nothing - parent class removes from cache.
         redisSessionTools.doDelRedis(session);
-        //通知全部的信息 执行删除本地缓存的操作
-        logger.info("删除redis中的session>>>" + session.getId());
+        logger.info("删除id为{}的session信息",session.getId());
     }
 
 

@@ -1,11 +1,13 @@
-package com.rubber.admin.framework.filter;
+package com.rubber.admin.framework.config;
 
 
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.WebFault;
 import java.io.IOException;
 
 /**
@@ -13,10 +15,12 @@ import java.io.IOException;
  * Created on 2019-05-27
  *
  * 解决跨域问题
+ *
+ * @Order(value = 1) 表示在拦截器中 这个拦截器是第一次执行
  */
-@SuppressWarnings("Duplicates")
 @Order(value = 1)
-@WebFilter
+@Component
+@WebFault
 public class CORSFilter implements Filter {
 
     @Override

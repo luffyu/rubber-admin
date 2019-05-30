@@ -25,15 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class LoginController {
 
-    @Resource
-    private RedisSessionTools redisSessionTools;
-
-    @GetMapping("/login")
-    public ResultModel loginPage() {
-        return ResultModel.createSuccess("请登陆");
-    }
-
-
 
 
     @PostMapping("/login")
@@ -64,8 +55,7 @@ public class LoginController {
 
 
 
-
-    @GetMapping("/logouts")
+    @GetMapping("/logout")
     public ResultModel logout( HttpServletRequest request) {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();

@@ -1,13 +1,13 @@
-package com.rubber.admin.core.exceptions;
+package com.rubber.admin.framework.exception;
 
 import com.rubber.admin.core.enums.MsgCode;
-import com.rubber.admin.core.exceptions.base.BaseException;
+import com.rubber.admin.core.exceptions.AdminException;
 
 /**
  * @author luffyu
  * Created on 2019-05-13
  */
-public class LoginException extends BaseException {
+public class LoginException extends AdminException {
 
     public LoginException() {
     }
