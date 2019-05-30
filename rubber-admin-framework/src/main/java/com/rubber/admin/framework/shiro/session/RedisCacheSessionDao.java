@@ -3,6 +3,7 @@ package com.rubber.admin.framework.shiro.session;
 import com.rubber.admin.framework.shiro.session.redis.RedisSessionTools;
 import org.apache.shiro.cache.*;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

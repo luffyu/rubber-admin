@@ -2,16 +2,20 @@ package com.rubber.admin.framework.controller;
 
 import com.rubber.admin.core.enums.MsgCode;
 import com.rubber.admin.core.model.ResultModel;
+import com.rubber.admin.framework.shiro.session.redis.RedisSessionTools;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -21,9 +25,18 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class LoginController {
 
-
+    @Resource
+    private RedisSessionTools redisSessionTools;
 
     @GetMapping("/login")
+    public ResultModel loginPage() {
+        return ResultModel.createSuccess("请登陆");
+    }
+
+
+
+
+    @PostMapping("/login")
     public ResultModel login(String username,String password, HttpServletRequest request) {
         if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
             return new ResultModel(MsgCode.PARAM_ERROR);

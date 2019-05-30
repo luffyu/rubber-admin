@@ -1,9 +1,7 @@
 package com.rubber.admin.framework.shiro.session.redis;
 
-import com.alibaba.fastjson.JSON;
 import com.rubber.admin.framework.shiro.session.RedisCacheSessionDao;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +98,7 @@ public class RedisSessionTools {
      */
     public void doDelRedis(Session session){
         if(session != null){
-            //getJedisCluster().del(ShiroSessionRedisUtil.serializeKey(SESSION_REDIS_KEY+session.getId()));
+            getJedisCluster().del(ShiroSessionRedisUtil.serializeKey(SESSION_REDIS_KEY+session.getId()));
             sendNodeToClearSession(session);
         }
     }

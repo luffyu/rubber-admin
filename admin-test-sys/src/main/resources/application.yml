@@ -7,8 +7,6 @@ mybatis-plus:
       id-type: AUTO
       field-strategy: NOT_NULL
       table-underline: true
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # Shiro
 shiro:
