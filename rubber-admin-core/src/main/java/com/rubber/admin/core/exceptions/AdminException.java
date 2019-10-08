@@ -1,71 +1,38 @@
 package com.rubber.admin.core.exceptions;
 
-import com.rubber.admin.core.enums.MsgCode;
+import com.luffyu.piece.utils.result.IResultHandle;
+import com.luffyu.piece.utils.result.code.ICodeHandle;
+import com.luffyu.piece.utils.result.exception.BaseResultException;
+import com.luffyu.piece.utils.result.exception.BaseResultRunTimeException;
 
 /**
  * @author luffyu
  * Created on 2019-05-13
  */
-public class AdminException extends RuntimeException {
+public class AdminException extends BaseResultRunTimeException {
 
-
-    private String code;
-
-    private String msg;
-
-    private Object data;
-
-    public AdminException() {
-    }
 
     public AdminException(String msg) {
         super(msg);
-        this.msg = msg;
+    }
+
+    public AdminException(IResultHandle handle) {
+        super(handle);
     }
 
     public AdminException(String code, String msg, Object data) {
-        super(msg);
-        this.code = code;
-        this.msg = msg;
-        this.data = data;
+        super(code, msg, data);
     }
 
-
-    public AdminException(MsgCode msgCode, Object data) {
-        super(msgCode.msg);
-        this.code = msgCode.code;
-        this.msg = msgCode.msg;
-        this.data = data;
+    public AdminException(ICodeHandle handle, Object data) {
+        super(handle, data);
     }
 
-
-    public AdminException(MsgCode msgCode) {
-        super(msgCode.msg);
-        this.code = msgCode.code;
-        this.msg = msgCode.msg;
+    public AdminException(ICodeHandle handle) {
+        super(handle);
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
+    public AdminException(ICodeHandle handle, String msg, Object... arguments) {
+        super(handle, msg, arguments);
     }
 }

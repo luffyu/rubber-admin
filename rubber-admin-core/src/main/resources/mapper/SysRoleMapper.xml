@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.rubber.admin.core.mapper.SysRoleMapper">
+<mapper namespace="com.rubber.admin.core.system.mapper.SysRoleMapper">
 
 
-    <resultMap type="com.rubber.admin.core.entity.SysRole" id="baseRoleResult">
+    <resultMap type="com.rubber.admin.core.system.entity.SysRole" id="baseRoleResult">
         <id property="roleId" column="role_id"/>
         <result property="roleName" column="role_name"/>
         <result property="roleKey" column="role_key"/>

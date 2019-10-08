@@ -1,11 +1,11 @@
 package com.rubber.admin.core.page;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.luffyu.piece.utils.StringTools;
 import com.rubber.admin.core.base.BaseEntity;
-import com.rubber.admin.core.enums.MsgCode;
+import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
-import com.rubber.admin.core.util.ReflectionUtils;
-import com.rubber.admin.core.util.StringTools;
+import com.rubber.admin.core.tools.ReflectionUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -26,7 +26,7 @@ public class SelectTools {
      * @param <T> entit的类名称
      * @return 返回查询的参数
      */
-    public static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(List<SelectModel> selectModels, Class<T> clz){
+    public static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(List<SelectModel> selectModels, Class<T> clz) throws AdminException {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         if(!CollectionUtils.isEmpty(selectModels)){
             Map<String,Class<?>> clzFiles = ReflectionUtils.getDBEntityFieldsName(clz);
@@ -44,7 +44,7 @@ public class SelectTools {
      * @param <T> 泛型
      * @return 返回查询的queryWrapper
      */
-    public static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(SelectModel selectModel, Class<T> clz){
+    public static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(SelectModel selectModel, Class<T> clz) throws AdminException {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         Map<String,Class<?>> clzFiles = ReflectionUtils.getDBEntityFieldsName(clz);
         creatSearchWrapper(queryWrapper,clzFiles,selectModel,clz);
@@ -62,7 +62,7 @@ public class SelectTools {
      * @param <T>
      * @return
      */
-    private static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(QueryWrapper<T> queryWrapper, Map<String,Class<?>> clzFiles, SelectModel selectModel, Class<T> clz){
+    private static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(QueryWrapper<T> queryWrapper, Map<String,Class<?>> clzFiles, SelectModel selectModel, Class<T> clz) throws AdminException {
         if(queryWrapper == null){
             queryWrapper = new QueryWrapper<>();
         }
@@ -70,7 +70,7 @@ public class SelectTools {
             return queryWrapper;
         }
         if(!clzFiles.containsKey(selectModel.getField())){
-            throw new AdminException(MsgCode.LOGIN_AUTH_ERROR,selectModel.getField()+"不存在"+clz.getName()+"中");
+            throw new AdminException(AdminCode.LOGIN_AUTH_ERROR,selectModel.getField()+"不存在"+clz.getName()+"中");
         }
         String column = StringTools.underline(selectModel.getField());
         Class<?> aClass = clzFiles.get(selectModel.getField());
@@ -99,7 +99,7 @@ public class SelectTools {
                     queryWrapper.like(column,selectModel.getData());
                     break;
                 }else {
-                    throw new AdminException(MsgCode.PARAM_ERROR,selectModel.getData()+"不是String对象，不是使用like比较");
+                    throw new AdminException(AdminCode.PARAM_ERROR,selectModel.getData()+"不是String对象，不是使用like比较");
                 }
             default:
         }

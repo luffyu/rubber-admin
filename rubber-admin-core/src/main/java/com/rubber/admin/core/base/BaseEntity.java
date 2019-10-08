@@ -1,10 +1,11 @@
 package com.rubber.admin.core.base;
 
-import java.io.Serializable;
+import com.luffyu.piece.utils.bean.IEntityBean;
+
 
 /**
  * @author luffyu
  * Created on 2019-05-11
  */
-public class BaseEntity implements Serializable {
+public class BaseEntity implements IEntityBean {
 }

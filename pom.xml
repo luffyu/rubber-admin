@@ -7,11 +7,10 @@
     <groupId>com.rubber.admin</groupId>
     <artifactId>rubber-admin</artifactId>
     <packaging>pom</packaging>
-    <version>${rubber-admin.version}</version>
+    <version>1.0.1</version>
 
     <modules>
         <module>rubber-admin-core</module>
-        <module>rubber-admin-framework</module>
         <module>springboot-rubber-admin-start</module>
     </modules>
 
@@ -20,7 +19,58 @@
         <mysql-connector.version>5.1.47</mysql-connector.version>
         <mybatis-plus.version>3.1.1</mybatis-plus.version>
         <spring.version>5.1.7.RELEASE</spring.version>
-        <rubber-admin.version>3.1.1-plus</rubber-admin.version>
+        <piece.version>1.0.1</piece.version>
     </properties>
+
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+
+    <dependencies>
+        <!--个人工具包项目-->
+        <!-- github地址:https://github.com/luffyu/piece -->
+        <dependency>
+            <artifactId>piece-util-core</artifactId>
+            <groupId>com.luffyu.piece</groupId>
+            <version>${piece.version}</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>

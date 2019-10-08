@@ -5,23 +5,14 @@
     <parent>
         <artifactId>rubber-admin</artifactId>
         <groupId>com.rubber.admin</groupId>
-        <version>3.1.1-plus</version>
+        <version>1.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>springboot-rubber-admin-start</artifactId>
+    <packaging>jar</packaging>
 
 
     <dependencies>
-
-
-
-        <dependency>
-            <groupId>com.rubber.admin</groupId>
-            <artifactId>rubber-admin-framework</artifactId>
-            <version>3.1.1-plus</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
