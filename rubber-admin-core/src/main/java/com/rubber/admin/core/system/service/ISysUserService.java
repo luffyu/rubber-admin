@@ -21,6 +21,14 @@ public interface ISysUserService extends IService<SysUser> {
      */
     SysUser getByLoginName(String loginName);
 
+    /**
+     * 通过用户名称查询到用户信息
+     * @param userName 用户到名称
+     * @return 返回用户到信息
+     */
+    SysUser getByUserName(String userName);
+
+
 
     /**
      * 保存用户的基本信息
@@ -28,11 +36,5 @@ public interface ISysUserService extends IService<SysUser> {
      */
     void checkAndUpdate(SysUser sysUser);
 
-
-    /**
-     * 注册用户的基本信息
-     * @param sysUser
-     */
-    void register(SysUser sysUser);
 
 }

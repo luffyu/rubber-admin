@@ -1,4 +1,4 @@
-package com.rubber.admin.core.page;
+package com.rubber.admin.core.plugins.select;
 
 /**
  * @author luffyu
@@ -8,42 +8,36 @@ public enum CompareType {
     /**
      * 比较的关键字
      */
-    IN("IN"),
-    NOT("NOT"),
 
-    LIKE("LIKE"),
+    like("LIKE"),
     /**
      * 等于
      */
-    EQ("="),
+    eq("="),
     /**
      * 不等于
      */
-    NE("<>"),
+    ne("<>"),
     /**
      * 大于
      */
-    GT(">"),
+    gt(">"),
     /**
      * 大于等于
      */
-    GE(">="),
+    ge(">="),
     /**
      * 小于
      */
-    LT("<"),
+    lt("<"),
     /**
      * 小于等于
      */
-    LE("<="),
+    le("<="),
     /**
-     * null
+     * 在什么之间
      */
-    IS_NULL("IS NULL"),
-    IS_NOT_NULL("IS NOT NULL"),
-
-    ASC("ASC"),
-    DESC("DESC");
+    between("BETWEEN"),
 
     ;
 

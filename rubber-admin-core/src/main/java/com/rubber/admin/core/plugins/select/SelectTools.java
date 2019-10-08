@@ -1,4 +1,4 @@
-package com.rubber.admin.core.page;
+package com.rubber.admin.core.plugins.select;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.luffyu.piece.utils.StringTools;
@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public class SelectTools {
 
-
     /**
      * 通过传入的参数信息来比较对象信息
      * @param selectModels 参数信息
@@ -31,11 +30,29 @@ public class SelectTools {
         if(!CollectionUtils.isEmpty(selectModels)){
             Map<String,Class<?>> clzFiles = ReflectionUtils.getDBEntityFieldsName(clz);
             for(SelectModel compareModel:selectModels){
-                creatSearchWrapper(queryWrapper,clzFiles,compareModel,clz);
+                creatSearchWrapper(queryWrapper,clzFiles,compareModel);
             }
         }
         return queryWrapper;
     }
+
+    /**
+     * 通过传入的参数信息来比较对象信息
+     * @param selectModels 参数信息
+     * @param <T> entit的类名称
+     * @return 返回查询的参数
+     */
+    public static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(List<SelectModel> selectModels,  Map<String,Class<?>> clzFiles) throws AdminException {
+        QueryWrapper<T> queryWrapper = new QueryWrapper<>();
+        if(!CollectionUtils.isEmpty(selectModels)){
+            for(SelectModel compareModel:selectModels){
+                creatSearchWrapper(queryWrapper,clzFiles,compareModel);
+            }
+        }
+        return queryWrapper;
+    }
+
+
 
     /**
      * 传入单个参数查询用户的基本信息
@@ -47,7 +64,7 @@ public class SelectTools {
     public static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(SelectModel selectModel, Class<T> clz) throws AdminException {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         Map<String,Class<?>> clzFiles = ReflectionUtils.getDBEntityFieldsName(clz);
-        creatSearchWrapper(queryWrapper,clzFiles,selectModel,clz);
+        creatSearchWrapper(queryWrapper,clzFiles,selectModel);
         return queryWrapper;
     }
 
@@ -58,11 +75,10 @@ public class SelectTools {
      * @param queryWrapper
      * @param clzFiles
      * @param selectModel
-     * @param clz
      * @param <T>
      * @return
      */
-    private static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(QueryWrapper<T> queryWrapper, Map<String,Class<?>> clzFiles, SelectModel selectModel, Class<T> clz) throws AdminException {
+    private static  <T extends BaseEntity> QueryWrapper<T> creatSearchWrapper(QueryWrapper<T> queryWrapper, Map<String,Class<?>> clzFiles, SelectModel selectModel) throws AdminException {
         if(queryWrapper == null){
             queryWrapper = new QueryWrapper<>();
         }
@@ -70,37 +86,40 @@ public class SelectTools {
             return queryWrapper;
         }
         if(!clzFiles.containsKey(selectModel.getField())){
-            throw new AdminException(AdminCode.LOGIN_AUTH_ERROR,selectModel.getField()+"不存在"+clz.getName()+"中");
+            throw new AdminException(AdminCode.LOGIN_AUTH_ERROR,selectModel.getField()+"是非法成员变量");
         }
         String column = StringTools.underline(selectModel.getField());
         Class<?> aClass = clzFiles.get(selectModel.getField());
         //解析比较信息
         switch (selectModel.getType()){
-            case EQ:
+            case eq:
                 queryWrapper.eq(column,selectModel.getData());
                 break;
-            case NE:
+            case ne:
                 queryWrapper.ne(column,selectModel.getData());
                 break;
-            case GT:
+            case gt:
                 queryWrapper.gt(column,selectModel.getData());
                 break;
-            case GE:
+            case ge:
                 queryWrapper.gt(column,selectModel.getData());
                 break;
-            case LT:
+            case lt:
                 queryWrapper.lt(column,selectModel.getData());
                 break;
-            case LE:
+            case le:
                 queryWrapper.le(column,selectModel.getData());
                 break;
-            case LIKE:
+            case like:
                 if(aClass == String.class){
                     queryWrapper.like(column,selectModel.getData());
                     break;
                 }else {
                     throw new AdminException(AdminCode.PARAM_ERROR,selectModel.getData()+"不是String对象，不是使用like比较");
                 }
+            case between:
+                queryWrapper.between(column,selectModel.getData(),selectModel.getDateEnd());
+                break;
             default:
         }
         return queryWrapper;

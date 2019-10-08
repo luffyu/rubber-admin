@@ -3,6 +3,7 @@ package com.rubber.admin.core.system.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
 
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * @author luffyu-auto
  * @since 2019-05-13
  */
+@Data
 public class SysRole extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -74,109 +76,4 @@ public class SysRole extends BaseEntity {
      */
     private String remark;
 
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public String getRoleKey() {
-        return roleKey;
-    }
-
-    public void setRoleKey(String roleKey) {
-        this.roleKey = roleKey;
-    }
-
-    public Integer getSeq() {
-        return seq;
-    }
-
-    public void setSeq(Integer seq) {
-        this.seq = seq;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(String delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public Integer getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Integer createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getLastUpdateTime() {
-        return lastUpdateTime;
-    }
-
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
-
-    public Integer getLastUpdateBy() {
-        return lastUpdateBy;
-    }
-
-    public void setLastUpdateBy(Integer lastUpdateBy) {
-        this.lastUpdateBy = lastUpdateBy;
-    }
-
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    @Override
-    public String toString() {
-        return "SysRole{" +
-                "roleId=" + roleId +
-                ", roleName=" + roleName +
-                ", roleKey=" + roleKey +
-                ", seq=" + seq +
-                ", status=" + status +
-                ", delFlag=" + delFlag +
-                ", createBy=" + createBy +
-                ", createTime=" + createTime +
-                ", lastUpdateBy=" + lastUpdateBy +
-                ", lastUpdateTime=" + lastUpdateTime +
-                ", remark=" + remark +
-                "}";
-    }
 }

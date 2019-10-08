@@ -1,5 +1,6 @@
 package com.rubber.admin.core.system.service;
 
+import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysRoleMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -11,6 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author luffyu-auto
  * @since 2019-05-13
  */
-public interface ISysRoleMenuService extends IService<SysRoleMenu> {
+public interface ISysRoleMenuService extends IBaseService<SysRoleMenu> {
 
 }

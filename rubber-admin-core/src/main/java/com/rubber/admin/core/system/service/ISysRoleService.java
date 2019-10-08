@@ -1,5 +1,6 @@
 package com.rubber.admin.core.system.service;
 
+import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,7 +15,7 @@ import java.util.Set;
  * @author luffyu-auto
  * @since 2019-05-13
  */
-public interface ISysRoleService extends IService<SysRole> {
+public interface ISysRoleService extends IBaseService<SysRole> {
 
     /**
      * 通过用户id 查找所有的用户信息

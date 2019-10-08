@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.luffyu.piece.utils.result.code.SysCode;
+import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
@@ -25,8 +26,14 @@ public class SysUserServiceImpl extends BaseService<SysUserMapper, SysUser> impl
     public SysUser getByLoginName(String loginName) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("login_name",loginName);
-        queryWrapper.eq("status",0);
+        return getOne(queryWrapper);
+    }
 
+
+    @Override
+    public SysUser getByUserName(String userName) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name",userName);
         return getOne(queryWrapper);
     }
 
@@ -40,11 +47,6 @@ public class SysUserServiceImpl extends BaseService<SysUserMapper, SysUser> impl
         if(!updateById(sysUser)){
             throw new AdminException(SysCode.SYSTEM_ERROR,"更新系统失败");
         }
-    }
-
-    @Override
-    public void register(SysUser sysUser) {
-        save(sysUser);
     }
 
     /**

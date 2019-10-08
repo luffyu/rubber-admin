@@ -3,6 +3,7 @@ package com.rubber.admin.core.system.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
 
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * @author luffyu-auto
  * @since 2019-05-13
  */
+@Data
 public class SysUser extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -115,181 +117,7 @@ public class SysUser extends BaseEntity {
      */
     private Boolean superAdmin;
 
-    public Integer getUserId() {
-        return userId;
-    }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getLoginName() {
-        return loginName;
-    }
-
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public Integer getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Integer createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Integer getLastUpdateBy() {
-        return lastUpdateBy;
-    }
-
-    public void setLastUpdateBy(Integer lastUpdateBy) {
-        this.lastUpdateBy = lastUpdateBy;
-    }
-
-    public Date getLastUpdateTime() {
-        return lastUpdateTime;
-    }
-
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
-
-    public String getLastLoginIp() {
-        return lastLoginIp;
-    }
-
-    public void setLastLoginIp(String lastLoginIp) {
-        this.lastLoginIp = lastLoginIp;
-    }
-
-    public Date getLastLoginTime() {
-        return lastLoginTime;
-    }
-
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
-    }
-
-    public Integer getLoginNumber() {
-        return loginNumber;
-    }
-
-    public void setLoginNumber(Integer loginNumber) {
-        this.loginNumber = loginNumber;
-    }
-
-    public Boolean getSuperAdmin() {
-        return superAdmin;
-    }
-
-    public void setSuperAdmin(Boolean superAdmin) {
-        this.superAdmin = superAdmin;
-    }
-
-    @Override
-    public String toString() {
-        return "SysUser{" +
-                "userId=" + userId +
-                ", loginName=" + loginName +
-                ", loginPassword=" + password +
-                ", salt=" + salt +
-                ", userName=" + userName +
-                ", avatar=" + avatar +
-                ", sex=" + sex +
-                ", email=" + email +
-                ", phone=" + phone +
-                ", status=" + status +
-                ", remark=" + remark +
-                ", createBy=" + createBy +
-                ", createTime=" + createTime +
-                ", lastUpdateBy=" + lastUpdateBy +
-                ", lastUpdateTime=" + lastUpdateTime +
-                ", lastLoginIp=" + lastLoginIp +
-                ", lastLoginTime=" + lastLoginTime +
-                ", loginNumber=" + loginNumber +
-                "}";
-    }
 
 
 }
