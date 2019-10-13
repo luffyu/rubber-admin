@@ -1,6 +1,7 @@
 package com.rubber.admin.core.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class SysUser extends BaseEntity {
     /**
      * 登陆密码
      */
-    private String password;
+    private String loginPassword;
 
     /**
      * 加密盐值
@@ -115,6 +116,7 @@ public class SysUser extends BaseEntity {
     /**
      * 是否是超级管理员 0表示不是 1表示是
      */
+    @TableField(exist = false)
     private Boolean superAdmin;
 
 

@@ -2,7 +2,6 @@ package com.rubber.admin.core.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.luffyu.piece.utils.result.code.SysCode;
-import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.mapper.SysUserMapper;

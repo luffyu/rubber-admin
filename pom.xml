@@ -9,6 +9,15 @@
     <packaging>pom</packaging>
     <version>1.0.1</version>
 
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.7.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+
     <modules>
         <module>rubber-admin-core</module>
         <module>springboot-rubber-admin-start</module>
@@ -21,32 +30,8 @@
         <mybatis-plus.version>3.1.1</mybatis-plus.version>
         <spring.version>5.1.7.RELEASE</spring.version>
         <piece.version>1.0.1</piece.version>
+        <rubber-admin.version>1.0.1</rubber-admin.version>
     </properties>
-
-
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aspects</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-
 
     <dependencies>
         <!--个人工具包项目-->

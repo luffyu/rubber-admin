@@ -12,4 +12,20 @@
     <artifactId>rubber-admin-security</artifactId>
 
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.rubber.admin</groupId>
+            <artifactId>rubber-admin-core</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+
+    </dependencies>
+
 </project>
