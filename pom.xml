@@ -12,6 +12,7 @@
     <modules>
         <module>rubber-admin-core</module>
         <module>springboot-rubber-admin-start</module>
+        <module>rubber-admin-security</module>
     </modules>
 
 
