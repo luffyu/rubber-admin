@@ -44,8 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 开启登陆配置
                 .authorizeRequests()
-                // 对于登录login 验证码captchaImage 允许匿名访问
-                //.antMatchers("/login", "/captchaImage").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
                         "/*.html",
@@ -54,15 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js"
                 ).permitAll()
 
-
                 //不需要验证的接口
                 .antMatchers("/login", "/captchaImage").anonymous()
-                .antMatchers("/test1/**").anonymous()
                 .antMatchers("/swagger-ui.html").anonymous()
                 .antMatchers("/swagger-resources/**").anonymous()
-                .antMatchers("/webjars/**").anonymous()
-                .antMatchers("/*/api-docs").anonymous()
-                .antMatchers("/druid/**").anonymous()
 
                 //需要什么角色
                 .antMatchers("/sys/**","/system/**").hasRole("admin")
