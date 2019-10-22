@@ -1,14 +1,13 @@
 package com.rubber.admin.security.handle;
 
-import org.springframework.context.annotation.Configuration;
+import com.luffyu.piece.utils.result.ResultMsg;
+import com.luffyu.piece.utils.web.ServletTools;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * 退出登陆的操作类
@@ -20,9 +19,8 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
 
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, ServletException {
-
-        System.out.println("退出成功");
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication){
+        ResultMsg msg = ResultMsg.success("退出成功");
+        ServletTools.printResponse(response, msg);
     }
 }

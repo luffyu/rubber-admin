@@ -2,6 +2,7 @@ package com.rubber.admin.security.handle;
 
 import com.luffyu.piece.utils.StringTools;
 import com.luffyu.piece.utils.result.ResultMsg;
+import com.luffyu.piece.utils.web.HttpCode;
 import com.luffyu.piece.utils.web.ServletTools;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -23,8 +24,8 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, S
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e){
-        String msg = StringTools.arrayFormat("没有权限访问：{}", request.getRequestURI());
+        String msg = StringTools.arrayFormat("没有权限访问：{}，异常信息：{}", request.getRequestURI(),e.getMessage());
         ResultMsg error = ResultMsg.error(msg);
-        ServletTools.printResponse(response,error);
+        ServletTools.printResponse(response, HttpCode.FORBIDDEN,error);
     }
 }

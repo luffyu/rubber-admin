@@ -19,6 +19,8 @@ public class LoginUserDetail implements UserDetails {
      */
     private String loginName;
 
+    private String password;
+
     /**
      * token
      */
@@ -28,6 +30,10 @@ public class LoginUserDetail implements UserDetails {
      * 用户的基本信息
      */
     private SysUser sysUser;
+
+    public LoginUserDetail(String loginName) {
+        this.loginName = loginName;
+    }
 
     public LoginUserDetail(SysUser sysUser) {
         this.sysUser = sysUser;
@@ -41,12 +47,12 @@ public class LoginUserDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return sysUser.getLoginPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return sysUser.getLoginName();
+        return loginName;
     }
 
     /**
