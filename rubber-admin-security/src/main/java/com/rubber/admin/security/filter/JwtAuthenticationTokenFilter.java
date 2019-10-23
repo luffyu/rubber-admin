@@ -1,9 +1,10 @@
 package com.rubber.admin.security.filter;
 
-import com.luffyu.piece.utils.CollectionUtils;
-import com.luffyu.piece.utils.result.IResultHandle;
-import com.luffyu.piece.utils.result.ResultMsg;
-import com.luffyu.piece.utils.web.ServletTools;
+import cn.hutool.coocaa.util.result.IResultHandle;
+import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import com.alibaba.fastjson.JSON;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.security.auth.jwt.JwtTokenAuthHandle;
@@ -25,7 +26,10 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +60,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     public void init() {
         Set<String> anonymous = rubberConfigProperties.getAllAnonymous();
         Map<HttpMethod, Set<String>> permitAll = rubberConfigProperties.getPermitAll();
-        if(CollectionUtils.isNotEmpty(permitAll)){
+        if(CollectionUtil.isNotEmpty(permitAll)){
             Collection<Set<String>> values = permitAll.values();
             values.forEach(anonymous::addAll);
         }
@@ -97,7 +101,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if(error == null){
             error = ResultMsg.error(AdminCode.USER_NOT_LOGIN);
         }
-        ServletTools.printResponse(response, error);
+        ServletUtil.write(response, JSON.toJSONString(error),"application/json");
     }
 
 

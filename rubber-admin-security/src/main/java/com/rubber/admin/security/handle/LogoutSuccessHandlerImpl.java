@@ -1,7 +1,8 @@
 package com.rubber.admin.security.handle;
 
-import com.luffyu.piece.utils.result.ResultMsg;
-import com.luffyu.piece.utils.web.ServletTools;
+import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.extra.servlet.ServletUtil;
+import com.alibaba.fastjson.JSON;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,6 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication){
         ResultMsg msg = ResultMsg.success("退出成功");
-        ServletTools.printResponse(response, msg);
+        ServletUtil.write(response, JSON.toJSONString(msg),"application/json");
     }
 }

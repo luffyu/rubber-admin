@@ -1,6 +1,7 @@
 package com.rubber.admin.core.enums;
 
-import com.luffyu.piece.utils.result.code.ICodeHandle;
+
+import cn.hutool.coocaa.util.result.code.ICodeHandle;
 
 /**
  * @author luffyu

@@ -1,6 +1,6 @@
 package com.rubber.admin.security.user;
 
-import com.luffyu.piece.utils.result.ResultMsg;
+import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.security.user.service.RubberUserLoginService;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,7 +24,7 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public ResultMsg login(String username,String password){
+    public ResultMsg login(String username, String password){
         try {
             return rubberLoginService.login(username,password);
         }catch (BadCredentialsException e){

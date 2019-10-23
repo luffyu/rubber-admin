@@ -1,5 +1,6 @@
 package com.rubber.admin.security.config;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.rubber.admin.security.bean.RubberConfigProperties;
 import com.rubber.admin.security.filter.JwtAuthenticationTokenFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
@@ -14,7 +15,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.luffyu.piece.utils.CollectionUtils;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -63,9 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         Map<HttpMethod, Set<String>> permitAll = rubberConfigProperties.getPermitAll();
-        if(CollectionUtils.isNotEmpty(permitAll)){
+        if(CollectionUtil.isNotEmpty(permitAll)){
             for(Map.Entry<HttpMethod, Set<String>> map:permitAll.entrySet()){
-                if(CollectionUtils.isEmpty(map.getValue())){
+                if(CollectionUtil.isEmpty(map.getValue())){
                     continue;
                 }
                 String[] value = new String[map.getValue().size()];
@@ -74,15 +74,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         }
         //验证配置
         Set<String> anonymous = rubberConfigProperties.getAllAnonymous();
-        if(CollectionUtils.isNotEmpty(anonymous)){
+        if(CollectionUtil.isNotEmpty(anonymous)){
             String[] value = new String[anonymous.size()];
             httpSecurity.authorizeRequests().antMatchers(anonymous.toArray(value)).anonymous();
         }
         //角色配置
         Map<String, Set<String>> rolePatterns = rubberConfigProperties.getRolePatterns();
-        if(!CollectionUtils.isEmpty(rolePatterns)){
+        if(!CollectionUtil.isEmpty(rolePatterns)){
             for(Map.Entry<String,Set<String>> entry:rolePatterns.entrySet()){
-                if(CollectionUtils.isEmpty(entry.getValue())){
+                if(CollectionUtil.isEmpty(entry.getValue())){
                     continue;
                 }
                 String[] value = new String[entry.getValue().size()];

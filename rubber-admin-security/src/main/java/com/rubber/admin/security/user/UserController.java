@@ -1,7 +1,6 @@
 package com.rubber.admin.security.user;
 
-import cn.hutool.core.util.StrUtil;
-import com.luffyu.piece.utils.result.ResultMsg;
+import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.security.user.bean.UserInfo;
 import com.rubber.admin.security.user.service.RubberUserService;
 import org.springframework.web.bind.annotation.GetMapping;

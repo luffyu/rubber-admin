@@ -1,6 +1,6 @@
 package com.rubber.admin.security.user.bean;
 
-import com.luffyu.piece.utils.result.code.ICodeHandle;
+import cn.hutool.coocaa.util.result.code.ICodeHandle;
 import com.rubber.admin.core.exceptions.AdminException;
 
 /**

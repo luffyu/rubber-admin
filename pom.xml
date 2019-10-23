@@ -34,14 +34,18 @@
     </properties>
 
     <dependencies>
-        <!--个人工具包项目-->
-        <!-- github地址:https://github.com/luffyu/piece -->
+        <!--个人工具包项目 继承开源项目 hutool-->
+        <!-- github地址:https://github.com/luffyu/hutool -->
         <dependency>
-            <artifactId>piece-util-core</artifactId>
-            <groupId>com.luffyu.piece</groupId>
-            <version>${piece.version}</version>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all-coocaa</artifactId>
+            <version>5.0.4-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
 
 

@@ -1,7 +1,7 @@
 package com.rubber.admin.security.auth.jwt;
 
-import com.luffyu.piece.utils.StringTools;
-import com.luffyu.piece.utils.jwt.JwtUtil;
+import cn.hutool.coocaa.util.jwt.JwtUtil;
+import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.security.bean.RubberConfigProperties;
 import com.rubber.admin.security.handle.PropertiesHandle;
@@ -26,7 +26,7 @@ public class JwtTokenAuthHandle {
     public LoginUserDetail checkToken(HttpServletRequest request){
         RubberConfigProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
         String jwtToken = request.getHeader(jwtConfig.getHeaderKey());
-        if(StringTools.isEmpty(jwtToken)){
+        if(StrUtil.isEmpty(jwtToken)){
             throw new JwtException(AdminCode.USER_NOT_LOGIN);
         }
         try {

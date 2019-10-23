@@ -1,7 +1,8 @@
 package com.rubber.admin.core.tools;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.luffyu.piece.utils.DateTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -35,7 +36,7 @@ public class ReflectionUtils {
                 String fieldName = field.getName();
                 if (isJavaClass(field.getType())) {
                     if (obj instanceof Date) {
-                        map.put(fieldName, DateTools.formatData((Date) obj, DateTools.DF_YYYY_MM_DD));
+                        map.put(fieldName,DateUtil.format((Date) obj, DatePattern.NORM_DATETIME_PATTERN));
                     } else {
                         map.put(fieldName, obj);
                     }
@@ -44,7 +45,7 @@ public class ReflectionUtils {
                         Object subObj = ReflectionUtils.getFieldValue(obj, subField.getName());
                         if (subObj != null && !"".equals(subObj)) {
                             if (subObj instanceof Date) {
-                                map.put(fieldName + "." + subField.getName(), DateTools.formatData((Date) subObj, DateTools.DF_YYYY_MM_DD));
+                                map.put(fieldName + "." + subField.getName(), DateUtil.format((Date) obj, DatePattern.NORM_DATETIME_PATTERN));
                             } else {
                                 map.put(fieldName + "." + subField.getName(), subObj);
                             }

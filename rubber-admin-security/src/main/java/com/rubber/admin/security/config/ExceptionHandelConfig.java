@@ -1,7 +1,7 @@
 package com.rubber.admin.security.config;
 
-import com.luffyu.piece.utils.result.IResultHandle;
-import com.luffyu.piece.utils.result.ResultMsg;
+import cn.hutool.coocaa.util.result.IResultHandle;
+import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.exceptions.AdminException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;

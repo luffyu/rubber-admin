@@ -1,9 +1,9 @@
 package com.rubber.admin.core.exceptions;
 
-import com.luffyu.piece.utils.result.IResultHandle;
-import com.luffyu.piece.utils.result.code.ICodeHandle;
-import com.luffyu.piece.utils.result.exception.BaseResultException;
-import com.luffyu.piece.utils.result.exception.BaseResultRunTimeException;
+
+import cn.hutool.coocaa.util.result.IResultHandle;
+import cn.hutool.coocaa.util.result.code.ICodeHandle;
+import cn.hutool.coocaa.util.result.exception.BaseResultRunTimeException;
 
 /**
  * @author luffyu

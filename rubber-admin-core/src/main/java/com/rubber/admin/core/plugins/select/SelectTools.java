@@ -1,7 +1,7 @@
 package com.rubber.admin.core.plugins.select;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.luffyu.piece.utils.StringTools;
 import com.rubber.admin.core.base.BaseEntity;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
@@ -88,7 +88,7 @@ public class SelectTools {
         if(!clzFiles.containsKey(selectModel.getField())){
             throw new AdminException(AdminCode.LOGIN_AUTH_ERROR,selectModel.getField()+"是非法成员变量");
         }
-        String column = StringTools.underline(selectModel.getField());
+        String column = StrUtil.toUnderlineCase(selectModel.getField());
         Class<?> aClass = clzFiles.get(selectModel.getField());
         //解析比较信息
         switch (selectModel.getType()){

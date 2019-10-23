@@ -1,8 +1,8 @@
 package com.rubber.admin.core.plugins.page;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.luffyu.piece.utils.CollectionUtils;
 import com.rubber.admin.core.base.BaseEntity;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
@@ -26,7 +26,7 @@ public class PageTools {
         Page<T> page = new Page<>();
         page.setCurrent(pagerModel.getPage());
         page.setSize(pagerModel.getSize());
-        if(pagerModel.getOrder() != null && CollectionUtils.isNotEmpty(pagerModel.getSort())){
+        if(pagerModel.getOrder() != null && ArrayUtil.isNotEmpty(pagerModel.getSort())){
             switch (pagerModel.getOrder()){
                 case asc:
                     page.setAsc(pagerModel.getSort());

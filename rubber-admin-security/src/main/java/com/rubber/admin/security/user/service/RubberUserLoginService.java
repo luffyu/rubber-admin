@@ -1,6 +1,6 @@
 package com.rubber.admin.security.user.service;
 
-import com.luffyu.piece.utils.result.ResultMsg;
+import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,6 +1,6 @@
 package com.rubber.admin.security.user.service;
 
-import com.luffyu.piece.utils.StringTools;
+import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
@@ -42,16 +42,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
         SysUser userInfo = sysUserService.getByLoginName(s);
         if (userInfo == null){
             //抛出用户的信息
-            String msg = StringTools.arrayFormat("用户{}不存在", s);
+            String msg = StrUtil.format("用户{}不存在", s);
             log.info(msg);
             throw new LoginException(AdminCode.LOGIN_USER_NOT_EXIST,msg);
         }else if (userInfo.getStatus() == null || StatusEnums.DISABLE == userInfo.getStatus()){
             //抛出用户的信息
-            String msg = StringTools.arrayFormat("用户{}被禁用", s);
+            String msg = StrUtil.format("用户{}被禁用", s);
             log.info(msg);
             throw new LoginException(AdminCode.USER_IS_DISABLE,msg);
         }else if(StatusEnums.DELETE == userInfo.getStatus()){
-            String msg = StringTools.arrayFormat("用户{}被删除", s);
+            String msg = StrUtil.format("用户{}被删除", s);
             log.info(msg);
             throw new LoginException(AdminCode.USER_IS_DELETE,msg);
         }

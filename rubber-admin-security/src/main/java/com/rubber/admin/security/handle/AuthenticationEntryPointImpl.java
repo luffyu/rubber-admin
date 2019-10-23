@@ -1,9 +1,9 @@
 package com.rubber.admin.security.handle;
 
-import com.luffyu.piece.utils.StringTools;
-import com.luffyu.piece.utils.result.ResultMsg;
-import com.luffyu.piece.utils.web.HttpCode;
-import com.luffyu.piece.utils.web.ServletTools;
+import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import com.alibaba.fastjson.JSON;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -24,8 +24,8 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, S
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e){
-        String msg = StringTools.arrayFormat("没有权限访问：{}，异常信息：{}", request.getRequestURI(),e.getMessage());
+        String msg = StrUtil.format("没有权限访问：{}，异常信息：{}", request.getRequestURI(),e.getMessage());
         ResultMsg error = ResultMsg.error(msg);
-        ServletTools.printResponse(response, HttpCode.FORBIDDEN,error);
+        ServletUtil.write(response, JSON.toJSONString(error),"application/json");
     }
 }
