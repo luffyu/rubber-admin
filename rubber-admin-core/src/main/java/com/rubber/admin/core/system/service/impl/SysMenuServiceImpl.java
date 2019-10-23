@@ -1,12 +1,12 @@
 package com.rubber.admin.core.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.rubber.admin.core.system.entity.SysMenu;
+import com.rubber.admin.core.base.BaseService;
+import com.rubber.admin.core.enums.MenuTypeEnums;
 import com.rubber.admin.core.enums.StatusEnums;
+import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.mapper.SysMenuMapper;
 import com.rubber.admin.core.system.service.ISysMenuService;
-import com.rubber.admin.core.base.BaseService;
-import com.rubber.admin.core.tools.MenuUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -32,6 +32,9 @@ public class SysMenuServiceImpl extends BaseService<SysMenuMapper, SysMenu> impl
      */
     @Override
     public SysMenu findMenuByUserId(Integer userId) {
+        if(userId == null || userId <= 0){
+            return getRoot();
+        }
         List<SysMenu> byUserId = getBaseMapper().findByUserId(userId);
         return getAllTree(byUserId);
     }
@@ -93,7 +96,7 @@ public class SysMenuServiceImpl extends BaseService<SysMenuMapper, SysMenu> impl
      */
     public SysMenu getAllTree(List<SysMenu> menus) {
         //获取root根菜单
-        SysMenu rootMenu = MenuUtil.getRoot();
+        SysMenu rootMenu = getRoot();
         if(!CollectionUtils.isEmpty(menus)){
             //标记整理菜单信息
             Map<Integer,List<SysMenu>> map = new HashMap<>();
@@ -149,6 +152,20 @@ public class SysMenuServiceImpl extends BaseService<SysMenuMapper, SysMenu> impl
         }
         return new HashSet<>(1);
 
+    }
+
+
+    /**
+     * 获取根菜单目录
+     * @return
+     */
+    public static SysMenu getRoot(){
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setMenuId(0);
+        sysMenu.setMenuName("我的桌面");
+        sysMenu.setStatus(StatusEnums.NORMAL);
+        sysMenu.setMenuType(MenuTypeEnums.M);
+        return sysMenu;
     }
 
 

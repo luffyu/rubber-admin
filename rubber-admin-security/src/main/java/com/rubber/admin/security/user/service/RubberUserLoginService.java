@@ -1,20 +1,21 @@
-package com.rubber.admin.security.login.service;
+package com.rubber.admin.security.user.service;
 
 import com.luffyu.piece.utils.result.ResultMsg;
-import com.rubber.admin.security.login.bean.LoginUserDetail;
+import com.rubber.admin.security.user.bean.LoginUserDetail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author luffyu
  * Created on 2019-10-23
  */
 @Service
-public class RubberLoginService {
+public class RubberUserLoginService {
 
 
     @Resource
@@ -34,5 +35,15 @@ public class RubberLoginService {
         LoginUserDetail principal = (LoginUserDetail)authentication.getPrincipal();
         return ResultMsg.success(principal);
     }
+
+
+    /**
+     * 用户的信息注册
+     * @param request
+     */
+    public void register(HttpServletRequest request){
+    }
+
+
 
 }

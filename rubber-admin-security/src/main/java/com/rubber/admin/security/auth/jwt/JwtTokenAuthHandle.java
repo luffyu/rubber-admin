@@ -5,7 +5,7 @@ import com.luffyu.piece.utils.jwt.JwtUtil;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.security.bean.RubberConfigProperties;
 import com.rubber.admin.security.handle.PropertiesHandle;
-import com.rubber.admin.security.login.bean.LoginUserDetail;
+import com.rubber.admin.security.user.bean.LoginUserDetail;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Component;
 

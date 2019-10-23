@@ -1,4 +1,4 @@
-package com.rubber.admin.security.login.service;
+package com.rubber.admin.security.user.service;
 
 import com.luffyu.piece.utils.StringTools;
 import com.rubber.admin.core.enums.AdminCode;
@@ -6,14 +6,15 @@ import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.service.impl.SysUserServiceImpl;
 import com.rubber.admin.security.auth.jwt.JwtTokenAuthHandle;
-import com.rubber.admin.security.login.bean.LoginException;
-import com.rubber.admin.security.login.bean.LoginUserDetail;
+import com.rubber.admin.security.user.bean.LoginException;
+import com.rubber.admin.security.user.bean.LoginUserDetail;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * @author luffyu
@@ -24,10 +25,10 @@ import org.springframework.stereotype.Component;
 public class UserDetailServiceImpl implements UserDetailsService {
 
 
-    @Autowired
+    @Resource
     private SysUserServiceImpl sysUserService;
 
-    @Autowired
+    @Resource
     private JwtTokenAuthHandle jwtTokenAuthHandle;
 
     /**

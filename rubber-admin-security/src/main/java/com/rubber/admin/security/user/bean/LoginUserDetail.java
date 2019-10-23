@@ -1,11 +1,15 @@
-package com.rubber.admin.security.login.bean;
+package com.rubber.admin.security.user.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.system.entity.SysUser;
 import lombok.Data;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Collection;
 
 /**
@@ -107,5 +111,23 @@ public class LoginUserDetail implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    /**
+     * 通过http信息获取用户的detail信息
+     * @param request http请求
+     * @return 返回用户的detail值
+     */
+    public static LoginUserDetail getByHttp(HttpServletRequest request){
+        Principal userPrincipal = request.getUserPrincipal();
+        if(userPrincipal instanceof Authentication){
+            Authentication authentication = (Authentication)userPrincipal;
+            Object details = authentication.getPrincipal();
+            if(details instanceof LoginUserDetail){
+                return (LoginUserDetail)details;
+            }
+        }
+        throw new LoginException(AdminCode.USER_NOT_LOGIN);
     }
 }

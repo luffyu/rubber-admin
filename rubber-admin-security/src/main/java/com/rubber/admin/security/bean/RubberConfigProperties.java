@@ -40,7 +40,7 @@ public class RubberConfigProperties {
     /**
      * 登陆的url
      */
-    private String logUrl = "/login";
+    private String logUrl = "/user";
 
 
     /**

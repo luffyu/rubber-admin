@@ -13,14 +13,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ExceptionHandelConfig {
 
 
-    @ExceptionHandler(value = AdminException.class)
+    @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public ResultMsg handel(AdminException e) {
-        IResultHandle resultHandle = e.getResult();
-        if( resultHandle instanceof ResultMsg){
-            return (ResultMsg) resultHandle;
+    public ResultMsg handel(Exception e) throws Exception {
+        if(e instanceof AdminException){
+            AdminException ae = (AdminException)e;
+            IResultHandle resultHandle = ae.getResult();
+            if( resultHandle instanceof ResultMsg){
+                return (ResultMsg) resultHandle;
+            }else {
+                return ResultMsg.error();
+            }
         }else {
-            return ResultMsg.error();
+            e.printStackTrace();
+            throw e;
         }
     }
 
