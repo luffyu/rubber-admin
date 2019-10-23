@@ -26,6 +26,6 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, S
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e){
         String msg = StrUtil.format("没有权限访问：{}，异常信息：{}", request.getRequestURI(),e.getMessage());
         ResultMsg error = ResultMsg.error(msg);
-        ServletUtil.write(response, JSON.toJSONString(error),"application/json");
+        ServletUtil.writeJSON(response, JSON.toJSONString(error));
     }
 }

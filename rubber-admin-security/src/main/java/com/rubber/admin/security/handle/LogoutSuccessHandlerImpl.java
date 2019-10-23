@@ -22,6 +22,6 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication){
         ResultMsg msg = ResultMsg.success("退出成功");
-        ServletUtil.write(response, JSON.toJSONString(msg),"application/json");
+        ServletUtil.writeJSON(response, JSON.toJSONString(msg));
     }
 }

@@ -9,6 +9,7 @@ import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.security.auth.jwt.JwtTokenAuthHandle;
 import com.rubber.admin.security.bean.RubberConfigProperties;
+import com.rubber.admin.security.bean.SpringContextBeans;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,10 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
@@ -39,8 +44,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-
-
 
 
     @Autowired
@@ -72,6 +75,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
+        RequestMappingHandlerMapping bean = SpringContextBeans.getApplicationContext().getBean(RequestMappingHandlerMapping.class);
+        Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
+        for (RequestMappingInfo rmi : handlerMethods.keySet()) {
+            PatternsRequestCondition pc = rmi.getPatternsCondition();
+            Set<String> pSet = pc.getPatterns();
+            System.out.println(pSet);
+        }
+
+
         try {
 
             LoginUserDetail loginUserDetail = jwtTokenAuthHandle.checkToken(request);
@@ -101,7 +113,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if(error == null){
             error = ResultMsg.error(AdminCode.USER_NOT_LOGIN);
         }
-        ServletUtil.write(response, JSON.toJSONString(error),"application/json");
+        ServletUtil.writeJSON(response, JSON.toJSONString(error));
     }
 
 

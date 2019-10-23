@@ -1,10 +1,8 @@
 package com.rubber.admin.core.system.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import cn.hutool.coocaa.util.result.ResultMsg;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author luffyu
@@ -15,5 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 public class MenuController {
 
 
-
+    @RequestMapping("/list")
+    public ResultMsg list(){
+        return ResultMsg.success();
+    }
 }
