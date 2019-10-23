@@ -6,6 +6,7 @@ import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -22,25 +23,10 @@ public class SysUser extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户id
+     * ID
      */
     @TableId(value = "user_id", type = IdType.AUTO)
     private Integer userId;
-
-    /**
-     * 登陆账户
-     */
-    private String loginName;
-
-    /**
-     * 登陆密码
-     */
-    private String loginPassword;
-
-    /**
-     * 加密盐值
-     */
-    private String salt;
 
     /**
      * 用户名称
@@ -48,70 +34,69 @@ public class SysUser extends BaseEntity {
     private String userName;
 
     /**
-     * 用户的头像
+     * 所属部门编号
      */
-    private String avatar;
+    private Integer deptId;
 
     /**
-     * 用户性别 0表示女 1表示男 2表示未知
+     * 账号
      */
-    private String sex;
+    private String loginName;
 
     /**
-     * 用户邮箱
+     * 密码
+     */
+    private String loginPwd;
+
+    /**
+     * 盐值
+     */
+    private String salt;
+
+    /**
+     * 邮件地址
      */
     private String email;
 
     /**
-     * 用户手机号
+     * 最后登录时间
      */
-    private String phone;
+    private LocalDateTime loginTime;
 
     /**
-     * 0秒杀正常 1表示停用
+     * 最后登录IP
+     */
+    private String loginIp;
+
+    /**
+     * 登录次数
+     */
+    private Integer loginCount;
+
+    /**
+     * 0可用 -1禁用  -2删除
      */
     private Integer status;
 
     /**
-     * 备注信息
+     * 备注
      */
     private String remark;
 
     /**
-     * 创建人id
-     */
-    private Integer createBy;
-
-    /**
      * 创建时间
      */
-    private Date createTime;
+    private LocalDateTime createDate;
 
     /**
-     * 最后一次更新人id
+     * 修改时间
      */
-    private Integer lastUpdateBy;
+    private LocalDateTime modifyDate;
 
     /**
-     * 最好一个更新时间
+     * 超级管理员0否1是
      */
-    private Date lastUpdateTime;
-
-    /**
-     * 最后一次登陆的ip地址
-     */
-    private String lastLoginIp;
-
-    /**
-     * 最后一次登陆的时间
-     */
-    private Date lastLoginTime;
-
-    /**
-     * 总的登陆次数
-     */
-    private Integer loginNumber;
-
+    private Integer superUser;
 
     /**
      * 是否是超级管理员 0表示不是 1表示是

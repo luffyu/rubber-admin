@@ -87,28 +87,23 @@ CREATE TABLE `sys_role_menu` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
-  `user_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
-  `login_name` varchar(50) NOT NULL COMMENT '登陆账户',
-  `login_password` varchar(50) DEFAULT '' COMMENT '登陆密码',
-  `salt` varchar(20) DEFAULT '' COMMENT '加密盐值',
-  `user_name` varchar(50) DEFAULT '' COMMENT '用户名称',
-  `avatar` varchar(255) DEFAULT '' COMMENT '用户的头像',
-  `sex` char(1) DEFAULT '0' COMMENT '用户性别 0表示女 1表示男 2表示未知',
-  `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',
-  `phone` varchar(11) DEFAULT '' COMMENT '用户手机号',
-  `status` tinyint(3) DEFAULT '0' COMMENT '0秒杀正常 1表示停用',
-  `remark` varchar(500) DEFAULT '' COMMENT '备注信息',
-  `create_by` int(11) DEFAULT NULL COMMENT '创建人id',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `last_update_by` int(11) DEFAULT NULL COMMENT '最后一次更新人id',
-  `last_update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
-  `last_login_ip` varchar(50) DEFAULT NULL COMMENT '最后一次登陆的ip地址',
-  `last_login_time` varchar(50) DEFAULT NULL COMMENT '最后一次登陆的时间',
-  `login_number` int(11) unsigned DEFAULT '0' COMMENT '总的登陆次数',
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `uniq_login_name` (`login_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
-
+  `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `user_name` varchar(50) DEFAULT NULL COMMENT '用户名称',
+  `dept_id` int(11) DEFAULT NULL COMMENT '所属部门编号',
+  `login_name` varchar(30) NOT NULL COMMENT '账号',
+  `login_pwd` varchar(32) NOT NULL COMMENT '密码',
+  `salt` varchar(6) DEFAULT NULL COMMENT '盐值',
+  `email` varchar(100) DEFAULT NULL COMMENT '邮件地址',
+  `login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
+  `login_ip` varchar(30) DEFAULT NULL COMMENT '最后登录IP',
+  `login_count` int(11) DEFAULT '0' COMMENT '登录次数',
+  `disabled` int(1) DEFAULT '0' COMMENT '0可用1禁用2删除',
+  `remark` varchar(128) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+  `modify_date` datetime DEFAULT NULL COMMENT '修改时间',
+  `super_user` tinyint(11) DEFAULT '0' COMMENT '超级管理员0否1是',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 -- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------

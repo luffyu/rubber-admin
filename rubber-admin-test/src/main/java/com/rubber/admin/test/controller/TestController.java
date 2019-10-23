@@ -19,4 +19,11 @@ public class TestController {
 
         return String.valueOf(new Date());
     }
+
+
+    @RequestMapping("/sys-time-1")
+    public String getSysTime1(){
+
+        return String.valueOf(new Date());
+    }
 }

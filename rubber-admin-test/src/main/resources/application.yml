@@ -12,5 +12,5 @@ spring:
 
 rubber:
   security:
-    anonymous: /login,/test/**
-    logUrl: /rubber/logout
+    anonymous: /login,/test/sys-time
+    logUrl: /logout

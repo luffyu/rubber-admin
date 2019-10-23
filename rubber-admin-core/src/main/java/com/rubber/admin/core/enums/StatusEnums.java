@@ -4,22 +4,32 @@ package com.rubber.admin.core.enums;
  * @author luffyu
  * Created on 2019-05-13
  */
-public enum StatusEnums {
+public interface StatusEnums {
+
+    /**
+     * 完成状态
+     */
+    int FINISH = 2;
+
+    /**
+     * 锁定 /上架状态
+     */
+    int LOCK = 1;
 
     /**
      * 正常可用的key值
+     * 正常状态
      */
-    NORMAL(0,"正常/可用"),
+    int NORMAL = 0;
 
-    DISABLE(1,"停用/废弃/删除")
-    ;
+    /**
+     * 不可用
+     */
+    int DISABLE = -1;
 
-    StatusEnums(int key, String remark) {
-        this.key = key;
-        this.remark = remark;
-    }
+    /**
+     * 删除状态
+     */
+    int DELETE = -2;
 
-    public int key;
-
-    private String remark;
 }

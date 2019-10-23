@@ -1,4 +1,4 @@
-package com.rubber.admin.security.config;
+package com.rubber.admin.security.bean;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -19,7 +19,7 @@ public class MySqlCodeGenerator {
     //作者名称
     private static final String author = "luffyu-auto";
     //链接的数据库配置
-    private static final String jdbcUrl = "jdbc:mysql://127.0.0.1/rubber-admin?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true";
+    private static final String jdbcUrl = "jdbc:mysql://127.0.0.1/rubber_admin?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true";
     private static final String dbUserName = "root";
     private static final String dbPassword = "root";
 
@@ -35,7 +35,7 @@ public class MySqlCodeGenerator {
 
 
     public static void main(String[] args) {
-        createCode("sys_dept","sys_menu","sys_role","sys_role_dept","sys_role_menu","sys_user","sys_user_role");
+        createCode("sys_user");
     }
 
 
@@ -86,7 +86,7 @@ public class MySqlCodeGenerator {
 
 
         //是否开启 lombok 开启之后 文件中没有get set方法
-        strategy.setEntityLombokModel(false);
+        strategy.setEntityLombokModel(true);
         //对于controller 是否开启 @RestController注解
         strategy.setRestControllerStyle(true);
 

@@ -1,9 +1,10 @@
 package com.rubber.admin.security.config;
 
+import com.rubber.admin.security.bean.RubberConfigProperties;
 import com.rubber.admin.security.filter.JwtAuthenticationTokenFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
 import com.rubber.admin.security.handle.LogoutSuccessHandlerImpl;
-import com.rubber.admin.security.login.UserDetailServiceImpl;
+import com.rubber.admin.security.login.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.luffyu.piece.utils.CollectionUtils;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 

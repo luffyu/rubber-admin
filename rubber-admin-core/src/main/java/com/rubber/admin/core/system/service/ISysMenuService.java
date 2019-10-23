@@ -48,6 +48,6 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
      * @param status 状态信息
      * @return 返回状态列表
      */
-    List<SysMenu> getAll(StatusEnums status);
+    List<SysMenu> getAll(Integer status);
 
 }

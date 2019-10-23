@@ -1,5 +1,6 @@
-package com.rubber.admin.security.login;
+package com.rubber.admin.security.login.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubber.admin.core.system.entity.SysUser;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,11 +16,19 @@ import java.util.Collection;
 public class LoginUserDetail implements UserDetails {
 
     /**
+     * 用户的id
+     */
+    private Integer userId;
+
+    /**
+     * 用户的名称
+     */
+    private String userName;
+
+    /**
      * 登陆的名称
      */
     private String loginName;
-
-    private String password;
 
     /**
      * token
@@ -29,16 +38,23 @@ public class LoginUserDetail implements UserDetails {
     /**
      * 用户的基本信息
      */
-    private SysUser sysUser;
+    @JsonIgnore
+    private String password;
 
-    public LoginUserDetail(String loginName) {
-        this.loginName = loginName;
-    }
 
     public LoginUserDetail(SysUser sysUser) {
-        this.sysUser = sysUser;
+        this.loginName = sysUser.getLoginName();
+        this.userId = sysUser.getUserId();
+        this.userName = sysUser.getUserName();
+        this.password = sysUser.getLoginPwd();
     }
 
+    public LoginUserDetail(Integer userId, String userName, String loginName,String token) {
+        this.userId = userId;
+        this.userName = userName;
+        this.loginName = loginName;
+        this.token = token;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,7 +63,7 @@ public class LoginUserDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override

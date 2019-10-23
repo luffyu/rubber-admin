@@ -3,14 +3,12 @@ package com.rubber.admin.security.filter;
 import com.luffyu.piece.utils.CollectionUtils;
 import com.luffyu.piece.utils.result.IResultHandle;
 import com.luffyu.piece.utils.result.ResultMsg;
-import com.luffyu.piece.utils.result.code.SysCode;
-import com.luffyu.piece.utils.web.HttpCode;
 import com.luffyu.piece.utils.web.ServletTools;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.security.auth.jwt.JwtTokenAuthHandle;
-import com.rubber.admin.security.config.RubberConfigProperties;
-import com.rubber.admin.security.login.LoginUserDetail;
+import com.rubber.admin.security.bean.RubberConfigProperties;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,11 +22,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,7 +74,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUserDetail, null, loginUserDetail.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
             filterChain.doFilter(request,response);
         }catch (Exception e){
             unSuccessJwtResult(response,e);

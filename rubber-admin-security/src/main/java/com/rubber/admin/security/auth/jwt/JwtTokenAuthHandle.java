@@ -3,12 +3,10 @@ package com.rubber.admin.security.auth.jwt;
 import com.luffyu.piece.utils.StringTools;
 import com.luffyu.piece.utils.jwt.JwtUtil;
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.system.entity.SysUser;
-import com.rubber.admin.security.config.RubberConfigProperties;
+import com.rubber.admin.security.bean.RubberConfigProperties;
 import com.rubber.admin.security.handle.PropertiesHandle;
-import com.rubber.admin.security.login.LoginUserDetail;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,13 +33,14 @@ public class JwtTokenAuthHandle {
             Claims claims = JwtUtil.checkToken(jwtToken, jwtConfig.getSecretKey());
             //登陆名称
             String subject = claims.getSubject();
-            return new LoginUserDetail(subject);
+            Integer id = (Integer) claims.get("id");
+            String name = (String) claims.get("name");
+            return new LoginUserDetail(id,name,subject,jwtToken);
         } catch (Exception e) {
             e.printStackTrace();
             throw new JwtException(AdminCode.USER_NOT_LOGIN);
         }
     }
-
 
     /**
      * 生成jwt的token
@@ -51,7 +50,10 @@ public class JwtTokenAuthHandle {
     public String creatJwtToken(LoginUserDetail loginUserDetail){
         long now = System.currentTimeMillis();
         RubberConfigProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
-        String jwtDefault = JwtUtil.createJwtDefault(loginUserDetail.getLoginName(), now, jwtConfig.getTimeOut(), new HashMap<>(2), jwtConfig.getSecretKey());
+        HashMap<String,Object> map = new HashMap<>(4);
+        map.put("id",loginUserDetail.getUserId());
+        map.put("name",loginUserDetail.getUsername());
+        String jwtDefault = JwtUtil.createJwtDefault(loginUserDetail.getLoginName(), now, jwtConfig.getTimeOut(),map, jwtConfig.getSecretKey());
         loginUserDetail.setToken(jwtDefault);
         return jwtDefault;
     }

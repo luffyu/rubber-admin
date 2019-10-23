@@ -76,10 +76,10 @@ public class SysMenuServiceImpl extends BaseService<SysMenuMapper, SysMenu> impl
      * @return 返回状态列表
      */
     @Override
-    public List<SysMenu> getAll(StatusEnums status) {
+    public List<SysMenu> getAll(Integer status) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
         if(status != null){
-            queryWrapper.eq("status",status.key);
+            queryWrapper.eq("status",status);
         }
         return list(queryWrapper);
     }

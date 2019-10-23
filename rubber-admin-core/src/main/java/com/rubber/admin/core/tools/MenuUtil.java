@@ -19,7 +19,7 @@ public class MenuUtil {
         SysMenu sysMenu = new SysMenu();
         sysMenu.setMenuId(0);
         sysMenu.setMenuName("我的桌面");
-        sysMenu.setStatus(StatusEnums.NORMAL.key);
+        sysMenu.setStatus(StatusEnums.NORMAL);
         sysMenu.setMenuType(MenuTypeEnums.M);
         return sysMenu;
     }

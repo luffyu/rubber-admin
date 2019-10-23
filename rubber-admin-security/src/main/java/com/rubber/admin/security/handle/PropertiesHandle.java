@@ -1,6 +1,6 @@
 package com.rubber.admin.security.handle;
 
-import com.rubber.admin.security.config.RubberConfigProperties;
+import com.rubber.admin.security.bean.RubberConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
