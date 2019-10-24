@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author luffyu
@@ -38,6 +39,12 @@ public class LoginUserDetail implements UserDetails {
      * token
      */
     private String token;
+
+    /**
+     * 用户的权限列表
+     */
+    @JsonIgnore
+    private Set<String> permissions;
 
     /**
      * 用户的基本信息

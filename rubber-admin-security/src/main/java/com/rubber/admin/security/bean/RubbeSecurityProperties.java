@@ -1,10 +1,13 @@
 package com.rubber.admin.security.bean;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +19,7 @@ import java.util.Set;
 @Data
 @Component
 @ConfigurationProperties("rubber.security")
-public class RubberConfigProperties {
+public class RubbeSecurityProperties {
 
 
     /**
@@ -24,12 +27,12 @@ public class RubberConfigProperties {
      *
      * Key为访问方式
      */
-    private Map<HttpMethod,Set<String>> permitAll;
+    private Map<HttpMethod,Set<String>> permitAll = new HashMap<>(10);
 
     /**
      * 匿名访问认证
      */
-    private Set<String> anonymous = new HashSet<>();
+    private Set<String> anonymous = new HashSet<>(10);
 
     /**
      * 每一种角色应该有的权限
@@ -76,8 +79,12 @@ public class RubberConfigProperties {
     }
 
     public Set<String> getAllAnonymous() {
-        anonymous.add(this.logUrl);
-        anonymous.add(this.logoutUrl);
-        return anonymous;
+        Set<String> allAnonymous = new HashSet<>(this.anonymous);
+        if(MapUtil.isNotEmpty(permitAll)){
+            permitAll.values().stream().filter(CollectionUtil::isNotEmpty).forEach(allAnonymous::addAll);
+        }
+        allAnonymous.add(this.logUrl);
+        allAnonymous.add(this.logoutUrl);
+        return allAnonymous;
     }
 }

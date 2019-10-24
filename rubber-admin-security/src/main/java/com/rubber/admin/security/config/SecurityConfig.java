@@ -1,8 +1,9 @@
 package com.rubber.admin.security.config;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.rubber.admin.security.bean.RubberConfigProperties;
+import com.rubber.admin.security.bean.RubbeSecurityProperties;
 import com.rubber.admin.security.filter.JwtAuthenticationTokenFilter;
+import com.rubber.admin.security.filter.RubberAuthenticationFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
 import com.rubber.admin.security.handle.LogoutSuccessHandlerImpl;
 import com.rubber.admin.security.user.service.UserDetailServiceImpl;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -41,10 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailServiceImpl userDetailService;
 
     @Autowired
-    private RubberConfigProperties rubberConfigProperties;
+    private RubbeSecurityProperties rubberConfigProperties;
 
-    @Autowired
-    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -73,11 +73,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             }
         }
         //验证配置
-        Set<String> anonymous = rubberConfigProperties.getAllAnonymous();
+        Set<String> anonymous = rubberConfigProperties.getAnonymous();
         if(CollectionUtil.isNotEmpty(anonymous)){
             String[] value = new String[anonymous.size()];
             httpSecurity.authorizeRequests().antMatchers(anonymous.toArray(value)).anonymous();
         }
+        //设置登陆为不可用验证的
+        httpSecurity.authorizeRequests().antMatchers(rubberConfigProperties.getLogUrl()).anonymous();
         //角色配置
         Map<String, Set<String>> rolePatterns = rubberConfigProperties.getRolePatterns();
         if(!CollectionUtil.isEmpty(rolePatterns)){
@@ -98,7 +100,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 后面穿入的class 只是为了标示过滤器的顺序、在验证用户和密码信息之前 进行过滤验证
         //具体的顺序参考 https://docs.spring.io/spring-security/site/docs/5.0.0.M1/reference/htmlsingle/#ns-custom-filters
-        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterAfter(JwtAuthenticationTokenFilter.builder(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterAfter(RubberAuthenticationFilter.builder(), FilterSecurityInterceptor.class);
     }
 
     /**

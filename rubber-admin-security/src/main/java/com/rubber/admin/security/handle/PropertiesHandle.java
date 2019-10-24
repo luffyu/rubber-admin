@@ -1,6 +1,6 @@
 package com.rubber.admin.security.handle;
 
-import com.rubber.admin.security.bean.RubberConfigProperties;
+import com.rubber.admin.security.bean.RubbeSecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +15,9 @@ public class PropertiesHandle {
 
 
     @Autowired
-    private RubberConfigProperties rubberConfigProperties;
+    private RubbeSecurityProperties rubberConfigProperties;
 
-    public static RubberConfigProperties config;
+    public static RubbeSecurityProperties config;
 
     @PostConstruct
     public void init() {

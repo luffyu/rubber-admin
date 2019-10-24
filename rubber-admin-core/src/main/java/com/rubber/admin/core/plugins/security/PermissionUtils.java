@@ -1,7 +1,10 @@
 package com.rubber.admin.core.plugins.security;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.util.StringUtils;
+
+import java.util.Set;
 
 /**
  * @author luffyu
@@ -19,6 +22,11 @@ public class PermissionUtils {
      * url请求的链接key
      */
     public static final String URL_LINK_KEY = "/";
+
+    /**
+     * 超级管理员的权限
+     */
+    public static final String SUPER_ADMIN_PERMISSION = "*:*";
 
     /**
      * 拥有查询权限的前缀信息
@@ -89,4 +97,17 @@ public class PermissionUtils {
         return StrUtil.subBefore(url,URL_LINK_KEY,false);
     }
 
+
+    /**
+     * 是否有权限
+     * @param userPermission 用户的全部权限信息
+     * @param requestPermission 必须要的权限信息
+     * @return
+     */
+    public static boolean havePermission(Set<String> userPermission,String requestPermission){
+        if(CollectionUtil.isEmpty(userPermission)){
+            return false;
+        }
+        return userPermission.contains(SUPER_ADMIN_PERMISSION) || userPermission.contains(requestPermission);
+    }
 }

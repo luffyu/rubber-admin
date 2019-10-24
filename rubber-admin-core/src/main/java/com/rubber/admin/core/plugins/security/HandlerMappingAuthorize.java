@@ -13,9 +13,9 @@ import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author luffyu
@@ -24,9 +24,9 @@ import java.util.Set;
 @Component
 public class HandlerMappingAuthorize implements ApplicationContextAware {
 
-    static ApplicationContext applicationContext;
+    private static ApplicationContext applicationContext;
 
-    static Map<String,String> mappingAuthorize;
+    private static Map<String,String> mappingAuthorize = new ConcurrentHashMap<>(40);
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -43,7 +43,6 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
         RequestMappingHandlerMapping bean = applicationContext.getBean(RequestMappingHandlerMapping.class);
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
         if(MapUtil.isNotEmpty(handlerMethods)){
-            mappingAuthorize = new HashMap<>(handlerMethods.size());
             for(Map.Entry<RequestMappingInfo, HandlerMethod> map:handlerMethods.entrySet()){
                 PatternsRequestCondition pc = map.getKey().getPatternsCondition();
                 //获取到请求到url
