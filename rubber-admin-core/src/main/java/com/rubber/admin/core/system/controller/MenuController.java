@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Created on 2019-10-23
  */
 @RestController
-@RequestMapping("/menu")
+@RequestMapping(value = "/menu",name = "menu")
 public class MenuController {
-
 
     @RequestMapping("/list")
     public ResultMsg list(){

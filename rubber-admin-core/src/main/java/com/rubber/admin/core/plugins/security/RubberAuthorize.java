@@ -15,7 +15,7 @@ public @interface RubberAuthorize {
      * 某一个唯一的id值
      * @return 返回一个id值
      */
-    String id();
+    String key();
 
     /**
      * 权限信息

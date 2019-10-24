@@ -23,7 +23,7 @@ public class LoginController {
     private RubberUserLoginService rubberLoginService;
 
 
-    @PostMapping("/login")
+    @PostMapping
     public ResultMsg login(String username, String password){
         try {
             return rubberLoginService.login(username,password);

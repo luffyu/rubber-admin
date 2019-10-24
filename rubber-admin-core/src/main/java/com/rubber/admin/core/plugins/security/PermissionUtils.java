@@ -1,6 +1,7 @@
 package com.rubber.admin.core.plugins.security;
 
 import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 
 /**
  * @author luffyu
@@ -8,25 +9,42 @@ import cn.hutool.core.util.StrUtil;
  */
 public class PermissionUtils {
 
+
+    /**
+     * 权限链接字符
+     */
+    public static final String PER_LINK_KEY = ":";
+
+    /**
+     * url请求的链接key
+     */
+    public static final String URL_LINK_KEY = "/";
+
     /**
      * 拥有查询权限的前缀信息
      */
-    static final String[] LIST_PERMISSION = new String[]{"list","query","get","find","page","info"};
+    private static final String[] LIST_PERMISSION = new String[]{"list","query","get","find","page","info","download","export"};
 
     /**
      * 拥有添加权限的前缀信息
      */
-    static final String[] ADD_PERMISSION = new String[]{"add","save","install","saving"};
+    private static final String[] ADD_PERMISSION = new String[]{"add","save","install","saving","upload","import"};
 
     /**
      * 拥有编辑权限的前缀信息
      */
-    static final String[] EDIT_PERMISSION = new String[]{"edit","update","modify","mod"};
+    private static final String[] EDIT_PERMISSION = new String[]{"edit","update","modify","mod"};
 
     /**
      * 拥有删除权限的前缀信息
      */
-    static final  String[] DEL_PERMISSION = new String[]{"del","delete","remove","rf"};
+    private static final  String[] DEL_PERMISSION = new String[]{"del","delete","remove","rf"};
+
+    /**
+     * 审核权限权限
+     * 上下架权限
+     */
+    private static final String[] VERIFY_PERMISSION = new String[]{"verify","online","offline"};
 
 
     /**
@@ -45,12 +63,30 @@ public class PermissionUtils {
             if(StrUtil.startWithAny(methodName, EDIT_PERMISSION)){
                 return PermissionEnums.edit;
             }
+            if(StrUtil.startWithAny(methodName, VERIFY_PERMISSION)){
+                return PermissionEnums.verify;
+            }
             if(StrUtil.startWithAny(methodName, DEL_PERMISSION)){
                 return PermissionEnums.delete;
             }
         }
-        return PermissionEnums.undefined;
+        return PermissionEnums.common;
     }
 
+
+    /**
+     * 截取url 的头部字段
+     * @param url
+     * @return
+     */
+    public static String getUrlHeadKey(String url){
+        if(StringUtils.isEmpty(url)){
+            return url;
+        }
+        if(url.startsWith(URL_LINK_KEY)){
+            url = url.substring(1);
+        }
+        return StrUtil.subBefore(url,URL_LINK_KEY,false);
+    }
 
 }

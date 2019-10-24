@@ -28,9 +28,17 @@ public enum PermissionEnums {
     delete,
 
     /**
-     * 没有任何权限
+     * 审核权限
+     * 上架 下架
      */
-    undefined,
+    verify,
+
+
+    /**
+     * 公共权限
+     * 默认登陆成功之后都有都权限
+     */
+    common,
 
     ;
 
