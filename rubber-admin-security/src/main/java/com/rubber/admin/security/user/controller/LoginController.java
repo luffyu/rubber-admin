@@ -1,4 +1,4 @@
-package com.rubber.admin.security.controller;
+package com.rubber.admin.security.user.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.enums.AdminCode;

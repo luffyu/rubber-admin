@@ -1,8 +1,8 @@
 package com.rubber.admin.security.config;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.rubber.admin.security.bean.RubbeSecurityProperties;
-import com.rubber.admin.security.filter.JwtAuthenticationTokenFilter;
+import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
+import com.rubber.admin.security.filter.AuthenticationTokenFilter;
 import com.rubber.admin.security.filter.RubberAuthenticationFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
 import com.rubber.admin.security.handle.LogoutSuccessHandlerImpl;
@@ -100,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 后面穿入的class 只是为了标示过滤器的顺序、在验证用户和密码信息之前 进行过滤验证
         //具体的顺序参考 https://docs.spring.io/spring-security/site/docs/5.0.0.M1/reference/htmlsingle/#ns-custom-filters
-        httpSecurity.addFilterAfter(JwtAuthenticationTokenFilter.builder(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterAfter(AuthenticationTokenFilter.builder(), UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterAfter(RubberAuthenticationFilter.builder(), FilterSecurityInterceptor.class);
     }
 

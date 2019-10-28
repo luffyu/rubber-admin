@@ -1,7 +1,8 @@
-package com.rubber.admin.security.bean;
+package com.rubber.admin.security.config.properties;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import com.rubber.admin.security.auth.AuthType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpMethod;
@@ -58,6 +59,15 @@ public class RubbeSecurityProperties {
     private JwtProperties jwt = new JwtProperties();
 
 
+    /**
+     * token的有效期
+     */
+    private long sessionTime = 10000000;
+
+    /**
+     * 默认的认证方法
+     */
+    private AuthType authType = AuthType.jwt;
 
 
     @Data

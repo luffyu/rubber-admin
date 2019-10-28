@@ -1,4 +1,4 @@
-package com.rubber.admin.security.bean;
+package com.rubber.admin.security.config.properties;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
@@ -56,6 +56,15 @@ public class RubberPropertiesUtils {
     public static ApplicationContext getApplicationContext() {
         return HandlerMappingAuthorize.getApplicationContext();
     }
+
+
+    /**
+     * @return 返回配置信息
+     */
+    public static RubbeSecurityProperties getSecurityProperties() {
+        return securityProperties;
+    }
+
 
 
     /**

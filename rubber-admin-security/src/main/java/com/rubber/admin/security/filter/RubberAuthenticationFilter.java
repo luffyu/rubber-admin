@@ -2,7 +2,7 @@ package com.rubber.admin.security.filter;
 
 import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
 import com.rubber.admin.core.plugins.security.PermissionUtils;
-import com.rubber.admin.security.bean.RubberPropertiesUtils;
+import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.filter.OncePerRequestFilter;

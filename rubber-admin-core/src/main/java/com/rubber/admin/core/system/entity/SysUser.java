@@ -2,12 +2,13 @@ package com.rubber.admin.core.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.Set;
 
 /**
  * <p>
@@ -105,6 +106,12 @@ public class SysUser extends BaseEntity {
     private Boolean superAdmin;
 
 
+    /**
+     * 用户的权限列表
+     */
+    @TableField(exist = false)
+    @JsonIgnore
+    private Set<String> permissions;
 
 
 }

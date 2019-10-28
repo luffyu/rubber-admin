@@ -52,12 +52,16 @@ public class LoginUserDetail implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @JsonIgnore
+    private SysUser sysUser;
+
 
     public LoginUserDetail(SysUser sysUser) {
         this.loginName = sysUser.getLoginName();
         this.userId = sysUser.getUserId();
         this.userName = sysUser.getUserName();
         this.password = sysUser.getLoginPwd();
+        this.sysUser = sysUser;
     }
 
     public LoginUserDetail(Integer userId, String userName, String loginName,String token) {

@@ -52,7 +52,7 @@ public class PermissionUtils {
      * 审核权限权限
      * 上下架权限
      */
-    private static final String[] VERIFY_PERMISSION = new String[]{"verify","online","offline"};
+    private static final String[] VERIFY_PERMISSION = new String[]{"auth","online","offline"};
 
 
     /**

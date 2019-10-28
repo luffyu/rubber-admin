@@ -5,7 +5,7 @@ import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.service.impl.SysUserServiceImpl;
-import com.rubber.admin.security.auth.jwt.JwtTokenAuthUtils;
+import com.rubber.admin.security.auth.ITokenAuthService;
 import com.rubber.admin.security.user.bean.LoginException;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +27,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Resource
     private SysUserServiceImpl sysUserService;
+
+    @Resource
+    private ITokenAuthService iTokenAuth;
 
 
     /**
@@ -55,7 +58,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
         LoginUserDetail loginUserDetail = new LoginUserDetail(userInfo);
         //创建token
-        JwtTokenAuthUtils.creatJwtToken(loginUserDetail);
+        iTokenAuth.create(loginUserDetail);
         return loginUserDetail;
     }
 }

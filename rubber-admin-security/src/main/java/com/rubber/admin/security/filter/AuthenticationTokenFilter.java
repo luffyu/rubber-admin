@@ -6,8 +6,8 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.alibaba.fastjson.JSON;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
-import com.rubber.admin.security.auth.jwt.JwtTokenAuthUtils;
-import com.rubber.admin.security.bean.RubberPropertiesUtils;
+import com.rubber.admin.security.auth.ITokenAuthService;
+import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,27 +23,31 @@ import javax.servlet.http.HttpServletResponse;
  * @author luffyu
  * Created on 2019-10-22
  */
+public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+    private static AuthenticationTokenFilter filer = new AuthenticationTokenFilter();
 
+    private ITokenAuthService tokenAuth;
 
-    private static JwtAuthenticationTokenFilter filer = new JwtAuthenticationTokenFilter();
-    private JwtAuthenticationTokenFilter() {
+    private AuthenticationTokenFilter() {
+        tokenAuth = RubberPropertiesUtils.getApplicationContext().getBean(ITokenAuthService.class);
+        if(tokenAuth == null){
+            throw new RuntimeException("tokenAuth is null");
+        }
     }
     /**
      * 返回一个单例的模式
      * @return
      */
-    public static JwtAuthenticationTokenFilter builder(){
+    public static AuthenticationTokenFilter builder(){
         return filer;
     }
-
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
         try {
-            LoginUserDetail loginUserDetail = JwtTokenAuthUtils.checkToken(request);
+            LoginUserDetail loginUserDetail = tokenAuth.verify(request);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUserDetail, null, loginUserDetail.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -81,7 +85,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        System.out.println("jwt>>>>");
         return RubberPropertiesUtils.verifyNotFilter(request);
     }
 
