@@ -4,11 +4,15 @@ import cn.hutool.coocaa.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseService;
 import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
 import com.rubber.admin.core.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -25,7 +29,13 @@ public class SysUserServiceImpl extends BaseService<SysUserMapper, SysUser> impl
     public SysUser getByLoginName(String loginName) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("login_name",loginName);
-        return getOne(queryWrapper);
+        SysUser sysUser = getOne(queryWrapper);
+        if(sysUser != null){
+            Set<String> set = new HashSet<>();
+            set.add(PermissionUtils.SUPER_ADMIN_PERMISSION);
+            sysUser.setPermissions(set);
+        }
+        return sysUser;
     }
 
 

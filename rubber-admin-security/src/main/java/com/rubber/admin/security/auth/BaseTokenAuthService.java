@@ -1,8 +1,9 @@
 package com.rubber.admin.security.auth;
 
 import com.rubber.admin.core.plugins.cache.IUserSecurityCache;
+import com.rubber.admin.core.plugins.cache.UserSecurityNoCache;
 import com.rubber.admin.core.system.entity.SysUser;
-import com.rubber.admin.core.system.service.impl.SysUserServiceImpl;
+import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
@@ -18,24 +19,33 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class BaseTokenAuthService implements ITokenAuthService {
 
     @Resource
-    private SysUserServiceImpl sysUserService;
+    private ISysUserService sysUserService;
 
-    @Resource
+    /**
+     * 缓存配置信息
+     */
     private IUserSecurityCache userSecurityCache;
 
 
-    /**
-     * 返回具体的缓存设置
-     * @return 返回具体的缓存类型
-     */
-    public IUserSecurityCache getSecurityCache(){
-        return userSecurityCache;
+
+    public BaseTokenAuthService(IUserSecurityCache userSecurityCache) {
+        this.userSecurityCache = userSecurityCache;
     }
+
+
+    public ISysUserService getUserService(){
+        if(sysUserService == null){
+            sysUserService = RubberPropertiesUtils.getApplicationContext().getBean(ISysUserService.class);
+        }
+        return sysUserService;
+    }
+
 
     /**
      * 具体的验证key
      * @param request 请求参数
      * @return 返回具体的验证key
+     * @throws
      */
     public abstract String doVerify(HttpServletRequest request) throws TokenVerifyException ;
 
@@ -48,15 +58,21 @@ public abstract class BaseTokenAuthService implements ITokenAuthService {
     public abstract String doCreate(LoginUserDetail loginUserDetail) throws TokenCreateException;
 
 
+    /**
+     * 验证参数信息
+     * @param request 请求值
+     * @return
+     * @throws TokenVerifyException
+     */
     @Override
     public LoginUserDetail verify(HttpServletRequest request) throws TokenVerifyException {
         //获取验证的信息
         String subject = doVerify(request);
-        SysUser sysUser = getSecurityCache().findByKey(subject);
+        SysUser sysUser = doFindByCache(subject);
         if(sysUser == null){
-            sysUser = sysUserService.getByLoginName(subject);
+            sysUser = getUserService().getByLoginName(subject);
             //token写入到缓存中
-            getSecurityCache().update(sysUser,getTokenTimeOut());
+            doUpdateByCache(sysUser);
         }
         return createUserDetail(sysUser);
     }
@@ -72,7 +88,7 @@ public abstract class BaseTokenAuthService implements ITokenAuthService {
         //创建token
         String s = doCreate(loginUserDetail);
         //token写入到缓存中
-        getSecurityCache().update(loginUserDetail.getSysUser(),getTokenTimeOut());
+        doUpdateByCache(loginUserDetail.getSysUser());
         //写入token
         loginUserDetail.setToken(s);
         return s;
@@ -94,6 +110,47 @@ public abstract class BaseTokenAuthService implements ITokenAuthService {
      */
     protected LoginUserDetail createUserDetail(SysUser sysUser){
         return new LoginUserDetail(sysUser);
+    }
+
+
+    /**
+     * 通过缓存更新参数
+     * @param subject
+     */
+    private void doUpdateByCache(SysUser subject){
+        if(checkCacheAble()){
+            if(subject != null){
+                userSecurityCache.update(subject,getTokenTimeOut());
+            }
+
+        }
+    }
+
+    /**
+     * 通过缓存查询缓存
+     * @param subject 查询缓存的基本信息
+     * @return 返回具体的对象信息
+     */
+    private SysUser doFindByCache(String subject){
+        if(!checkCacheAble()){
+            return null;
+        }
+        return userSecurityCache.findByKey(subject);
+    }
+
+    /**
+     * 检测是否配置了缓存
+     * 如果没有配置则不在使用
+     * @return 返回true表示可以使用缓存 false表示不用使用缓存
+     */
+    private boolean checkCacheAble(){
+        if(userSecurityCache == null){
+            return false;
+        }
+        if(userSecurityCache instanceof UserSecurityNoCache){
+            return false;
+        }
+        return true;
     }
 
 }

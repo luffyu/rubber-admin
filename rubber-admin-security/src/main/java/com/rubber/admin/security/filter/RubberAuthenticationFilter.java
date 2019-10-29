@@ -4,7 +4,7 @@ import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
 import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -53,9 +53,10 @@ public class RubberAuthenticationFilter extends OncePerRequestFilter {
         //获取用户的基本信息
         LoginUserDetail loginUserDetail = LoginUserDetail.getByHttp(httpServletRequest);
         //验证是否有权限
-        if(!PermissionUtils.havePermission(loginUserDetail.getPermissions(),authorizeKey)){
-            throw new AccessDeniedException("AbstractAccessDecisionManager.accessDenied Access is denied");
+        if(!PermissionUtils.havePermission(loginUserDetail.getSysUser().getPermissions(),authorizeKey)){
+           throw new UsernameNotFoundException("test");
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
+
     }
 }
