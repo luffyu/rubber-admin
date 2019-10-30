@@ -94,6 +94,8 @@ CREATE TABLE `sys_user` (
   `login_pwd` varchar(100) NOT NULL COMMENT '密码',
   `salt` varchar(6) DEFAULT NULL COMMENT '盐值',
   `email` varchar(100) DEFAULT NULL COMMENT '邮件地址',
+  `avatar` varchar(100) DEFAULT NULL COMMENT '头像地址',
+  `sex` char(1) DEFAULT NULL COMMENT '性别信息',
   `login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `login_ip` varchar(30) DEFAULT NULL COMMENT '最后登录IP',
   `login_count` int(11) DEFAULT '0' COMMENT '登录次数',
