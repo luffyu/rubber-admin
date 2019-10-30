@@ -14,7 +14,7 @@ spring:
 
 rubber:
   security:
-    anonymous: /login,/test/sys-time
+    permitAll: /login,/test/sys-time
     logUrl: /logout
 
 mybatis-plus:

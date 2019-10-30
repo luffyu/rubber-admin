@@ -2,7 +2,7 @@ package com.rubber.admin.security.config;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
-import com.rubber.admin.security.filter.AuthenticationTokenFilter;
+import com.rubber.admin.security.filter.AuthenticationTokenVerifyFilter;
 import com.rubber.admin.security.filter.RubberAuthenticationFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
 import com.rubber.admin.security.handle.LogoutSuccessHandlerImpl;
@@ -10,7 +10,6 @@ import com.rubber.admin.security.user.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -62,15 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 new Header("Access-Control-Expose-Headers",rubberConfigProperties.getJwt().getHeaderKey()))));
 
 
-        Map<HttpMethod, Set<String>> permitAll = rubberConfigProperties.getPermitAll();
+        Set<String> permitAll = rubberConfigProperties.getPermitAll();
         if(CollectionUtil.isNotEmpty(permitAll)){
-            for(Map.Entry<HttpMethod, Set<String>> map:permitAll.entrySet()){
-                if(CollectionUtil.isEmpty(map.getValue())){
-                    continue;
-                }
-                String[] value = new String[map.getValue().size()];
-                httpSecurity.authorizeRequests().antMatchers(map.getKey(),map.getValue().toArray(value)).permitAll();
-            }
+            String[] value = new String[permitAll.size()];
+            httpSecurity.authorizeRequests().antMatchers(permitAll.toArray(value)).permitAll();
+
         }
         //验证配置
         Set<String> anonymous = rubberConfigProperties.getAnonymous();
@@ -100,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 后面穿入的class 只是为了标示过滤器的顺序、在验证用户和密码信息之前 进行过滤验证
         //具体的顺序参考 https://docs.spring.io/spring-security/site/docs/5.0.0.M1/reference/htmlsingle/#ns-custom-filters
-        httpSecurity.addFilterAfter(AuthenticationTokenFilter.builder(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(AuthenticationTokenVerifyFilter.builder(), UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterAfter(RubberAuthenticationFilter.builder(), FilterSecurityInterceptor.class);
     }
 

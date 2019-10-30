@@ -3,6 +3,7 @@ package com.rubber.admin.core.system.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
@@ -99,12 +100,9 @@ public class SysUser extends BaseEntity {
      */
     private Integer superUser;
 
-    /**
-     * 是否是超级管理员 0表示不是 1表示是
-     */
-    @TableField(exist = false)
-    private Boolean superAdmin;
 
+    @Version
+    private Integer version;
 
     /**
      * 用户的权限列表

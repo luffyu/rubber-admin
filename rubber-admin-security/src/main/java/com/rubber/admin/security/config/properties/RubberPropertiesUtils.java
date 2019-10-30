@@ -72,11 +72,6 @@ public class RubberPropertiesUtils {
      */
     private static void initRequestMatcher(){
         Set<String> anonymous = securityProperties.getAllAnonymous();
-        Map<HttpMethod, Set<String>> permitAll = securityProperties.getPermitAll();
-        if(CollectionUtil.isNotEmpty(permitAll)){
-            Collection<Set<String>> values = permitAll.values();
-            values.forEach(anonymous::addAll);
-        }
         List<RequestMatcher> matchers =anonymous.stream().map(AntPathRequestMatcher::new).collect(Collectors.toList());
         unFilterRequest = new OrRequestMatcher(matchers);
     }

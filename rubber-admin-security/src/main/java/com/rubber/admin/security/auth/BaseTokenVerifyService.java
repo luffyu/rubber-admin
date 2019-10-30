@@ -1,5 +1,6 @@
 package com.rubber.admin.security.auth;
 
+import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.cache.IUserSecurityCache;
 import com.rubber.admin.core.plugins.cache.UserSecurityNoCache;
 import com.rubber.admin.core.system.entity.SysUser;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author luffyu
  * Created on 2019-10-28
  */
-public abstract class BaseTokenAuthService implements ITokenAuthService {
+public abstract class BaseTokenVerifyService implements ITokenVerifyService {
 
     @Resource
     private ISysUserService sysUserService;
@@ -28,7 +29,7 @@ public abstract class BaseTokenAuthService implements ITokenAuthService {
 
 
 
-    public BaseTokenAuthService(IUserSecurityCache userSecurityCache) {
+    public BaseTokenVerifyService(IUserSecurityCache userSecurityCache) {
         this.userSecurityCache = userSecurityCache;
     }
 
@@ -45,15 +46,16 @@ public abstract class BaseTokenAuthService implements ITokenAuthService {
      * 具体的验证key
      * @param request 请求参数
      * @return 返回具体的验证key
-     * @throws
+     * @throws TokenVerifyException 验证异常
      */
-    public abstract String doVerify(HttpServletRequest request) throws TokenVerifyException ;
+    public abstract TokenVerifyBean doVerify(HttpServletRequest request) throws TokenVerifyException ;
 
 
     /**
      * 具体的创建session信息
-     * @param loginUserDetail
-     * @return
+     * @param loginUserDetail 用户的detail信息
+     * @return 返回唯一的token值
+     * @throws  TokenCreateException 创建的异常信息
      */
     public abstract String doCreate(LoginUserDetail loginUserDetail) throws TokenCreateException;
 
@@ -67,10 +69,17 @@ public abstract class BaseTokenAuthService implements ITokenAuthService {
     @Override
     public LoginUserDetail verify(HttpServletRequest request) throws TokenVerifyException {
         //获取验证的信息
-        String subject = doVerify(request);
-        SysUser sysUser = doFindByCache(subject);
+        TokenVerifyBean verifyBean = doVerify(request);
+        SysUser sysUser = doFindByCache(verifyBean.getSubject());
         if(sysUser == null){
-            sysUser = getUserService().getByLoginName(subject);
+            sysUser = getUserService().getByLoginName(verifyBean.getSubject());
+            if(sysUser == null){
+                throw new TokenVerifyException(AdminCode.LOGIN_USER_NOT_EXIST);
+            }
+            //验证版本是否合法
+            if (!sysUser.getVersion().equals(verifyBean.getVersion())){
+                throw new TokenVerifyException(AdminCode.TOKEN_IS_EXPIRED);
+            }
             //token写入到缓存中
             doUpdateByCache(sysUser);
         }

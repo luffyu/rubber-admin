@@ -6,7 +6,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.alibaba.fastjson.JSON;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
-import com.rubber.admin.security.auth.ITokenAuthService;
+import com.rubber.admin.security.auth.ITokenVerifyService;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,31 +23,41 @@ import javax.servlet.http.HttpServletResponse;
  * @author luffyu
  * Created on 2019-10-22
  */
-public class AuthenticationTokenFilter extends OncePerRequestFilter {
+public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
 
-    private static AuthenticationTokenFilter filer = new AuthenticationTokenFilter();
+    private static AuthenticationTokenVerifyFilter filer = new AuthenticationTokenVerifyFilter();
 
-    private ITokenAuthService tokenAuth;
-
-    private AuthenticationTokenFilter() {
-        tokenAuth = RubberPropertiesUtils.getApplicationContext().getBean(ITokenAuthService.class);
-        if(tokenAuth == null){
-            throw new RuntimeException("tokenAuth is null");
-        }
+    private AuthenticationTokenVerifyFilter() {
     }
     /**
      * 返回一个单例的模式
      * @return
      */
-    public static AuthenticationTokenFilter builder(){
+    public static AuthenticationTokenVerifyFilter builder(){
         return filer;
+    }
+
+    /**
+     * 解析token的service方法
+     * 注入的哪一个就用哪一个
+     */
+    private ITokenVerifyService tokenAuth;
+
+    public ITokenVerifyService getTokenAuth() {
+        if(tokenAuth == null){
+            tokenAuth = RubberPropertiesUtils.getApplicationContext().getBean(ITokenVerifyService.class);
+        }
+        if(tokenAuth == null){
+            throw new RuntimeException("tokenAuth is null");
+        }
+        return tokenAuth;
     }
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
         try {
-            LoginUserDetail loginUserDetail = tokenAuth.verify(request);
+            LoginUserDetail loginUserDetail = getTokenAuth().verify(request);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUserDetail, null, loginUserDetail.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

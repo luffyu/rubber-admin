@@ -40,6 +40,14 @@ public enum AdminCode implements ICodeHandle {
     LOGIN_USER_NOT_EXIST("20102","用户不存在"),
     USER_IS_DISABLE("20103","用户已经被禁用"),
     USER_IS_DELETE("20104","用户已经被删除"),
+
+    /**
+     * 认证错误的code
+     */
+    TOKEN_IS_EXPIRED("20200","登陆token过期"),
+    TOKEN_IS_ERROR("20201","登陆token错误"),
+
+
     ;
     /**
      * 业务错误码 000000的结构

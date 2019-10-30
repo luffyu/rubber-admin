@@ -5,13 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.cache.IUserSecurityCache;
 import com.rubber.admin.core.plugins.cache.LocalUserSecurityCache;
-import com.rubber.admin.security.auth.BaseTokenAuthService;
+import com.rubber.admin.security.auth.BaseTokenVerifyService;
+import com.rubber.admin.security.auth.TokenVerifyBean;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
 import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
 import com.rubber.admin.security.handle.PropertiesHandle;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -20,21 +22,21 @@ import java.util.HashMap;
  * @author luffyu
  * Created on 2019-10-22
  */
-public class JwtTokenAuthService extends BaseTokenAuthService {
+public class JwtTokenVerifyService extends BaseTokenVerifyService {
 
     /**
      * 默认采用本地的缓存方法
      */
-    public JwtTokenAuthService() {
+    public JwtTokenVerifyService() {
         super(new LocalUserSecurityCache());
     }
 
-    public JwtTokenAuthService(IUserSecurityCache userSecurityCache) {
+    public JwtTokenVerifyService(IUserSecurityCache userSecurityCache) {
         super(userSecurityCache);
     }
 
     @Override
-    public String doVerify(HttpServletRequest request) throws TokenVerifyException {
+    public TokenVerifyBean doVerify(HttpServletRequest request) throws TokenVerifyException {
         RubbeSecurityProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
         String jwtToken = request.getHeader(jwtConfig.getHeaderKey());
         if(StrUtil.isEmpty(jwtToken)){
@@ -43,10 +45,14 @@ public class JwtTokenAuthService extends BaseTokenAuthService {
         try {
             Claims claims = JwtUtil.checkToken(jwtToken, jwtConfig.getSecretKey());
             //登陆名称
-            return claims.getSubject();
+            String subject = claims.getSubject();
+            Integer version = Integer.valueOf(claims.get("version").toString());
+            return new TokenVerifyBean(version,subject);
+        }catch (ExpiredJwtException e){
+            throw new TokenVerifyException(AdminCode.TOKEN_IS_EXPIRED);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new TokenVerifyException(AdminCode.USER_NOT_LOGIN);
+            throw new TokenVerifyException(AdminCode.TOKEN_IS_ERROR);
         }
     }
 
@@ -56,8 +62,7 @@ public class JwtTokenAuthService extends BaseTokenAuthService {
         long now = System.currentTimeMillis();
         RubbeSecurityProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
         HashMap<String,Object> map = new HashMap<>(4);
-        map.put("id",loginUserDetail.getUserId());
-        map.put("name",loginUserDetail.getUsername());
+        map.put("version",loginUserDetail.getSysUser().getVersion());
         String jwtDefault = JwtUtil.createJwtDefault(loginUserDetail.getLoginName(), now, jwtConfig.getTimeOut(),map, jwtConfig.getSecretKey());
         loginUserDetail.setToken(jwtDefault);
         return jwtDefault;

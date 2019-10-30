@@ -26,4 +26,10 @@ public class TestController {
 
         return String.valueOf(new Date());
     }
+
+    @RequestMapping("/sys-time-2")
+    public String getSysTime2(){
+
+        return String.valueOf(new Date());
+    }
 }

@@ -91,19 +91,28 @@ CREATE TABLE `sys_user` (
   `user_name` varchar(50) DEFAULT NULL COMMENT '用户名称',
   `dept_id` int(11) DEFAULT NULL COMMENT '所属部门编号',
   `login_name` varchar(30) NOT NULL COMMENT '账号',
-  `login_pwd` varchar(32) NOT NULL COMMENT '密码',
+  `login_pwd` varchar(100) NOT NULL COMMENT '密码',
   `salt` varchar(6) DEFAULT NULL COMMENT '盐值',
   `email` varchar(100) DEFAULT NULL COMMENT '邮件地址',
   `login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `login_ip` varchar(30) DEFAULT NULL COMMENT '最后登录IP',
   `login_count` int(11) DEFAULT '0' COMMENT '登录次数',
-  `disabled` int(1) DEFAULT '0' COMMENT '0可用1禁用2删除',
+  `status` tinyint(3) DEFAULT '0' COMMENT '0可用 -1表示禁用 -2表示逻辑删除',
   `remark` varchar(128) DEFAULT NULL COMMENT '备注',
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   `modify_date` datetime DEFAULT NULL COMMENT '修改时间',
   `super_user` tinyint(11) DEFAULT '0' COMMENT '超级管理员0否1是',
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+  `version` int(11) DEFAULT '0' COMMENT '版本号',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `uniq_login` (`login_name`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+
+-- ----------------------------
+-- Records of sys_user
+-- ----------------------------
+
+INSERT INTO `sys_user` VALUES (1, '管理员', NULL, 'admin', '$2a$10$z78yiN0qOS8IyN4tE5617eXCCjNmZNZSabgB201hVDNUOJdC8WMEu', NULL, NULL, '2019-10-23 10:41:25', NULL, 0, 0, NULL, NULL, NULL, 1, 0);
+
 -- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------
