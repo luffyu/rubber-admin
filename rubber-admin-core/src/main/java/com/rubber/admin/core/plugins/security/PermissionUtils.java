@@ -29,6 +29,12 @@ public class PermissionUtils {
     public static final String SUPER_ADMIN_PERMISSION = "*:*";
 
     /**
+     * 用户自身的权限
+     * 默认是u开头的
+     */
+    public static final String USERSELF_PERMISSION = "u:*";
+
+    /**
      * 拥有查询权限的前缀信息
      */
     private static final String[] LIST_PERMISSION = new String[]{"list","query","get","find","page","info","download","export"};

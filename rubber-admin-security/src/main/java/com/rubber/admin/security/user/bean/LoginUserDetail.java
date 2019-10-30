@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * @author luffyu
@@ -26,69 +25,52 @@ public class LoginUserDetail implements UserDetails {
     private Integer userId;
 
     /**
-     * 用户的名称
+     * 用户的名称 不是下面的getUsername的返回值
      */
-    private String userName;
-
-    /**
-     * 登陆的名称
-     */
-    private String loginName;
+    private String name;
 
     /**
      * token
      */
     private String token;
 
-    /**
-     * 用户的权限列表
-     */
-    @JsonIgnore
-    private Set<String> permissions;
 
     /**
-     * 用户的基本信息
+     * 用户的实体信息
      */
-    @JsonIgnore
-    private String password;
-
     @JsonIgnore
     private SysUser sysUser;
 
 
     public LoginUserDetail(SysUser sysUser) {
-        this.loginName = sysUser.getLoginName();
         this.userId = sysUser.getUserId();
-        this.userName = sysUser.getUserName();
-        this.password = sysUser.getLoginPwd();
+        this.name = sysUser.getUserName();
         this.sysUser = sysUser;
     }
 
-    public LoginUserDetail(Integer userId, String userName, String loginName,String token) {
-        this.userId = userId;
-        this.userName = userName;
-        this.loginName = loginName;
-        this.token = token;
-    }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
-        return this.password;
+        return this.sysUser.getLoginPwd();
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
-        return loginName;
+        return sysUser.getLoginAccount();
     }
 
     /**
      * 账户是否未过期,过期无法验证
      */
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -99,6 +81,7 @@ public class LoginUserDetail implements UserDetails {
      *
      * @return
      */
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
@@ -109,6 +92,7 @@ public class LoginUserDetail implements UserDetails {
      *
      * @return
      */
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
@@ -119,6 +103,7 @@ public class LoginUserDetail implements UserDetails {
      *
      * @return
      */
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

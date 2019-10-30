@@ -1,6 +1,8 @@
 package com.rubber.admin.security.user.service;
 
 import com.rubber.admin.core.system.entity.SysMenu;
+import com.rubber.admin.core.system.entity.SysUser;
+import com.rubber.admin.core.system.model.SysUserModel;
 import com.rubber.admin.core.system.service.impl.SysMenuServiceImpl;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import com.rubber.admin.security.user.bean.UserInfo;
@@ -30,8 +32,11 @@ public class RubberUserService {
      */
     public UserInfo getLoginUserInfo(HttpServletRequest request){
         LoginUserDetail loginUserDetail = LoginUserDetail.getByHttp(request);
+        SysUser sysUser = loginUserDetail.getSysUser();
+
+
         SysMenu menu = sysMenuService.findMenuByUserId(loginUserDetail.getUserId());
-        return new UserInfo(loginUserDetail,menu);
+        return new UserInfo(new SysUserModel(sysUser),menu);
     }
 
 

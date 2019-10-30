@@ -1,5 +1,6 @@
 package com.rubber.admin.security.config;
 
+import cn.hutool.coocaa.util.exception.ExceptionUtils;
 import cn.hutool.coocaa.util.result.IResultHandle;
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.exceptions.AdminException;
@@ -13,20 +14,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ExceptionHandelConfig {
 
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = AdminException.class)
     @ResponseBody
-    public ResultMsg handel(Exception e) throws Exception {
-        if(e instanceof AdminException){
-            AdminException ae = (AdminException)e;
-            IResultHandle resultHandle = ae.getResult();
-            if( resultHandle instanceof ResultMsg){
-                return (ResultMsg) resultHandle;
-            }else {
-                return ResultMsg.error();
-            }
+    public ResultMsg handel(AdminException e) throws Exception {
+        ExceptionUtils.printErrorMsg(e);
+        IResultHandle resultHandle = e.getResult();
+        if( resultHandle instanceof ResultMsg){
+            return (ResultMsg) resultHandle;
         }else {
-            e.printStackTrace();
-            throw e;
+            return ResultMsg.error();
         }
     }
 

@@ -63,7 +63,7 @@ public class JwtTokenVerifyService extends BaseTokenVerifyService {
         RubbeSecurityProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
         HashMap<String,Object> map = new HashMap<>(4);
         map.put("version",loginUserDetail.getSysUser().getVersion());
-        String jwtDefault = JwtUtil.createJwtDefault(loginUserDetail.getLoginName(), now, jwtConfig.getTimeOut(),map, jwtConfig.getSecretKey());
+        String jwtDefault = JwtUtil.createJwtDefault(loginUserDetail.getSysUser().getLoginAccount(), now, jwtConfig.getTimeOut(),map, jwtConfig.getSecretKey());
         loginUserDetail.setToken(jwtDefault);
         return jwtDefault;
     }

@@ -1,6 +1,10 @@
 package com.rubber.admin.security.user.service;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.extra.servlet.ServletUtil;
+import com.rubber.admin.core.system.entity.SysUser;
+import com.rubber.admin.core.system.service.ISysUserService;
+import com.rubber.admin.security.user.bean.LoginBean;
 import com.rubber.admin.security.user.bean.LoginUserDetail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,22 +23,44 @@ public class RubberUserLoginService {
 
 
     @Resource
+    private ISysUserService sysUserService;
+
+
+    @Resource
     private AuthenticationManager authenticationManager;
 
 
     /**
      * 登陆操作的service
-     * @param username 用户的名称
-     * @param password 用户的密码
+     * @param loginBean 登陆的基本信息
      * @return 登陆操作
      */
-    public ResultMsg login(String username, String password){
+    public ResultMsg login(LoginBean loginBean, HttpServletRequest request){
         // 用户验证
         Authentication authentication  = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginBean.getAccount(), loginBean.getPassword()));
         LoginUserDetail principal = (LoginUserDetail)authentication.getPrincipal();
+        //登陆之后的操作
+        doLoginAfter(loginBean,principal.getSysUser(),request);
+        //返回登陆成功的信息
         return ResultMsg.success(principal);
     }
+
+
+    /**
+     * 登陆成功之后的用户信息
+     * @param sysUser 用户的基本信息
+     */
+    private void doLoginAfter(LoginBean loginBean,SysUser sysUser,HttpServletRequest request){
+        String clientIP = ServletUtil.getClientIP(request);
+        sysUser.setLoginIp(clientIP);
+        int count = sysUser.getLoginCount() == null ? 0 : sysUser.getLoginCount();
+        sysUser.setLoginCount(++count);
+        sysUser.setVersion(sysUser.getVersion()+1);
+        sysUser.setLoginTime(loginBean.getLoginTime());
+        sysUserService.updateById(sysUser);
+    }
+
 
 
     /**

@@ -19,7 +19,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param loginName 登陆名称
      * @return 返回用户的登陆信息
      */
-    SysUser getByLoginName(String loginName);
+    SysUser getByLoginAccount(String loginName);
 
     /**
      * 通过用户名称查询到用户信息

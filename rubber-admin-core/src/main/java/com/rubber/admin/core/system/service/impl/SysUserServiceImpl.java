@@ -26,9 +26,9 @@ import java.util.Set;
 public class SysUserServiceImpl extends BaseService<SysUserMapper, SysUser> implements ISysUserService {
 
     @Override
-    public SysUser getByLoginName(String loginName) {
+    public SysUser getByLoginAccount(String loginName) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("login_name",loginName);
+        queryWrapper.eq("login_account",loginName);
         SysUser sysUser = getOne(queryWrapper);
         if(sysUser != null){
             Set<String> set = new HashSet<>();

@@ -80,7 +80,7 @@ public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
             }
         }
         if(error == null){
-            error = ResultMsg.error(AdminCode.USER_NOT_LOGIN);
+            error = ResultMsg.error(AdminCode.TOKEN_IS_ERROR);
         }
         ServletUtil.writeJSON(response, JSON.toJSONString(error));
     }

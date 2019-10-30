@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -43,7 +43,7 @@ public class SysUser extends BaseEntity {
     /**
      * 账号
      */
-    private String loginName;
+    private String loginAccount;
 
     /**
      * 密码
@@ -61,9 +61,19 @@ public class SysUser extends BaseEntity {
     private String email;
 
     /**
+     * 头像信息
+     */
+    private String avatar;
+
+    /**
+     * 性别信息
+     */
+    private String sex;
+
+    /**
      * 最后登录时间
      */
-    private LocalDateTime loginTime;
+    private Date loginTime;
 
     /**
      * 最后登录IP
@@ -88,12 +98,12 @@ public class SysUser extends BaseEntity {
     /**
      * 创建时间
      */
-    private LocalDateTime createDate;
+    private Date createDate;
 
     /**
      * 修改时间
      */
-    private LocalDateTime modifyDate;
+    private Date modifyDate;
 
     /**
      * 超级管理员0否1是

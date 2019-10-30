@@ -90,7 +90,7 @@ CREATE TABLE `sys_user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `user_name` varchar(50) DEFAULT NULL COMMENT '用户名称',
   `dept_id` int(11) DEFAULT NULL COMMENT '所属部门编号',
-  `login_name` varchar(30) NOT NULL COMMENT '账号',
+  `login_account` varchar(30) NOT NULL COMMENT '账号',
   `login_pwd` varchar(100) NOT NULL COMMENT '密码',
   `salt` varchar(6) DEFAULT NULL COMMENT '盐值',
   `email` varchar(100) DEFAULT NULL COMMENT '邮件地址',
@@ -104,7 +104,7 @@ CREATE TABLE `sys_user` (
   `super_user` tinyint(11) DEFAULT '0' COMMENT '超级管理员0否1是',
   `version` int(11) DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `uniq_login` (`login_name`) USING HASH
+  UNIQUE KEY `uniq_login` (`login_account`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
 -- ----------------------------

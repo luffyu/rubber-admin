@@ -25,13 +25,13 @@ public class LocalUserSecurityCache implements IUserSecurityCache {
         if(sysUser == null){
             return false;
         }
-        cache.put(sysUser.getLoginName(),sysUser,time);
+        cache.put(sysUser.getLoginAccount(),sysUser,time);
         return true;
     }
 
     @Override
     public boolean update(SysUser sysUser, long time) {
-        delete(sysUser.getLoginName());
+        delete(sysUser.getLoginAccount());
         return write(sysUser,time);
     }
 
