@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -99,13 +98,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterAfter(RubberAuthenticationFilter.builder(), FilterSecurityInterceptor.class);
     }
 
-    /**
-     * 身份认证接口
-     */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(new BCryptPasswordEncoder());
-    }
+//    /**
+//     * 身份认证接口
+//     */
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailService).passwordEncoder(new BCryptPasswordEncoder());
+//    }
 
 
     /**
@@ -120,4 +119,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    public static void main(String[] args) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encode = bCryptPasswordEncoder.encode("123456");
+        System.out.println(encode);
+    }
 }
