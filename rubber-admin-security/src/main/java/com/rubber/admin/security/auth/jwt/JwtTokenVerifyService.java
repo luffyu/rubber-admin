@@ -11,7 +11,7 @@ import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
 import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
 import com.rubber.admin.security.handle.PropertiesHandle;
-import com.rubber.admin.security.user.bean.LoginUserDetail;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 

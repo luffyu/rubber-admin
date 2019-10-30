@@ -50,7 +50,7 @@ public class MySqlCodeGenerator {
         //全局变量配置
         GlobalConfig gc = new GlobalConfig();
 
-        String projectPath = System.getProperty("user.dir") + "/"+modelName;
+        String projectPath = System.getProperty("login.dir") + "/"+modelName;
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor(author);
         //是否打开输出文件

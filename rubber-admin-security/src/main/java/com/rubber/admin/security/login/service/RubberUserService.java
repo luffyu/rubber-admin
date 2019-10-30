@@ -1,11 +1,11 @@
-package com.rubber.admin.security.user.service;
+package com.rubber.admin.security.login.service;
 
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.model.SysUserModel;
 import com.rubber.admin.core.system.service.impl.SysMenuServiceImpl;
-import com.rubber.admin.security.user.bean.LoginUserDetail;
-import com.rubber.admin.security.user.bean.UserInfo;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
+import com.rubber.admin.security.login.bean.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

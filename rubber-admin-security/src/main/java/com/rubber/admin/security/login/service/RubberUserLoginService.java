@@ -1,11 +1,11 @@
-package com.rubber.admin.security.user.service;
+package com.rubber.admin.security.login.service;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.service.ISysUserService;
-import com.rubber.admin.security.user.bean.LoginBean;
-import com.rubber.admin.security.user.bean.LoginUserDetail;
+import com.rubber.admin.security.login.bean.LoginBean;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

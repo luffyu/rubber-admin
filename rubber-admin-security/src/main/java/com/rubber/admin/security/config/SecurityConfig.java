@@ -6,7 +6,7 @@ import com.rubber.admin.security.filter.AuthenticationTokenVerifyFilter;
 import com.rubber.admin.security.filter.RubberAuthenticationFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
 import com.rubber.admin.security.handle.LogoutSuccessHandlerImpl;
-import com.rubber.admin.security.user.service.UserDetailServiceImpl;
+import com.rubber.admin.security.login.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

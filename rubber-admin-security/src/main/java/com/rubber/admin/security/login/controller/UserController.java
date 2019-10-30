@@ -1,8 +1,8 @@
-package com.rubber.admin.security.user.controller;
+package com.rubber.admin.security.login.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
-import com.rubber.admin.security.user.bean.UserInfo;
-import com.rubber.admin.security.user.service.RubberUserService;
+import com.rubber.admin.security.login.bean.UserInfo;
+import com.rubber.admin.security.login.service.RubberUserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

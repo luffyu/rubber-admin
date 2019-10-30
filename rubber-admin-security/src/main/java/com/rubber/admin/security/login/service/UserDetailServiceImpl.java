@@ -1,12 +1,12 @@
-package com.rubber.admin.security.user.service;
+package com.rubber.admin.security.login.service;
 
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.service.impl.SysUserServiceImpl;
 import com.rubber.admin.security.auth.ITokenVerifyService;
-import com.rubber.admin.security.user.bean.LoginException;
-import com.rubber.admin.security.user.bean.LoginUserDetail;
+import com.rubber.admin.security.login.bean.LoginException;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

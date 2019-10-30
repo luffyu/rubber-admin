@@ -8,7 +8,7 @@ import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.security.auth.ITokenVerifyService;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
-import com.rubber.admin.security.user.bean.LoginUserDetail;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;

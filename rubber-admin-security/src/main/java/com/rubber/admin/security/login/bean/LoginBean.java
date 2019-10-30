@@ -1,4 +1,4 @@
-package com.rubber.admin.security.user.bean;
+package com.rubber.admin.security.login.bean;
 
 import lombok.Data;
 

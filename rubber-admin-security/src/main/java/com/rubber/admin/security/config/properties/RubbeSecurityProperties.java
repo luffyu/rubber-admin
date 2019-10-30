@@ -41,7 +41,7 @@ public class RubbeSecurityProperties {
     /**
      * 登陆的url
      */
-    private String logUrl = "/user";
+    private String logUrl = "/login";
 
 
     /**

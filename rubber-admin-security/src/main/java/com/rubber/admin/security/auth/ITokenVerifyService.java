@@ -2,7 +2,7 @@ package com.rubber.admin.security.auth;
 
 import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
-import com.rubber.admin.security.user.bean.LoginUserDetail;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 
 import javax.servlet.http.HttpServletRequest;
 

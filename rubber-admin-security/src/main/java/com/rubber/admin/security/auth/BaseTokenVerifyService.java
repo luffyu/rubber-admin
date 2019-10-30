@@ -8,7 +8,7 @@ import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
-import com.rubber.admin.security.user.bean.LoginUserDetail;
+import com.rubber.admin.security.login.bean.LoginUserDetail;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

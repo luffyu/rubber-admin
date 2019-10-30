@@ -1,9 +1,9 @@
-package com.rubber.admin.security.user.controller;
+package com.rubber.admin.security.login.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.security.user.bean.LoginBean;
-import com.rubber.admin.security.user.service.RubberUserLoginService;
+import com.rubber.admin.security.login.bean.LoginBean;
+import com.rubber.admin.security.login.service.RubberUserLoginService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
