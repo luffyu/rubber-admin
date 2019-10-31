@@ -15,7 +15,7 @@ public @interface RubberAuthorize {
      * 某一个唯一的id值
      * @return 返回一个id值
      */
-    String key();
+    String moduleKey();
 
     /**
      * 权限信息
@@ -23,6 +23,6 @@ public @interface RubberAuthorize {
      *
      * @return 返回权限类型
      */
-    PermissionEnums permission();
+    String unitKey();
 
 }

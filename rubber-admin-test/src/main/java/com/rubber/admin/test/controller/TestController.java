@@ -1,9 +1,13 @@
 package com.rubber.admin.test.controller;
 
+import cn.hutool.coocaa.util.result.ResultMsg;
+import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author luffyu
@@ -22,14 +26,16 @@ public class TestController {
 
 
     @RequestMapping("/sys-time-1")
-    public String getSysTime1(){
-
-        return String.valueOf(new Date());
+    public ResultMsg getSysTime1(){
+        Map<String, Set<String>> allAuthorize = HandlerMappingAuthorize.getAllAuthorize();
+        return ResultMsg.success(allAuthorize);
     }
 
     @RequestMapping("/sys-time-2")
-    public String getSysTime2(){
+    public ResultMsg getSysTime2(){
 
-        return String.valueOf(new Date());
+        Map<String, String> mappingAuthorize = HandlerMappingAuthorize.getMappingAuthorize();
+
+        return ResultMsg.success(mappingAuthorize);
     }
 }

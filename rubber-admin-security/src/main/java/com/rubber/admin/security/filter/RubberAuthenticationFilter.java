@@ -1,7 +1,7 @@
 package com.rubber.admin.security.filter;
 
 import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
-import com.rubber.admin.core.plugins.security.PermissionUtils;
+import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -53,7 +53,7 @@ public class RubberAuthenticationFilter extends OncePerRequestFilter {
         //获取用户的基本信息
         LoginUserDetail loginUserDetail = LoginUserDetail.getByHttp(httpServletRequest);
         //验证是否有权限
-        if(!PermissionUtils.havePermission(loginUserDetail.getSysUser().getPermissions(),authorizeKey)){
+        if(!PrivilegeUtils.havePermission(loginUserDetail.getSysUser().getPermissions(),authorizeKey)){
            throw new AuthenticationCredentialsNotFoundException("not have this permission");
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);

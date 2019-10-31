@@ -3,6 +3,8 @@ package com.rubber.admin.core.plugins.security;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import com.rubber.admin.core.system.entity.SysPrivilegeDict;
+import com.rubber.admin.core.system.service.ISysPrivilegeDictService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -13,6 +15,8 @@ import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +30,20 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
-    private static Map<String,String> mappingAuthorize = new ConcurrentHashMap<>(40);
+    /**
+     * url的权限字典
+     * key表示urlPath
+     * value表示该url需要的权限字段key
+     */
+    private static Map<String,String> urlPrivilegeDict = new ConcurrentHashMap<>(40);
+
+    /**
+     * 全部的权限内容
+     *
+     * key表示模块头
+     * value表示 表示该模块有的权限信息
+     */
+    private static Map<String,Set<String>> allPrivilege = new ConcurrentHashMap<>(200);
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -40,47 +57,90 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
      * @param applicationContext applicationContext
      */
     public void writeHandlerMappingAuthorize(ApplicationContext applicationContext){
+        ISysPrivilegeDictService privilegeDict = applicationContext.getBean(ISysPrivilegeDictService.class);
+        //获取到全部到权限字典
+        List<SysPrivilegeDict> privilegeUnitDicts = privilegeDict.selectByType(PrivilegeUtils.BASIC_UNIT);
+        if (privilegeUnitDicts == null){
+            return;
+        }
+        //获取模块的目录信息
+        List<SysPrivilegeDict> privilegeModuleDicts = privilegeDict.selectByType(PrivilegeUtils.BASIC_MODULE);
+
         RequestMappingHandlerMapping bean = applicationContext.getBean(RequestMappingHandlerMapping.class);
+        //获取到全部到Mapping信息
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
         if(MapUtil.isNotEmpty(handlerMethods)){
             for(Map.Entry<RequestMappingInfo, HandlerMethod> map:handlerMethods.entrySet()){
-                PatternsRequestCondition pc = map.getKey().getPatternsCondition();
                 //获取到请求到url
+                PatternsRequestCondition pc = map.getKey().getPatternsCondition();
                 Set<String> pSet = pc.getPatterns();
                 if (CollectionUtil.isEmpty(pSet)){
                     continue;
                 }
                 String urlPath = pSet.iterator().next();
-                //在获取方法到标签
-                String authorizeKey = getMappingMethodAuthorizeKey(urlPath,map.getValue());
-                mappingAuthorize.putIfAbsent(urlPath,authorizeKey);
+                resolveHandlerMethod(urlPath,map.getValue(),privilegeUnitDicts,privilegeModuleDicts);
             }
         }
     }
 
     /**
-     * 获取mapping的权限key
-     * 用 key:Permission 来表示
-     * @param url 请求的url
-     * @param handlerMethod handlerMethod的方法
-     * @return 返回  key:Permission 接口的key值
-     *
+     * 解析handlerMethod方法
+     * @param urlPath url地址
+     * @param handlerMethod 方法地址
+     * @param privilegeUnitDicts list信息
      */
-    private String getMappingMethodAuthorizeKey(String url,HandlerMethod handlerMethod){
-        String key = null;
-        PermissionEnums permission = null;
+    public void resolveHandlerMethod(String urlPath,HandlerMethod handlerMethod,List<SysPrivilegeDict> privilegeUnitDicts,List<SysPrivilegeDict> privilegeModuleDicts){
+        //模块到key
+        String moduleKey = null;
+        //权限到基础key
+        String privilegeUnitKey = null;
+        //获取配置到权限认证字段
         RubberAuthorize methodAnnotation = handlerMethod.getMethodAnnotation(RubberAuthorize.class);
         if(methodAnnotation != null){
-            key= methodAnnotation.key();
-            permission = methodAnnotation.permission();
+            moduleKey = methodAnnotation.moduleKey();
+            privilegeUnitKey = methodAnnotation.unitKey();
         }
-        if(StrUtil.isEmpty(key)){
-            key = doCreateDefaultKey(handlerMethod,url);
+        //获取默认的handlerMethod
+        if(StrUtil.isEmpty(moduleKey)){
+            moduleKey = doCreateDefaultKey(handlerMethod,urlPath);
         }
-        if(permission == null){
-            permission = PermissionUtils.getPermission(handlerMethod.getMethod().getName());
+
+        if(privilegeUnitKey == null){
+            SysPrivilegeDict unit = PrivilegeUtils.getUnitKey(handlerMethod.getMethod().getName(), privilegeUnitDicts);
+            if(unit != null){
+                privilegeUnitKey = unit.getDictKey();
+            }
+            if(StrUtil.isEmpty(privilegeUnitKey)){
+                privilegeUnitKey = PrivilegeUtils.DEFAULT_UNIT_KEY;
+            }
         }
-        return key + PermissionUtils.PER_LINK_KEY + permission.toString();
+        //写入url的权限字段
+        writeUrlPermissionDict(urlPath,moduleKey,privilegeUnitKey);
+        writeAllPermission(moduleKey,privilegeUnitKey);
+    }
+
+    /**
+     * 获取mapping的权限key
+     * 用 key:Permission 来表示
+     * @param urlPath 请求的url
+     * @param moduleKey handlerMethod的方法 privilegeUnitKey
+     * @return 返回  moduleKey:privilegeUnitKey 接口的key值
+     *
+     */
+    public void writeUrlPermissionDict(String urlPath,String moduleKey,String privilegeUnitKey){
+        String authorizeKey =  moduleKey + PrivilegeUtils.PER_LINK_KEY + privilegeUnitKey;
+        urlPrivilegeDict.putIfAbsent(urlPath,authorizeKey);
+    }
+
+
+
+    public synchronized void writeAllPermission(String moduleKey,String unitKey){
+        Set<String> privilegeBean = allPrivilege.get(moduleKey);
+        if(privilegeBean == null){
+            privilegeBean = new HashSet<>(20);
+        }
+        privilegeBean.add(unitKey);
+        allPrivilege.put(moduleKey,privilegeBean);
     }
 
 
@@ -100,8 +160,8 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
                 return name;
             }
         }
-        String urlHeadKey = PermissionUtils.getUrlHeadKey(url);
-        return StrUtil.nullToDefault(urlHeadKey,"*");
+        String urlHeadKey = PrivilegeUtils.getUrlHeadKey(url);
+        return StrUtil.nullToDefault(urlHeadKey,PrivilegeUtils.DEFAULT_MODEL_KEY);
     }
 
 
@@ -114,6 +174,14 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
      * @return  返回handleMapping中的权限标示
      */
     public static Map<String, String> getMappingAuthorize() {
-        return mappingAuthorize;
+        return urlPrivilegeDict;
+    }
+
+
+    /**
+     * @return  返回handleMapping中的权限标示
+     */
+    public static Map<String,Set<String>> getAllAuthorize() {
+        return allPrivilege;
     }
 }

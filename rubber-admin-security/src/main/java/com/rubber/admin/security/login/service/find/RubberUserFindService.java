@@ -105,7 +105,7 @@ public class RubberUserFindService implements IUserFindService {
         sysUser.setAvatar(sysUserModel.getAvatar());
         sysUser.setEmail(sysUserModel.getEmail());
         sysUser.setStatus(StatusEnums.NORMAL);
-        sysUser.setCreateDate(loginBean.getLoginTime());
+        sysUser.setCreateTime(loginBean.getLoginTime());
         sysUser.setSuperUser(StatusEnums.NORMAL);
         return sysUser;
     }

@@ -48,7 +48,7 @@ public class SysUserModel extends BaseModel {
     /**
      * 性别信息
      */
-    private String sex;
+    private Integer sex;
 
 
     /**

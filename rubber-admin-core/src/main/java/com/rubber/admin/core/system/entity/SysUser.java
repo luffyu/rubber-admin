@@ -60,14 +60,19 @@ public class SysUser extends BaseEntity {
     private String email;
 
     /**
+     * 手机号码
+     */
+    private String phone;
+
+    /**
      * 头像信息
      */
     private String avatar;
 
     /**
-     * 性别信息
+     * 性别 0表示女 1表示男 2表示未知
      */
-    private String sex;
+    private Integer sex;
 
     /**
      * 最后登录时间
@@ -85,9 +90,19 @@ public class SysUser extends BaseEntity {
     private Integer loginCount;
 
     /**
-     * 0可用 -1禁用  -2删除
+     * 账户状态 0可用 -1表示禁用
      */
     private Integer status;
+
+    /**
+     * 删除标志 0表示存在  -1表示逻辑删除
+     */
+    private Integer delFlag;
+
+    /**
+     * 超级管理员0否1是
+     */
+    private Integer superUser;
 
     /**
      * 备注
@@ -95,21 +110,28 @@ public class SysUser extends BaseEntity {
     private String remark;
 
     /**
+     * 创建人id
+     */
+    private Integer createBy;
+
+    /**
      * 创建时间
      */
-    private Date createDate;
+    private Date createTime;
 
     /**
-     * 修改时间
+     * 最后一次更新人id
      */
-    private Date modifyDate;
+    private Integer updateBy;
 
     /**
-     * 超级管理员0否1是
+     * 最好一个更新时间
      */
-    private Integer superUser;
+    private Date updateTime;
 
-
+    /**
+     * 版本号
+     */
     @Version
     private Integer version;
 

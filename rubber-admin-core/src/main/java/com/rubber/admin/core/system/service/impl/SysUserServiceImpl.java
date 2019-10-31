@@ -4,7 +4,7 @@ import cn.hutool.coocaa.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseService;
 import com.rubber.admin.core.exceptions.AdminException;
-import com.rubber.admin.core.plugins.security.PermissionUtils;
+import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
 import com.rubber.admin.core.system.service.ISysUserService;
@@ -32,7 +32,7 @@ public class SysUserServiceImpl extends BaseService<SysUserMapper, SysUser> impl
         SysUser sysUser = getOne(queryWrapper);
         if(sysUser != null){
             Set<String> set = new HashSet<>();
-            set.add(PermissionUtils.SUPER_ADMIN_PERMISSION);
+            set.add(PrivilegeUtils.SUPER_ADMIN_PERMISSION);
             sysUser.setPermissions(set);
         }
         return sysUser;
