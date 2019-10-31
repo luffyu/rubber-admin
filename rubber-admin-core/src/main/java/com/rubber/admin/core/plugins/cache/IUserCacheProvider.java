@@ -5,8 +5,9 @@ import com.rubber.admin.core.system.entity.SysUser;
 /**
  * @author luffyu
  * Created on 2019-10-28
+ * 对用户信息的缓存
  */
-public interface IUserSecurityCache {
+public interface IUserCacheProvider {
 
 
     /**

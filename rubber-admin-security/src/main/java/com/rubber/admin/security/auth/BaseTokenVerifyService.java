@@ -1,8 +1,8 @@
 package com.rubber.admin.security.auth;
 
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.plugins.cache.IUserSecurityCache;
-import com.rubber.admin.core.plugins.cache.UserSecurityNoCache;
+import com.rubber.admin.core.plugins.cache.IUserCacheProvider;
+import com.rubber.admin.core.plugins.cache.UserCacheNoProvider;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
@@ -25,12 +25,12 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
     /**
      * 缓存配置信息
      */
-    private IUserSecurityCache userSecurityCache;
+    private IUserCacheProvider userCacheProvider;
 
 
 
-    public BaseTokenVerifyService(IUserSecurityCache userSecurityCache) {
-        this.userSecurityCache = userSecurityCache;
+    public BaseTokenVerifyService(IUserCacheProvider userCacheProvider) {
+        this.userCacheProvider = userCacheProvider;
     }
 
 
@@ -129,7 +129,7 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
     private void doUpdateByCache(SysUser subject){
         if(checkCacheAble()){
             if(subject != null){
-                userSecurityCache.update(subject,getTokenTimeOut());
+                userCacheProvider.update(subject,getTokenTimeOut());
             }
 
         }
@@ -144,7 +144,7 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
         if(!checkCacheAble()){
             return null;
         }
-        return userSecurityCache.findByKey(subject);
+        return userCacheProvider.findByKey(subject);
     }
 
     /**
@@ -153,10 +153,10 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
      * @return 返回true表示可以使用缓存 false表示不用使用缓存
      */
     private boolean checkCacheAble(){
-        if(userSecurityCache == null){
+        if(userCacheProvider == null){
             return false;
         }
-        if(userSecurityCache instanceof UserSecurityNoCache){
+        if(userCacheProvider instanceof UserCacheNoProvider){
             return false;
         }
         return true;

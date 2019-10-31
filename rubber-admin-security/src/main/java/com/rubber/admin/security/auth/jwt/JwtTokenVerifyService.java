@@ -3,8 +3,7 @@ package com.rubber.admin.security.auth.jwt;
 import cn.hutool.coocaa.util.jwt.JwtUtil;
 import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.plugins.cache.IUserSecurityCache;
-import com.rubber.admin.core.plugins.cache.LocalUserSecurityCache;
+import com.rubber.admin.core.plugins.cache.UserCacheProviderFactory;
 import com.rubber.admin.security.auth.BaseTokenVerifyService;
 import com.rubber.admin.security.auth.TokenVerifyBean;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
@@ -28,11 +27,7 @@ public class JwtTokenVerifyService extends BaseTokenVerifyService {
      * 默认采用本地的缓存方法
      */
     public JwtTokenVerifyService() {
-        super(new LocalUserSecurityCache());
-    }
-
-    public JwtTokenVerifyService(IUserSecurityCache userSecurityCache) {
-        super(userSecurityCache);
+        super(UserCacheProviderFactory.builder());
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.rubber.admin.core.system.entity.SysUser;
  * Created on 2019-10-28
  * 不写入缓存信息
  */
-public class UserSecurityNoCache implements IUserSecurityCache {
+public class UserCacheNoProvider implements IUserCacheProvider {
     @Override
     public boolean write(SysUser sysUser, long time) {
         return true;
