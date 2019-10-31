@@ -6,7 +6,6 @@ import com.rubber.admin.security.filter.AuthenticationTokenVerifyFilter;
 import com.rubber.admin.security.filter.RubberAuthenticationFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
 import com.rubber.admin.security.handle.LogoutSuccessHandlerImpl;
-import com.rubber.admin.security.login.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,9 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private LogoutSuccessHandlerImpl logoutSuccessHandler;
-
-    @Autowired
-    private UserDetailServiceImpl userDetailService;
 
     @Autowired
     private RubbeSecurityProperties rubberConfigProperties;
@@ -98,14 +94,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterAfter(RubberAuthenticationFilter.builder(), FilterSecurityInterceptor.class);
     }
 
-//    /**
-//     * 身份认证接口
-//     */
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailService).passwordEncoder(new BCryptPasswordEncoder());
-//    }
-
 
     /**
      * 解决 无法直接注入 AuthenticationManager
@@ -119,9 +107,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    public static void main(String[] args) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encode = bCryptPasswordEncoder.encode("123456");
-        System.out.println(encode);
+    /**
+     * 强散列哈希加密实现
+     */
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

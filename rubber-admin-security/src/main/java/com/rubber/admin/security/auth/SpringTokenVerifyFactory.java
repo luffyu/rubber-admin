@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Created on 2019-10-28
  */
 @Component
-public class SpringTokenAuthFactory implements FactoryBean<ITokenVerifyService> {
+public class SpringTokenVerifyFactory implements FactoryBean<ITokenVerifyService> {
 
     @Autowired
     private RubbeSecurityProperties rubbeSecurityProperties;

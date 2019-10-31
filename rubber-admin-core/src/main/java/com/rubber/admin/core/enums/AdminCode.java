@@ -35,18 +35,17 @@ public enum AdminCode implements ICodeHandle {
     /**
      * 已  2-**-** 开头
      */
+    /**
+     * 201** 登陆类型的错误code
+     */
     USER_NOT_LOGIN("20100","用户未登陆"),
     LOGIN_AUTH_ERROR("20101","登陆密码错误"),
     LOGIN_USER_NOT_EXIST("20102","用户不存在"),
     USER_IS_DISABLE("20103","用户已经被禁用"),
     USER_IS_DELETE("20104","用户已经被删除"),
-
-    /**
-     * 认证错误的code
-     */
-    TOKEN_IS_EXPIRED("20200","登陆token过期"),
-    TOKEN_IS_ERROR("20201","登陆token错误"),
-
+    TOKEN_IS_EXPIRED("20105","登陆token过期"),
+    TOKEN_IS_ERROR("20106","登陆token错误"),
+    LOGIN_TYPE_NOT_SUPPORT("20107","不支持的登陆类型"),
 
     ;
     /**

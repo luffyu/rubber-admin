@@ -38,7 +38,7 @@ public class RubberUserLoginService {
     public ResultMsg login(LoginBean loginBean, HttpServletRequest request){
         // 用户验证
         Authentication authentication  = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginBean.getAccount(), loginBean.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginBean, loginBean.getPassword()));
         LoginUserDetail principal = (LoginUserDetail)authentication.getPrincipal();
         //登陆之后的操作
         doLoginAfter(loginBean,principal.getSysUser(),request);
@@ -56,20 +56,10 @@ public class RubberUserLoginService {
         sysUser.setLoginIp(clientIP);
         int count = sysUser.getLoginCount() == null ? 0 : sysUser.getLoginCount();
         sysUser.setLoginCount(++count);
-        sysUser.setVersion(sysUser.getVersion()+1);
+        int verion = sysUser.getVersion() == null ? 0 : sysUser.getVersion();
+        sysUser.setVersion(verion+1);
         sysUser.setLoginTime(loginBean.getLoginTime());
         sysUserService.updateById(sysUser);
     }
-
-
-
-    /**
-     * 用户的信息注册
-     * @param request
-     */
-    public void register(HttpServletRequest request){
-    }
-
-
 
 }

@@ -122,4 +122,12 @@ public class SysUser extends BaseEntity {
     private Set<String> permissions;
 
 
+    /**
+     * 获取加密的key值
+     * @param psw 用户输入的密码
+     * @return
+     */
+    public String getEncodeKey(String psw){
+        return psw + this.salt;
+    }
 }
