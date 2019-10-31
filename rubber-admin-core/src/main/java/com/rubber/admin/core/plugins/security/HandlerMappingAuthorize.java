@@ -106,7 +106,7 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
         }
 
         if(privilegeUnitKey == null){
-            SysPrivilegeDict unit = PrivilegeUtils.getUnitKey(handlerMethod.getMethod().getName(), privilegeUnitDicts);
+            SysPrivilegeDict unit = PrivilegeUtils.findByValue(handlerMethod.getMethod().getName(), privilegeUnitDicts);
             if(unit != null){
                 privilegeUnitKey = unit.getDictKey();
             }
@@ -128,7 +128,7 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
      *
      */
     public void writeUrlPermissionDict(String urlPath,String moduleKey,String privilegeUnitKey){
-        String authorizeKey =  moduleKey + PrivilegeUtils.PER_LINK_KEY + privilegeUnitKey;
+        String authorizeKey = PrivilegeUtils.createAuthorizeKey(moduleKey,privilegeUnitKey);
         urlPrivilegeDict.putIfAbsent(urlPath,authorizeKey);
     }
 

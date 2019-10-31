@@ -4,16 +4,18 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseService;
+import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
+import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.core.system.entity.SysPrivilegeDict;
 import com.rubber.admin.core.system.mapper.SysPrivilegeDictMapper;
+import com.rubber.admin.core.system.model.PrivilegeBean;
 import com.rubber.admin.core.system.service.ISysPrivilegeDictService;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -39,23 +41,39 @@ public class SysPrivilegeDictServiceImpl extends BaseService<SysPrivilegeDictMap
     }
 
 
-
+    /**
+     * 获取全部的权限信息
+     * @return  返回系统中所有接口所需要的权限列表
+     */
     @Override
-    public Map<SysPrivilegeDict, Set<String>> selectDictByType(String type) {
-        List<SysPrivilegeDict> sysPrivilegeDicts = selectByType(type);
-        if(CollectionUtil.isEmpty(sysPrivilegeDicts)){
+    public List<PrivilegeBean> allPrivilege() {
+        //获取系统中全部Controller权限信息
+        Map<String, Set<String>> allAuthorize = HandlerMappingAuthorize.getAllAuthorize();
+        if (CollectionUtil.isEmpty(allAuthorize)){
             return null;
         }
-        Map<SysPrivilegeDict, Set<String>> map = new HashMap<>();
+        List<PrivilegeBean> privilegeBeans = new ArrayList<>(allAuthorize.size());
+        //获取到全部的字典信息
+        List<SysPrivilegeDict> moduleDict = selectByType(PrivilegeUtils.BASIC_MODULE);
 
+        List<SysPrivilegeDict> unitDict = selectByType(PrivilegeUtils.BASIC_UNIT);
 
-        sysPrivilegeDicts.stream().collect(Collectors.toMap(SysPrivilegeDict::getDictKey,SysPrivilegeDict::getDictValue));
-        for(SysPrivilegeDict sysPrivilegeDict:sysPrivilegeDicts){
-            String dictValue = sysPrivilegeDict.getDictValue();
-
+        for(String key:allAuthorize.keySet()){
+            //获取全部的key
+            SysPrivilegeDict model = PrivilegeUtils.findByValue(key, moduleDict);
+            PrivilegeBean privilegeBean = new PrivilegeBean(key,model);
+            Set<String> unitKeys = allAuthorize.get(key);
+            if(CollectionUtil.isNotEmpty(unitKeys)){
+                for (String unitKey:unitKeys){
+                    SysPrivilegeDict unit = PrivilegeUtils.findByValue(unitKey, unitDict);
+                    String authorizeKey = PrivilegeUtils.createAuthorizeKey(key, unitKey);
+                    PrivilegeBean.UnitBean unitBean = new PrivilegeBean.UnitBean(unitKey,unit,authorizeKey);
+                    privilegeBean.getUnitBeans().add(unitBean);
+                }
+            }
+            privilegeBeans.add(privilegeBean);
         }
-
-        return null;
+        return privilegeBeans;
     }
 
 

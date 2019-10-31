@@ -2,10 +2,9 @@ package com.rubber.admin.core.system.service;
 
 import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysPrivilegeDict;
+import com.rubber.admin.core.system.model.PrivilegeBean;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>
@@ -26,12 +25,12 @@ public interface ISysPrivilegeDictService extends IBaseService<SysPrivilegeDict>
     List<SysPrivilegeDict> selectByType(String type);
 
 
+
     /**
-     * 通过类型获取权限字典表
-     * @param type 权限的字典表
-     * @return 返回权限的字典信息
+     * 获取全部的权限列表
+     * @return 全部的权限信息
      */
-    Map<SysPrivilegeDict, Set<String>> selectDictByType(String type);
+    List<PrivilegeBean> allPrivilege();
 
 
 }

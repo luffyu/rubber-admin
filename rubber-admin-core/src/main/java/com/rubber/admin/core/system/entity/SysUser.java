@@ -132,7 +132,6 @@ public class SysUser extends BaseEntity {
     /**
      * 版本号
      */
-    @Version
     private Integer version;
 
     /**
@@ -155,5 +154,23 @@ public class SysUser extends BaseEntity {
      */
     public String getEncodeKey(String psw){
         return psw + this.salt;
+    }
+
+
+    public void addCount(){
+        if(this.loginCount == null){
+            this.loginCount = 1;
+        }else {
+            this.loginCount ++ ;
+        }
+    }
+
+
+    public void addVersion(){
+        if(this.version == null){
+            this.version = 1;
+        }else {
+            this.version ++ ;
+        }
     }
 }

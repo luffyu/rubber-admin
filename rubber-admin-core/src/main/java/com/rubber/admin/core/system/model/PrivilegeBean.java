@@ -1,5 +1,7 @@
-package com.rubber.admin.core.plugins.security;
+package com.rubber.admin.core.system.model;
 
+import cn.hutool.core.util.StrUtil;
+import com.rubber.admin.core.system.entity.SysPrivilegeDict;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class PrivilegeBean {
     private String moduleName;
 
     /**
-     *
+     * 具体的权限信息
      */
     private List<UnitBean> unitBeans;
 
@@ -34,6 +36,17 @@ public class PrivilegeBean {
         this.moduleName = moduleName;
         this.unitBeans = new ArrayList<>();
     }
+
+    public PrivilegeBean(String moduleKey, SysPrivilegeDict module) {
+        this.moduleKey = moduleKey;
+        if(module != null && StrUtil.isNotEmpty( module.getDictName())){
+            this.moduleName = module.getDictName();
+        }else {
+            this.moduleName = moduleKey;
+        }
+        this.unitBeans = new ArrayList<>();
+    }
+
 
     @Data
     public static class UnitBean{
@@ -55,6 +68,16 @@ public class PrivilegeBean {
         public UnitBean(String unitKey, String unitName, String authorizeKey) {
             this.unitKey = unitKey;
             this.unitName = unitName;
+            this.authorizeKey = authorizeKey;
+        }
+
+        public UnitBean(String unitKey, SysPrivilegeDict unit,String authorizeKey) {
+            this.unitKey = unitKey;
+            if(unit != null && StrUtil.isNotEmpty(unit.getDictName())){
+                this.unitName = unit.getDictName();
+            }else {
+                this.unitName = unitKey;
+            }
             this.authorizeKey = authorizeKey;
         }
     }

@@ -68,6 +68,7 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
      */
     @Override
     public LoginUserDetail verify(HttpServletRequest request) throws TokenVerifyException {
+        boolean updateCache = false;
         //获取验证的信息
         TokenVerifyBean verifyBean = doVerify(request);
         SysUser sysUser = doFindByCache(verifyBean.getSubject());
@@ -76,10 +77,13 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
             if(sysUser == null){
                 throw new TokenVerifyException(AdminCode.LOGIN_USER_NOT_EXIST);
             }
-            //验证版本是否合法
-            if (!sysUser.getVersion().equals(verifyBean.getVersion())){
-                throw new TokenVerifyException(AdminCode.TOKEN_IS_EXPIRED);
-            }
+            updateCache = true;
+        }
+        //验证版本是否合法
+        if (!sysUser.getVersion().equals(verifyBean.getVersion())){
+            throw new TokenVerifyException(AdminCode.TOKEN_IS_EXPIRED);
+        }
+        if(updateCache){
             //token写入到缓存中
             doUpdateByCache(sysUser);
         }
@@ -94,6 +98,8 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
      */
     @Override
     public String create(LoginUserDetail loginUserDetail) throws TokenCreateException{
+        //添加版本号
+        loginUserDetail.getSysUser().addVersion();
         //创建token
         String s = doCreate(loginUserDetail);
         //token写入到缓存中

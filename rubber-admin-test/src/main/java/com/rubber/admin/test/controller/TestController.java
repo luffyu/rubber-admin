@@ -2,12 +2,15 @@ package com.rubber.admin.test.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
+import com.rubber.admin.core.system.model.PrivilegeBean;
+import com.rubber.admin.core.system.service.impl.SysPrivilegeDictServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author luffyu
@@ -17,6 +20,8 @@ import java.util.Set;
 @RequestMapping("/test")
 public class TestController {
 
+    @Resource
+    SysPrivilegeDictServiceImpl sysPrivilegeDictService;
 
     @RequestMapping("/sys-time")
     public String getSysTime(){
@@ -27,8 +32,8 @@ public class TestController {
 
     @RequestMapping("/sys-time-1")
     public ResultMsg getSysTime1(){
-        Map<String, Set<String>> allAuthorize = HandlerMappingAuthorize.getAllAuthorize();
-        return ResultMsg.success(allAuthorize);
+        List<PrivilegeBean> privilegeBeans = sysPrivilegeDictService.allPrivilege();
+        return ResultMsg.success(privilegeBeans);
     }
 
     @RequestMapping("/sys-time-2")

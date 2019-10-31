@@ -54,10 +54,7 @@ public class RubberUserLoginService {
     private void doLoginAfter(LoginBean loginBean,SysUser sysUser,HttpServletRequest request){
         String clientIP = ServletUtil.getClientIP(request);
         sysUser.setLoginIp(clientIP);
-        int count = sysUser.getLoginCount() == null ? 0 : sysUser.getLoginCount();
-        sysUser.setLoginCount(++count);
-        int verion = sysUser.getVersion() == null ? 0 : sysUser.getVersion();
-        sysUser.setVersion(verion+1);
+        sysUser.addCount();
         sysUser.setLoginTime(loginBean.getLoginTime());
         sysUserService.updateById(sysUser);
     }

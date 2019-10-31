@@ -51,6 +51,17 @@ public class PrivilegeUtils {
     public static final String SUPER_ADMIN_PERMISSION = "*:*";
 
 
+    /**
+     * 生成验证的key
+     * @param module
+     * @param unit
+     * @return
+     */
+    public static String createAuthorizeKey(String module,String unit){
+        return module + PER_LINK_KEY + unit;
+    }
+
+
 
     /**
      * 通过配置到字段信息返回一个默认到 unitKey
@@ -58,7 +69,7 @@ public class PrivilegeUtils {
      * @param privilegeDicts 数据库中配置到权限字段
      * @return 返回一个合适到权限字段信息
      */
-    public static SysPrivilegeDict getUnitKey(String methodName, List<SysPrivilegeDict> privilegeDicts){
+    public static SysPrivilegeDict findByValue(String methodName, List<SysPrivilegeDict> privilegeDicts){
         if(CollectionUtil.isEmpty(privilegeDicts)){
             return null;
         }
