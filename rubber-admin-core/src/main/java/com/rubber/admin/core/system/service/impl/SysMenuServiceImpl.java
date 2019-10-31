@@ -1,7 +1,7 @@
 package com.rubber.admin.core.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.rubber.admin.core.base.BaseService;
+import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.MenuTypeEnums;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysMenu;
@@ -22,7 +22,7 @@ import java.util.*;
  * @since 2019-05-13
  */
 @Service
-public class SysMenuServiceImpl extends BaseService<SysMenuMapper, SysMenu> implements ISysMenuService {
+public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu> implements ISysMenuService {
 
 
     /**

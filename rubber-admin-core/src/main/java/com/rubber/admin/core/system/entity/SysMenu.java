@@ -83,12 +83,12 @@ public class SysMenu extends BaseEntity {
     /**
      * 最后一次更新人id
      */
-    private Integer lastUpdateBy;
+    private Integer updateBy;
 
     /**
      * 最好一个更新时间
      */
-    private Date lastUpdateTime;
+    private Date updateTime;
 
     /**
      * 备注

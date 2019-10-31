@@ -3,7 +3,7 @@ package com.rubber.admin.core.system.service.impl;
 import com.rubber.admin.core.system.entity.SysUserRole;
 import com.rubber.admin.core.system.mapper.SysUserRoleMapper;
 import com.rubber.admin.core.system.service.ISysUserRoleService;
-import com.rubber.admin.core.base.BaseService;
+import com.rubber.admin.core.base.BaseAdminService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @since 2019-05-13
  */
 @Service
-public class SysUserRoleServiceImpl extends BaseService<SysUserRoleMapper, SysUserRole> implements ISysUserRoleService {
+public class SysUserRoleServiceImpl extends BaseAdminService<SysUserRoleMapper, SysUserRole> implements ISysUserRoleService {
 
 
     private void gett(){

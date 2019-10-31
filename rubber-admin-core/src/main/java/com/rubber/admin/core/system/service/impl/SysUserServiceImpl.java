@@ -2,7 +2,7 @@ package com.rubber.admin.core.system.service.impl;
 
 import cn.hutool.coocaa.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.rubber.admin.core.base.BaseService;
+import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.core.system.entity.SysUser;
@@ -23,7 +23,7 @@ import java.util.Set;
  * @since 2019-05-13
  */
 @Service
-public class SysUserServiceImpl extends BaseService<SysUserMapper, SysUser> implements ISysUserService {
+public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser> implements ISysUserService {
 
     @Override
     public SysUser getByLoginAccount(String loginName) {

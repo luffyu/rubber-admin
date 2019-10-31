@@ -17,7 +17,7 @@ import java.util.Map;
  * @author luffyu
  * Created on 2019-05-11
  */
-public class BaseService<M extends BaseMapper<T>,T extends BaseEntity> extends ServiceImpl<M,T> implements IBaseService<T> {
+public class BaseAdminService<M extends BaseMapper<T>,T extends BaseEntity> extends ServiceImpl<M,T> implements IBaseService<T> {
 
 
     /**

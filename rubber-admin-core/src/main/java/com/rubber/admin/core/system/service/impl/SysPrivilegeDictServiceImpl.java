@@ -3,7 +3,7 @@ package com.rubber.admin.core.system.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.rubber.admin.core.base.BaseService;
+import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
 import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.core.system.entity.SysPrivilegeDict;
@@ -26,7 +26,7 @@ import java.util.Set;
  * @since 2019-10-31
  */
 @Service
-public class SysPrivilegeDictServiceImpl extends BaseService<SysPrivilegeDictMapper, SysPrivilegeDict> implements ISysPrivilegeDictService {
+public class SysPrivilegeDictServiceImpl extends BaseAdminService<SysPrivilegeDictMapper, SysPrivilegeDict> implements ISysPrivilegeDictService {
 
 
 

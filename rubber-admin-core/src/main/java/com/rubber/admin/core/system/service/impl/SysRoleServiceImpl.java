@@ -3,7 +3,7 @@ package com.rubber.admin.core.system.service.impl;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.mapper.SysRoleMapper;
 import com.rubber.admin.core.system.service.ISysRoleService;
-import com.rubber.admin.core.base.BaseService;
+import com.rubber.admin.core.base.BaseAdminService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -20,7 +20,7 @@ import java.util.Set;
  * @since 2019-05-13
  */
 @Service
-public class SysRoleServiceImpl extends BaseService<SysRoleMapper, SysRole> implements ISysRoleService {
+public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole> implements ISysRoleService {
 
 
     /**
