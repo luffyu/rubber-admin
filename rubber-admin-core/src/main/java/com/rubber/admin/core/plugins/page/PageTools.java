@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rubber.admin.core.base.BaseEntity;
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.exceptions.AdminRunTimeException;
 
 import java.util.Map;
 
@@ -53,7 +53,7 @@ public class PageTools {
         if(pagerModel.getOrder() != null && pagerModel.getSort() != null && clzFiles != null){
             for (String s : pagerModel.getSort()) {
                 if(clzFiles.get(s) == null){
-                    throw new AdminException(AdminCode.LOGIN_AUTH_ERROR,s+"是非法成员变量");
+                    throw new AdminRunTimeException(AdminCode.LOGIN_AUTH_ERROR,s+"是非法成员变量");
                 }
             }
         }

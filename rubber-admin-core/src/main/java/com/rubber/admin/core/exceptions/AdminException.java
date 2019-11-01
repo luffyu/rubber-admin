@@ -1,15 +1,14 @@
 package com.rubber.admin.core.exceptions;
 
-
 import cn.hutool.coocaa.util.result.IResultHandle;
 import cn.hutool.coocaa.util.result.code.ICodeHandle;
-import cn.hutool.coocaa.util.result.exception.BaseResultRunTimeException;
+import cn.hutool.coocaa.util.result.exception.BaseResultException;
 
 /**
  * @author luffyu
- * Created on 2019-05-13
+ * Created on 2019-11-01
  */
-public class AdminException extends BaseResultRunTimeException {
+public class AdminException extends BaseResultException {
 
 
     public AdminException(String msg) {
@@ -35,4 +34,5 @@ public class AdminException extends BaseResultRunTimeException {
     public AdminException(ICodeHandle handle, String msg, Object... arguments) {
         super(handle, msg, arguments);
     }
+
 }

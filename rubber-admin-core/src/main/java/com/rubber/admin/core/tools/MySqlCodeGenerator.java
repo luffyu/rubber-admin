@@ -24,18 +24,18 @@ public class MySqlCodeGenerator {
     private static final String dbPassword = "root";
 
     //生成文件所在的包名称
-    private static final String packageParent = "com.rubber.admin.core";
+    private static final String packageParent = "com.rubber.admin.core.system";
 
     //entity继承的baseEntity地址
     private static final String baseEntityClass = "com.rubber.admin.core.base.BaseEntity";
     //serviceImpl继承的serviceImpl地址
-    private static final String baseServiceImpl = "com.rubber.admin.core.base.BaseService";
+    private static final String baseServiceImpl = "com.rubber.admin.core.base.IBaseService";
     //service继承的service地址
     //private static final String baseService = "com.coocaa.lottery.platform.pojo.base.IBaseService";
 
 
     public static void main(String[] args) {
-        createCode("sys_user");
+        createCode("sys_role_privilege");
     }
 
 
@@ -50,7 +50,7 @@ public class MySqlCodeGenerator {
         //全局变量配置
         GlobalConfig gc = new GlobalConfig();
 
-        String projectPath = System.getProperty("login.dir") + "/"+modelName;
+        String projectPath = modelName;
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor(author);
         //是否打开输出文件

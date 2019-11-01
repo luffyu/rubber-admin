@@ -1,6 +1,6 @@
 package com.rubber.admin.security.filter;
 
-import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
+import com.rubber.admin.core.plugins.security.PrivilegeAuthorizeProvider;
 import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
@@ -49,7 +49,7 @@ public class RubberAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String servletPath = httpServletRequest.getServletPath();
         //通过http请求获取用户必须要的权限
-        String authorizeKey = HandlerMappingAuthorize.getMappingAuthorize().get(servletPath);
+        String authorizeKey = PrivilegeAuthorizeProvider.getMappingAuthorize().get(servletPath);
         //获取用户的基本信息
         LoginUserDetail loginUserDetail = LoginUserDetail.getByHttp(httpServletRequest);
         //验证是否有权限

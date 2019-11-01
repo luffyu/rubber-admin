@@ -52,6 +52,12 @@ public class PrivilegeUtils {
 
 
     /**
+     * 单元权限链接字符
+     */
+    public static final String UNIT_LINK_KEY = ",";
+
+
+    /**
      * 生成验证的key
      * @param module
      * @param unit

@@ -1,10 +1,8 @@
 package com.rubber.admin.security.config.properties;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
+import com.rubber.admin.core.plugins.security.PrivilegeAuthorizeProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -13,9 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,7 +50,7 @@ public class RubberPropertiesUtils {
      * @return 返回Application的基本信息
      */
     public static ApplicationContext getApplicationContext() {
-        return HandlerMappingAuthorize.getApplicationContext();
+        return PrivilegeAuthorizeProvider.getApplicationContext();
     }
 
 

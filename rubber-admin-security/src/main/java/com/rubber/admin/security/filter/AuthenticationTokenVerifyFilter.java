@@ -5,7 +5,8 @@ import cn.hutool.coocaa.util.result.ResultMsg;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.alibaba.fastjson.JSON;
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.exceptions.AdminRunTimeException;
+import com.rubber.admin.core.tools.ServletUtils;
 import com.rubber.admin.security.auth.ITokenVerifyService;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
@@ -61,6 +62,8 @@ public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUserDetail, null, loginUserDetail.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            //写入用户的登陆id
+            ServletUtils.writeUserToHttp(loginUserDetail.getUserId(),request);
             filterChain.doFilter(request,response);
         }catch (Exception e){
             unSuccessJwtResult(response,e);
@@ -73,8 +76,8 @@ public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
      */
     public void unSuccessJwtResult(HttpServletResponse response,Exception e){
         ResultMsg error = null ;
-        if(e instanceof AdminException){
-            IResultHandle result = ((AdminException) e).getResult();
+        if(e instanceof AdminRunTimeException){
+            IResultHandle result = ((AdminRunTimeException) e).getResult();
             if(result instanceof ResultMsg){
                 error = (ResultMsg) result;
             }

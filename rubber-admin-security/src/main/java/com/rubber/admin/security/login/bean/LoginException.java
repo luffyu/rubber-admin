@@ -1,13 +1,13 @@
 package com.rubber.admin.security.login.bean;
 
 import cn.hutool.coocaa.util.result.code.ICodeHandle;
-import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.exceptions.AdminRunTimeException;
 
 /**
  * @author luffyu
  * Created on 2019-10-23
  */
-public class LoginException extends AdminException {
+public class LoginException extends AdminRunTimeException {
 
 
     public LoginException(ICodeHandle handle) {

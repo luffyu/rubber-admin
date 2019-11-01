@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
-import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
+import com.rubber.admin.core.plugins.security.PrivilegeAuthorizeProvider;
 import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.core.system.entity.SysPrivilegeDict;
 import com.rubber.admin.core.system.mapper.SysPrivilegeDictMapper;
@@ -48,7 +48,7 @@ public class SysPrivilegeDictServiceImpl extends BaseAdminService<SysPrivilegeDi
     @Override
     public List<PrivilegeBean> allPrivilege() {
         //获取系统中全部Controller权限信息
-        Map<String, Set<String>> allAuthorize = HandlerMappingAuthorize.getAllAuthorize();
+        Map<String, Set<String>> allAuthorize = PrivilegeAuthorizeProvider.getAllAuthorize();
         if (CollectionUtil.isEmpty(allAuthorize)){
             return null;
         }

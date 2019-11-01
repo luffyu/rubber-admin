@@ -1,6 +1,8 @@
 package com.rubber.admin.core.system.service.impl;
 
+import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.system.entity.SysRole;
+import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.mapper.SysRoleMapper;
 import com.rubber.admin.core.system.service.ISysRoleService;
 import com.rubber.admin.core.base.BaseAdminService;
@@ -50,5 +52,20 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
             return roleName;
         }
         return new HashSet<>(1);
+    }
+
+
+
+
+    @Override
+    public SysRole getAndVerifyById(Integer roleId) throws RoleException {
+        if(roleId == null){
+            throw new RoleException(AdminCode.ROLE_NOT_EXIST);
+        }
+        SysRole byId = getById(roleId);
+        if(byId == null){
+            throw new RoleException(AdminCode.ROLE_NOT_EXIST);
+        }
+        return byId;
     }
 }

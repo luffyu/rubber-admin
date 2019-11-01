@@ -1,6 +1,5 @@
 package com.rubber.admin.security.login.service;
 
-import cn.hutool.core.util.RandomUtil;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
@@ -14,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -68,12 +66,4 @@ public class RubberAuthenticationProvider implements AuthenticationProvider {
         return true;
     }
 
-    public static void main(String[] args) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String s = RandomUtil.randomNumbers(6);
-        System.out.println(s);
-
-        String encode = bCryptPasswordEncoder.encode("123456" + "798835");
-        System.out.println(encode);
-    }
 }

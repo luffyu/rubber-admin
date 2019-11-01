@@ -47,6 +47,12 @@ public enum AdminCode implements ICodeHandle {
     TOKEN_IS_ERROR("20106","登陆token错误"),
     LOGIN_TYPE_NOT_SUPPORT("20107","不支持的登陆类型"),
 
+    /**
+     * 202** 角色类型的错误
+     */
+    ROLE_NOT_EXIST("20200","角色不存在"),
+    ROLE_PRIVILEGE_ILLEGAL("20201","角色权限信息不合法"),
+
     ;
     /**
      * 业务错误码 000000的结构

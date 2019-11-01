@@ -1,7 +1,7 @@
 package com.rubber.admin.test.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
-import com.rubber.admin.core.plugins.security.HandlerMappingAuthorize;
+import com.rubber.admin.core.plugins.security.PrivilegeAuthorizeProvider;
 import com.rubber.admin.core.system.model.PrivilegeBean;
 import com.rubber.admin.core.system.service.impl.SysPrivilegeDictServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +39,7 @@ public class TestController {
     @RequestMapping("/sys-time-2")
     public ResultMsg getSysTime2(){
 
-        Map<String, String> mappingAuthorize = HandlerMappingAuthorize.getMappingAuthorize();
+        Map<String, String> mappingAuthorize = PrivilegeAuthorizeProvider.getMappingAuthorize();
 
         return ResultMsg.success(mappingAuthorize);
     }

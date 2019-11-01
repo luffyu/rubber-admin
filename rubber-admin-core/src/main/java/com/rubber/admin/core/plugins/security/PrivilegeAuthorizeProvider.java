@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 2019-10-23
  */
 @Component
-public class HandlerMappingAuthorize implements ApplicationContextAware {
+public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
@@ -47,7 +47,7 @@ public class HandlerMappingAuthorize implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        HandlerMappingAuthorize.applicationContext = applicationContext;
+        PrivilegeAuthorizeProvider.applicationContext = applicationContext;
         writeHandlerMappingAuthorize(applicationContext);
     }
 

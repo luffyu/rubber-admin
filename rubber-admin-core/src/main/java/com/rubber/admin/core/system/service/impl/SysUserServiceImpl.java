@@ -3,7 +3,7 @@ package com.rubber.admin.core.system.service.impl;
 import cn.hutool.coocaa.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
-import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.exceptions.AdminRunTimeException;
 import com.rubber.admin.core.plugins.security.PrivilegeUtils;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
@@ -54,7 +54,7 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     public void checkAndUpdate(SysUser sysUser) {
         checkSysUser(sysUser);
         if(!updateById(sysUser)){
-            throw new AdminException(SysCode.SYSTEM_ERROR,"更新系统失败");
+            throw new AdminRunTimeException(SysCode.SYSTEM_ERROR,"更新系统失败");
         }
     }
 
