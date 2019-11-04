@@ -47,9 +47,9 @@ public class SysRole extends BaseEntity {
     private Integer status;
 
     /**
-     * 删除标志（0代表存在 2代表删除）
+     * 删除标志（0代表存在 -1代表删除）
      */
-    private String delFlag;
+    private Integer delFlag;
 
     /**
      * 创建人id
@@ -64,12 +64,12 @@ public class SysRole extends BaseEntity {
     /**
      * 最后一次更新人id
      */
-    private Integer lastUpdateBy;
+    private Integer updateBy;
 
     /**
      * 最好一个更新时间
      */
-    private Date lastUpdateTime;
+    private Date updateTime;
 
     /**
      * 备注

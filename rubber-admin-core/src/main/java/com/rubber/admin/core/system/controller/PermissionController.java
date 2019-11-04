@@ -47,7 +47,7 @@ public class PermissionController {
      * 获取系统中某个角色的全部权限
      * @return 返回权限列表
      */
-    @GetMapping("/{role}/role-list")
+    @GetMapping("/{role}/info")
     public ResultMsg getPrivilegeByRole(@PathVariable("role")Integer role) throws AdminException {
         SysRolePermissionModel rolePrivilege = sysRolePermissionService.getRolePermission(role);
         return ResultMsg.success(rolePrivilege);

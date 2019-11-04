@@ -40,4 +40,30 @@ public interface ISysRoleService extends IBaseService<SysRole> {
      */
     SysRole getAndVerifyById(Integer roleId) throws RoleException;
 
+
+    /**
+     * 系统的角色
+     * @param roleKey 角色key
+     * @return 返回系统的稼穑哦
+     * @throws RoleException 角色的异常信息
+     */
+    SysRole getByRoleKey(String roleKey) ;
+
+
+    /**
+     * 保存或者更新用户的角色信息
+     * @param sysRole 系统的角色信息
+     * @return 返回true表示更新成功 false表示更新失败
+     * @throws RoleException 异常的信息
+     */
+    boolean saveOrUpdateRole(SysRole sysRole) throws RoleException;
+
+
+    /**
+     * 删除角色的信息
+     * @param roleId 角色id
+     * @throws RoleException 异常的信息
+     */
+    void delRoleById(Integer roleId) throws RoleException;
+
 }

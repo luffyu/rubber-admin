@@ -89,12 +89,19 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
 
     @Override
     public List<PermissionBean> getRolesPermission(Set<Integer> roleIds) throws RoleException {
+        return getRolesPermission(roleIds,true);
+    }
+
+    @Override
+    public List<PermissionBean> getRolesPermission(Set<Integer> roleIds, boolean verifyIds) throws RoleException {
         if(CollectionUtil.isEmpty(roleIds)){
             return null;
         }
         List<SysRolePermission> sysRolePermissions = new ArrayList<>();
         for (Integer roleId:roleIds){
-            sysRoleService.getAndVerifyById(roleId);
+            if(verifyIds){
+                sysRoleService.getAndVerifyById(roleId);
+            }
             sysRolePermissions.addAll(queryByRole(roleId));
         }
         return doChangeEntityToModel(sysRolePermissions);

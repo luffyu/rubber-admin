@@ -33,7 +33,7 @@ public interface ISysUserRoleService extends IBaseService<SysUserRole> {
     /**
      * 通过用户的id 返回用户的角色信息
      * @param userId 用户的id
-     * @return
+     * @return 返回角色的id
      */
     SysUserRoleModel getRoleByUserId(Integer userId);
 }

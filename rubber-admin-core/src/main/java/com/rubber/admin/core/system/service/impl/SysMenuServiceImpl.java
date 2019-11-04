@@ -1,12 +1,17 @@
 package com.rubber.admin.core.system.service.impl;
 
+import cn.hutool.coocaa.util.result.code.SysCode;
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
+import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.MenuTypeEnums;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysMenu;
+import com.rubber.admin.core.system.exception.MenuException;
 import com.rubber.admin.core.system.mapper.SysMenuMapper;
 import com.rubber.admin.core.system.service.ISysMenuService;
+import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -41,12 +46,17 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
 
     /**
      * 获取某个角色的菜单结构
-     * @param roleId
+     * @param roleIds 角色id
      * @return
      */
     @Override
-    public SysMenu findMenuByRoleId(Integer roleId) {
-        List<SysMenu> byRoleId = getBaseMapper().findByRoleId(roleId);
+    public SysMenu findMenuByRoleId(Set<Integer> roleIds) {
+        List<SysMenu> byRoleId = null;
+        if(CollectionUtil.isNotEmpty(roleIds)){
+            Integer[] ids = new Integer[roleIds.size()];
+            ids = roleIds.toArray(ids);
+            byRoleId = getBaseMapper().findByRoleId(ids);
+        }
         return getAllTree(byRoleId);
     }
 
@@ -87,6 +97,86 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         return list(queryWrapper);
     }
 
+
+    /**
+     * 保存或者目录值
+     * @param sysMenu 系统的目录
+     */
+    @Override
+    public void saveOrUpdateMenu(SysMenu sysMenu) throws MenuException {
+        if(sysMenu == null){
+            throw new MenuException(AdminCode.PARAM_ERROR,"菜单的信息为空");
+        }
+        Integer parentId = sysMenu.getParentId();
+        if(parentId == null){
+            throw new MenuException(AdminCode.PARAM_ERROR,"父级菜单为空");
+        }
+        if (parentId != 0){
+            SysMenu parentMenu = getById(parentId);
+            if(parentMenu == null){
+                throw new MenuException(AdminCode.PARAM_ERROR,"父级菜单[{}]不存在",parentId);
+            }
+        }
+        if (sysMenu.getMenuId() != null){
+            doUpdate(sysMenu);
+        }else {
+            doSave(sysMenu);
+        }
+    }
+
+
+
+    @Override
+    public void delMenu(Integer menuId) throws MenuException {
+        SysMenu dbMenu = getById(menuId);
+        if(dbMenu == null){
+            throw new MenuException(AdminCode.MENU_NOT_EXIST,"菜单{}不存在",menuId);
+        }
+        //查询有没有子目录
+        int childNum = countChildNum(dbMenu.getParentId());
+        if(childNum > 0){
+            throw new MenuException(AdminCode.MENU_HAVE_CHILD,"菜单{}存在{}子目录，无法删除",menuId,childNum);
+        }
+        dbMenu.setDelFlag(StatusEnums.DELETE);
+        if(updateById(dbMenu)){
+            throw new MenuException(AdminCode.ROLE_NOT_EXIST,"删除菜单信息失败");
+        }
+    }
+
+
+    /**
+     * 菜单信息
+     * @param sysMenu
+     */
+    private void doSave(SysMenu sysMenu) throws MenuException {
+        sysMenu.setStatus(StatusEnums.NORMAL);
+        Date now = new Date();
+        Integer loginUserId = ServletUtils.getLoginUserId();
+
+        sysMenu.setCreateBy(loginUserId);
+        sysMenu.setCreateTime(now);
+        sysMenu.setUpdateBy(loginUserId);
+        sysMenu.setUpdateTime(now);
+        if(!save(sysMenu)){
+            throw new MenuException(SysCode.SYSTEM_ERROR,"添加菜单信息失败",sysMenu);
+        }
+    }
+
+
+    /**
+     * 更新菜单的信息
+     * @param sysMenu
+     * @throws MenuException
+     */
+    private void doUpdate(SysMenu sysMenu) throws MenuException {
+        SysMenu dbMenu = getById(sysMenu.getMenuId());
+        if(dbMenu == null){
+            throw new MenuException(AdminCode.MENU_NOT_EXIST,"菜单{}不存在",sysMenu.getMenuId());
+        }
+        if(updateById(sysMenu)){
+            throw new MenuException(AdminCode.ROLE_NOT_EXIST,"更新菜单信息失败");
+        }
+    }
 
 
     /**
@@ -168,5 +258,31 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         return sysMenu;
     }
 
+
+
+
+    @Override
+    public boolean updateById(SysMenu entity) {
+        if(entity == null){
+            return false;
+        }
+        Date now = new Date();
+        Integer loginUserId = ServletUtils.getLoginUserId();
+        entity.setUpdateTime(now);
+        entity.setUpdateBy(loginUserId);
+        return super.updateById(entity);
+    }
+
+
+    /**
+     * 通过父id 查询子目录的数量
+     * @param parentId 父id
+     * @return 子目录的数量
+     */
+    public int countChildNum(Integer parentId){
+        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("parent_id",parentId);
+        return count(queryWrapper);
+    }
 
 }

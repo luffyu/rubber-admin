@@ -60,6 +60,13 @@ public class SysMenu extends BaseEntity {
      */
     private String authKey;
 
+
+    /**
+     * 删除标志（0代表存在 -1代表删除）
+     */
+    private Integer delFlag;
+
+
     /**
      * 状态（0正常 1停用）
      */

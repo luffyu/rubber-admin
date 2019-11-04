@@ -1,8 +1,10 @@
 package com.rubber.admin.core.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.exception.UserException;
+import com.rubber.admin.core.system.model.UserInfoModel;
 
 /**
  * <p>
@@ -30,9 +32,27 @@ public interface ISysUserService extends IService<SysUser> {
     SysUser getByUserName(String userName);
 
 
-
-
+    /**
+     * 获取用户的基本信息 并且验证
+     * @param userId 用户的id
+     * @return 返回用户信息
+     * @throws UserException
+     */
     SysUser getAndVerifyById(Integer userId) throws UserException;
 
 
+    /**
+     * 获取用户的全部信息
+     * @param userId 用户的id
+     * @return 返回用户的基本信息
+     * @throws AdminException 异常信息
+     */
+    UserInfoModel getUserAllInfo(Integer userId) throws AdminException;
+
+
+    /**
+     * 设置用户的权限
+     * @param sysUser 用户信息
+     */
+    void setUserPermission(SysUser sysUser);
 }

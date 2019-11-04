@@ -3,7 +3,6 @@ package com.rubber.admin.core.system.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.Version;
 import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
 
@@ -140,11 +139,12 @@ public class SysUser extends BaseEntity {
     @TableField(exist = false)
     private Set<String> permissions;
 
+
     /**
-     * 用户的角色值
+     * 用户的角色信息
      */
     @TableField(exist = false)
-    private SysRole sysRole;
+    private Set<String> roleKeys;
 
 
     /**

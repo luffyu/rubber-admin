@@ -2,8 +2,7 @@ package com.rubber.admin.core.system.service;
 
 import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysMenu;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.rubber.admin.core.enums.StatusEnums;
+import com.rubber.admin.core.system.exception.MenuException;
 
 import java.util.List;
 import java.util.Set;
@@ -28,10 +27,10 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
 
     /**
      * 通过角色id查询到用户到菜单信息
-     * @param userId 用户的id
+     * @param roleIds 用户的id
      * @return
      */
-    SysMenu findMenuByRoleId(Integer userId);
+    SysMenu findMenuByRoleId(Set<Integer> roleIds);
 
     /**
      * 获取菜单的全目录 从根目录开始往下读取
@@ -49,5 +48,21 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
      * @return 返回状态列表
      */
     List<SysMenu> getAll(Integer status);
+
+
+    /**
+     * 保存或者更新菜单信息
+     * @param sysMenu 系统的菜单信息
+     * @throws MenuException 菜单的异常
+     */
+    void saveOrUpdateMenu(SysMenu sysMenu) throws MenuException;
+
+
+    /**
+     * 删除菜单
+     * @param menuId 菜单的id
+     * @throws MenuException 异常的信息
+     */
+    void delMenu(Integer menuId) throws MenuException;
 
 }

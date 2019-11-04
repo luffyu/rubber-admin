@@ -30,7 +30,10 @@
     <select id="findByRoleId" resultMap="baseMenuResult">
         <include refid="selectMenu"/>
         left join sys_role_menu as rm on (a.menu_id = rm.menu_id)
-        where rm.role_id = #{roleId}
+        where rm.role_id in
+        <foreach collection="roleIds" open="(" separator="," close=")" item="roleId">
+            #{roleId}
+        </foreach>
     </select>
 
 

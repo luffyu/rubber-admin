@@ -18,10 +18,10 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     /**
      * 通过用户的userId 找到用户的菜单信息
-     * @param roleId 通过角色id 查询菜单的信息
+     * @param roleIds 通过角色id 查询菜单的信息
      * @return 返回用户的菜单信息
      */
-    List<SysMenu> findByRoleId(Integer roleId);
+    List<SysMenu> findByRoleId(Integer[] roleIds);
 
 
     /**

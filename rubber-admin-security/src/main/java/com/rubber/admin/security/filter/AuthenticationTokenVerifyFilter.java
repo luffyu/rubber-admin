@@ -19,6 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author luffyu
@@ -56,7 +57,7 @@ public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         try {
             LoginUserDetail loginUserDetail = getTokenAuth().verify(request);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUserDetail, null, loginUserDetail.getAuthorities());
@@ -64,10 +65,11 @@ public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             //写入用户的登陆id
             ServletUtils.writeUserToHttp(loginUserDetail.getUserId(),request);
-            filterChain.doFilter(request,response);
         }catch (Exception e){
             unSuccessJwtResult(response,e);
+            return;
         }
+        filterChain.doFilter(request,response);
     }
     /**
      * 验证没有登陆成功的请求
@@ -83,7 +85,7 @@ public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
             }
         }
         if(error == null){
-            error = ResultMsg.error(AdminCode.TOKEN_IS_ERROR);
+            error = ResultMsg.create(AdminCode.TOKEN_IS_ERROR,null);
         }
         ServletUtil.writeJSON(response, JSON.toJSONString(error));
     }

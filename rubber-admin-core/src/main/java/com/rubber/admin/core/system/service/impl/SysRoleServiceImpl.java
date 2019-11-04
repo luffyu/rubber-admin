@@ -1,17 +1,23 @@
 package com.rubber.admin.core.system.service.impl;
 
+import cn.hutool.coocaa.util.result.code.SysCode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
+import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.mapper.SysRoleMapper;
 import com.rubber.admin.core.system.service.ISysRoleService;
-import com.rubber.admin.core.base.BaseAdminService;
+import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -45,11 +51,7 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
     public Set<String> findRoleNameByUserId(Integer userId){
         List<SysRole> userRoleEntityList = findByUserId(userId);
         if(!CollectionUtils.isEmpty(userRoleEntityList)){
-            Set<String> roleName = new HashSet<>(userRoleEntityList.size());
-            userRoleEntityList.forEach(roleEntity->{
-                roleName.add(roleEntity.getRoleKey());
-            });
-            return roleName;
+            return userRoleEntityList.stream().map(SysRole::getRoleKey).collect(Collectors.toSet());
         }
         return new HashSet<>(1);
     }
@@ -68,4 +70,104 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
         }
         return byId;
     }
+
+
+    @Override
+    public SysRole getByRoleKey(String roleKey)  {
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_key",roleKey);
+        return getOne(queryWrapper);
+    }
+
+
+    @Override
+    public boolean saveOrUpdateRole(SysRole sysRole) throws RoleException {
+        if(sysRole == null){
+            return false;
+        }
+        if(sysRole.getRoleId() == null){
+            return doSave(sysRole);
+        }else {
+            return doUpdate(sysRole);
+        }
+    }
+
+
+    @Override
+    public void delRoleById(Integer roleId) throws RoleException {
+        SysRole dbRole = getById(roleId);
+        if(dbRole == null){
+            throw new RoleException(AdminCode.ROLE_NOT_EXIST,"更新的角色id是{}",roleId);
+        }
+        dbRole.setDelFlag(StatusEnums.DELETE);
+        if(updateById(dbRole)){
+            throw new RoleException(AdminCode.ROLE_NOT_EXIST,"删除角色信息失败",dbRole);
+        }
+    }
+
+
+    /**
+     * 保存角色信息
+     * @param sysRole
+     * @return
+     */
+    private boolean doSave(SysRole sysRole) throws RoleException {
+        //验证key是否已经存在
+        SysRole byRoleKey = getByRoleKey(sysRole.getRoleKey());
+        if(byRoleKey != null){
+            throw new RoleException(AdminCode.ROLE_KEY_EXIST);
+        }
+        Date now = new Date();
+        Integer loginUserId = ServletUtils.getLoginUserId();
+
+        sysRole.setCreateBy(loginUserId);
+        sysRole.setCreateTime(now);
+        sysRole.setUpdateBy(loginUserId);
+        sysRole.setUpdateTime(now);
+        if(!save(sysRole)){
+            throw new RoleException(SysCode.SYSTEM_ERROR,"添加角色信息{}失败",sysRole);
+        }
+        return true;
+    }
+
+
+    private boolean doUpdate(SysRole sysRole) throws RoleException {
+        SysRole dbRole = getById(sysRole.getRoleId());
+        if(dbRole == null){
+            throw new RoleException(AdminCode.ROLE_NOT_EXIST,"更新的角色id是{}",sysRole.getRoleId());
+        }
+        //验证key是否已经存在
+        SysRole byRoleKey = getByRoleKey(sysRole.getRoleKey());
+        if(byRoleKey != null){
+            throw new RoleException(AdminCode.ROLE_KEY_EXIST);
+        }
+        dbRole.setRoleKey(sysRole.getRoleKey());
+        dbRole.setRoleName(sysRole.getRoleName());
+        dbRole.setRemark(sysRole.getRemark());
+        dbRole.setSeq(sysRole.getSeq());
+        dbRole.setStatus(sysRole.getStatus());
+
+        if(updateById(dbRole)){
+            throw new RoleException(AdminCode.ROLE_NOT_EXIST,"更新角色信息失败",dbRole);
+        }
+        return false;
+    }
+
+
+
+    @Override
+    public boolean updateById(SysRole entity) {
+        if(entity == null){
+            return false;
+        }
+        Date now = new Date();
+        Integer loginUserId = ServletUtils.getLoginUserId();
+        entity.setUpdateBy(loginUserId);
+        entity.setUpdateTime(now);
+        return super.updateById(entity);
+    }
+
+
+
+
 }

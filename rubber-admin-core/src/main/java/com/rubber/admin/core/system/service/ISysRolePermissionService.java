@@ -43,4 +43,15 @@ public interface ISysRolePermissionService extends IBaseService<SysRolePermissio
      * @throws RoleException 异常信息
      */
     List<PermissionBean> getRolesPermission(Set<Integer> roleIds) throws RoleException;
+
+
+    /**
+     * 查询多个角色的权限信息 并合并返回
+     * @param roleIds 角色ids
+     * @param verifyIds 是否验证roleIds的合法性
+     * @return 返回角色的id信息
+     * @throws RoleException 异常信息
+     */
+    List<PermissionBean> getRolesPermission(Set<Integer> roleIds,boolean verifyIds) throws RoleException;
+
 }
