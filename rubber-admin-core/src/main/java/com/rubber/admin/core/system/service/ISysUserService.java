@@ -1,6 +1,6 @@
 package com.rubber.admin.core.system.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.exception.UserException;
@@ -14,7 +14,7 @@ import com.rubber.admin.core.system.model.UserInfoModel;
  * @author luffyu-auto
  * @since 2019-05-13
  */
-public interface ISysUserService extends IService<SysUser> {
+public interface ISysUserService extends IBaseService<SysUser> {
 
 
     /**
@@ -55,4 +55,12 @@ public interface ISysUserService extends IService<SysUser> {
      * @param sysUser 用户信息
      */
     void setUserPermission(SysUser sysUser);
+
+
+    /**
+     * 注册用户的基本信息
+     * @param sysUser 用户信息
+     */
+    void addUser(SysUser sysUser);
+
 }

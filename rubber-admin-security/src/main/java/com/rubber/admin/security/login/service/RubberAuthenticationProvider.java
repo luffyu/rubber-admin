@@ -1,7 +1,6 @@
 package com.rubber.admin.security.login.service;
 
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.auth.ITokenVerifyService;
@@ -46,22 +45,10 @@ public class RubberAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
         //找到用户信息
         SysUser userInfo = iUserFindService.findByAccount(loginBean);
-        if (userInfo == null){
-            //抛出用户的信息
-            throw new LoginException(AdminCode.USER_NOT_EXIST,"用户{}不存在", loginBean.getAccount());
-        }else if (userInfo.getStatus() == null || StatusEnums.DISABLE == userInfo.getStatus()){
-            //抛出用户的信息
-            throw new LoginException(AdminCode.USER_IS_DISABLE,"用户{}被禁用", loginBean.getAccount());
-        }else if(StatusEnums.DELETE == userInfo.getDelFlag()){
-            throw new LoginException(AdminCode.USER_IS_DELETE,"用户{}被删除", loginBean.getAccount());
-        }
         //验证密码是否相同
         if(!passwordEncoder.matches(userInfo.getEncodeKey(password),userInfo.getLoginPwd())){
             throw new LoginException(AdminCode.LOGIN_AUTH_ERROR);
         }
-        //获取权限信息
-        sysUserService.setUserPermission(userInfo);
-
         LoginUserDetail userDetails = new LoginUserDetail(userInfo);
         //创建token
         iTokenAuth.create(userDetails);

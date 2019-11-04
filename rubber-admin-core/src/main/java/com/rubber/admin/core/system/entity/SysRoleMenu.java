@@ -26,4 +26,12 @@ public class SysRoleMenu extends BaseEntity {
      */
     private Integer menuId;
 
+
+    public SysRoleMenu() {
+    }
+
+    public SysRoleMenu(Integer roleId, Integer menuId) {
+        this.roleId = roleId;
+        this.menuId = menuId;
+    }
 }

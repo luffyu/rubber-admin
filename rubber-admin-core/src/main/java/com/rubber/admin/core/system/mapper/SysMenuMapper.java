@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.mapper;
 
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @param roleIds 通过角色id 查询菜单的信息
      * @return 返回用户的菜单信息
      */
-    List<SysMenu> findByRoleId(Integer[] roleIds);
+    List<SysMenu> findByRoleId(@Param("roleIds") Integer[] roleIds);
 
 
     /**

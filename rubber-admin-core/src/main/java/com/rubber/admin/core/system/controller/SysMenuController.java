@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping(value = "/sys/menu",name = "menu")
-public class MenuController  {
+public class SysMenuController {
 
     @Resource
     private ISysMenuService sysMenuService;

@@ -144,6 +144,20 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
     }
 
 
+
+    @Override
+    public SysMenu getAndVerifyById(Integer menuId) throws MenuException {
+        if(menuId == null){
+            throw new MenuException(AdminCode.MENU_NOT_EXIST);
+        }
+        SysMenu byId = getById(menuId);
+        if(byId == null){
+            throw new MenuException(AdminCode.MENU_NOT_EXIST);
+        }
+        return byId;
+    }
+
+
     /**
      * 菜单信息
      * @param sysMenu

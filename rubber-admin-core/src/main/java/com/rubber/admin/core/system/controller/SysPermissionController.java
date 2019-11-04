@@ -3,8 +3,10 @@ package com.rubber.admin.core.system.controller;
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.model.PermissionBean;
+import com.rubber.admin.core.system.model.SysRoleMenuModel;
 import com.rubber.admin.core.system.model.SysRolePermissionModel;
 import com.rubber.admin.core.system.service.ISysPermissionDictService;
+import com.rubber.admin.core.system.service.ISysRoleMenuService;
 import com.rubber.admin.core.system.service.ISysRolePermissionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/sys/permission",name = "permission")
-public class PermissionController {
+public class SysPermissionController {
 
 
     @Resource
@@ -28,6 +30,9 @@ public class PermissionController {
 
     @Resource
     private ISysRolePermissionService sysRolePermissionService;
+
+    @Resource
+    private ISysRoleMenuService sysRoleMenuService;
 
 
     /**
@@ -39,7 +44,6 @@ public class PermissionController {
         List<PermissionBean> privilegeBeans = sysPermissionDictService.allPermission();
         return ResultMsg.success(privilegeBeans);
     }
-
 
 
 
@@ -56,13 +60,27 @@ public class PermissionController {
 
 
     /**
-     * 添加权限列表
+     * 给角色设置权限列表
      * @param request http请求
      * @return 返回保存的角色权限
      */
-    @PostMapping("/save")
-    public ResultMsg save(@RequestParam SysRolePermissionModel rolePermissionModel, HttpServletRequest request) throws AdminException {
+    @PostMapping("/role/add")
+    public ResultMsg saveRolePermission(@RequestParam SysRolePermissionModel rolePermissionModel, HttpServletRequest request) throws AdminException {
         sysRolePermissionService.saveRolePermission(rolePermissionModel);
         return ResultMsg.success();
     }
+
+
+
+    /**
+     * 给角色设置权限列表
+     * @param sysRoleMenuModel 角色的菜单信息
+     * @return 返回保存的角色权限
+     */
+    @PostMapping("/role-menu/add")
+    public ResultMsg saveRoleMenu(@RequestParam SysRoleMenuModel sysRoleMenuModel) throws AdminException {
+        sysRoleMenuService.addMenuByRole(sysRoleMenuModel);
+        return ResultMsg.success();
+    }
+
 }

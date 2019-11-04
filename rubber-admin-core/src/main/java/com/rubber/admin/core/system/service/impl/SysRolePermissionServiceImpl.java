@@ -97,13 +97,14 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
         if(CollectionUtil.isEmpty(roleIds)){
             return null;
         }
-        List<SysRolePermission> sysRolePermissions = new ArrayList<>();
-        for (Integer roleId:roleIds){
-            if(verifyIds){
+        if(verifyIds){
+            for (Integer roleId:roleIds) {
                 sysRoleService.getAndVerifyById(roleId);
             }
-            sysRolePermissions.addAll(queryByRole(roleId));
         }
+        QueryWrapper<SysRolePermission> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("role_id",roleIds);
+        List<SysRolePermission> sysRolePermissions = list(queryWrapper);
         return doChangeEntityToModel(sysRolePermissions);
     }
 
@@ -219,6 +220,7 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
             Set<String> unitBeansUnRepeat = unRepeatPermission.get(modelKey);
             if(unitBeansUnRepeat == null){
                 unitBeansUnRepeat = new HashSet<>();
+                unRepeatPermission.put(modelKey,unitBeansUnRepeat);
             }
             String unitArray = sysRolePermission.getUnitArray();
             if(StrUtil.isNotEmpty(unitArray)){

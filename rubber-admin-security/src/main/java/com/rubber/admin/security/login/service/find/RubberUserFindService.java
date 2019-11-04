@@ -42,6 +42,16 @@ public class RubberUserFindService implements IUserFindService {
         }else {
             sysUser = doFindByThird(loginBean);
         }
+        if (sysUser == null){
+            //抛出用户的信息
+            throw new LoginException(AdminCode.USER_NOT_EXIST,"用户{}不存在", loginBean.getAccount());
+        }else if (sysUser.getStatus() == null || StatusEnums.DISABLE == sysUser.getStatus()){
+            //抛出用户的信息
+            throw new LoginException(AdminCode.USER_IS_DISABLE,"用户{}被禁用", loginBean.getAccount());
+        }else if(StatusEnums.DELETE == sysUser.getDelFlag()){
+            throw new LoginException(AdminCode.USER_IS_DELETE,"用户{}被删除", loginBean.getAccount());
+        }
+        sysUserService.setUserPermission(sysUser);
         return sysUser;
     }
 

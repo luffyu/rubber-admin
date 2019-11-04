@@ -61,6 +61,8 @@ public class SysRolePermission extends BaseEntity {
     private String remark;
 
 
+    public SysRolePermission() {
+    }
 
     public SysRolePermission(SysRole sysRole, String module, String unitArray, Integer loginUserId) {
         this.roleId = sysRole.getRoleId();

@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping(value = "/sys/role",name = "role")
-public class RoleController {
+public class SysRoleController {
 
 
     @Resource

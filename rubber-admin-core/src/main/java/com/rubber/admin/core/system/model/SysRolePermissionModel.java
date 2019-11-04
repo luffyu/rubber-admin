@@ -28,4 +28,6 @@ public class SysRolePermissionModel extends BaseModel {
      */
     private List<PermissionBean> permissionList;
 
+    public SysRolePermissionModel() {
+    }
 }

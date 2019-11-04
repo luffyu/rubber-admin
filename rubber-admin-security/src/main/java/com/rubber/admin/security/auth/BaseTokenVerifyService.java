@@ -4,11 +4,12 @@ import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.cache.IUserCacheProvider;
 import com.rubber.admin.core.plugins.cache.UserCacheNoProvider;
 import com.rubber.admin.core.system.entity.SysUser;
-import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
+import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
+import com.rubber.admin.security.login.service.find.IUserFindService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class BaseTokenVerifyService implements ITokenVerifyService {
 
     @Resource
-    private ISysUserService sysUserService;
+    private IUserFindService userFindService;
 
     /**
      * 缓存配置信息
@@ -34,11 +35,11 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
     }
 
 
-    public ISysUserService getUserService(){
-        if(sysUserService == null){
-            sysUserService = RubberPropertiesUtils.getApplicationContext().getBean(ISysUserService.class);
+    public IUserFindService getUserService(){
+        if(userFindService == null){
+            userFindService = RubberPropertiesUtils.getApplicationContext().getBean(IUserFindService.class);
         }
-        return sysUserService;
+        return userFindService;
     }
 
 
@@ -73,7 +74,7 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
         TokenVerifyBean verifyBean = doVerify(request);
         SysUser sysUser = doFindByCache(verifyBean.getSubject());
         if(sysUser == null){
-            sysUser = getUserService().getByLoginAccount(verifyBean.getSubject());
+            sysUser = getUserService().findByAccount(new LoginBean(verifyBean.getSubject()));
             if(sysUser == null){
                 throw new TokenVerifyException(AdminCode.USER_NOT_EXIST);
             }

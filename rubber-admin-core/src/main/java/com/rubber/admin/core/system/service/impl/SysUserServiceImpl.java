@@ -151,4 +151,17 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
             e.printStackTrace();
         }
     }
+
+
+
+
+    @Override
+    public void addUser(SysUser sysUser) {
+
+
+    }
+
+
+
+
 }

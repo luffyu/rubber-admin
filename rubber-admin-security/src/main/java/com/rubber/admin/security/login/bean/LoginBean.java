@@ -29,4 +29,12 @@ public class LoginBean {
      * 登陆的时间
      */
     private Date loginTime = new Date();
+
+
+    public LoginBean() {
+    }
+
+    public LoginBean(String account) {
+        this.account = account;
+    }
 }

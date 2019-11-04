@@ -65,4 +65,12 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
      */
     void delMenu(Integer menuId) throws MenuException;
 
+
+    /**
+     * 获取并验证一个菜单信息
+     * @param menuId menuId
+     * @return
+     * @throws MenuException
+     */
+    SysMenu getAndVerifyById(Integer menuId) throws MenuException;
 }
