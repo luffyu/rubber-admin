@@ -2,7 +2,7 @@ package com.rubber.admin.core.plugins.security;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.rubber.admin.core.system.entity.SysPrivilegeDict;
+import com.rubber.admin.core.system.entity.SysPermissionDict;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Set;
  * @author luffyu
  * Created on 2019-10-23
  */
-public class PrivilegeUtils {
+public class PermissionUtils {
 
     /**
      * 基础的原始权限
@@ -48,7 +48,7 @@ public class PrivilegeUtils {
     /**
      * 超级管理员的权限
      */
-    public static final String SUPER_ADMIN_PERMISSION = "*:*";
+    public static final int SUPER_ADMIN_FLAG = 1;
 
 
     /**
@@ -75,11 +75,11 @@ public class PrivilegeUtils {
      * @param privilegeDicts 数据库中配置到权限字段
      * @return 返回一个合适到权限字段信息
      */
-    public static SysPrivilegeDict findByValue(String methodName, List<SysPrivilegeDict> privilegeDicts){
+    public static SysPermissionDict findByValue(String methodName, List<SysPermissionDict> privilegeDicts){
         if(CollectionUtil.isEmpty(privilegeDicts)){
             return null;
         }
-        for(SysPrivilegeDict sysPrivilegeDict:privilegeDicts){
+        for(SysPermissionDict sysPrivilegeDict:privilegeDicts){
             if(StrUtil.startWithAny(methodName,sysPrivilegeDict.getDictCollect())){
                 return sysPrivilegeDict;
             }
@@ -114,6 +114,6 @@ public class PrivilegeUtils {
         if(CollectionUtil.isEmpty(userPermission)){
             return false;
         }
-        return userPermission.contains(SUPER_ADMIN_PERMISSION) || userPermission.contains(requestPermission);
+        return userPermission.contains(requestPermission);
     }
 }

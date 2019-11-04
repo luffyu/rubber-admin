@@ -7,13 +7,13 @@ import com.rubber.admin.core.exceptions.AdminException;
  * @author luffyu
  * Created on 2019-11-01
  */
-public class PrivilegeException extends AdminException {
+public class PermissionException extends AdminException {
 
-    public PrivilegeException(ICodeHandle handle) {
+    public PermissionException(ICodeHandle handle) {
         super(handle);
     }
 
-    public PrivilegeException(ICodeHandle handle, String msg, Object... arguments) {
+    public PermissionException(ICodeHandle handle, String msg, Object... arguments) {
         super(handle, msg, arguments);
     }
 }

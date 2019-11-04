@@ -20,7 +20,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class SysRolePrivilege extends BaseEntity {
+public class SysRolePermission extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +62,7 @@ public class SysRolePrivilege extends BaseEntity {
 
 
 
-    public SysRolePrivilege(SysRole sysRole, String module, String unitArray,Integer loginUserId) {
+    public SysRolePermission(SysRole sysRole, String module, String unitArray, Integer loginUserId) {
         this.roleId = sysRole.getRoleId();
         this.module = module;
         this.unitArray = unitArray;

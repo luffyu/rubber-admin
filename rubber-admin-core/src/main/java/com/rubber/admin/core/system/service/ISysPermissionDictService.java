@@ -1,8 +1,8 @@
 package com.rubber.admin.core.system.service;
 
 import com.rubber.admin.core.base.IBaseService;
-import com.rubber.admin.core.system.entity.SysPrivilegeDict;
-import com.rubber.admin.core.system.model.PrivilegeBean;
+import com.rubber.admin.core.system.entity.SysPermissionDict;
+import com.rubber.admin.core.system.model.PermissionBean;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author luffyu-auto
  * @since 2019-10-31
  */
-public interface ISysPrivilegeDictService extends IBaseService<SysPrivilegeDict> {
+public interface ISysPermissionDictService extends IBaseService<SysPermissionDict> {
 
 
     /**
@@ -22,7 +22,7 @@ public interface ISysPrivilegeDictService extends IBaseService<SysPrivilegeDict>
      * @param type 权限的字典表
      * @return 返回权限的字典信息
      */
-    List<SysPrivilegeDict> selectByType(String type);
+    List<SysPermissionDict> selectByType(String type);
 
 
 
@@ -30,7 +30,7 @@ public interface ISysPrivilegeDictService extends IBaseService<SysPrivilegeDict>
      * 获取全部的权限列表
      * @return 全部的权限信息
      */
-    List<PrivilegeBean> allPrivilege();
+    List<PermissionBean> allPermission();
 
 
 }

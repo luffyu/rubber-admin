@@ -3,8 +3,8 @@ package com.rubber.admin.core.plugins.security;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import com.rubber.admin.core.system.entity.SysPrivilegeDict;
-import com.rubber.admin.core.system.service.ISysPrivilegeDictService;
+import com.rubber.admin.core.system.entity.SysPermissionDict;
+import com.rubber.admin.core.system.service.ISysPermissionDictService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 2019-10-23
  */
 @Component
-public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
+public class PermissionAuthorizeProvider implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
@@ -35,7 +35,7 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
      * key表示urlPath
      * value表示该url需要的权限字段key
      */
-    private static Map<String,String> urlPrivilegeDict = new ConcurrentHashMap<>(40);
+    private static Map<String,String> urlPermissionDict = new ConcurrentHashMap<>(40);
 
     /**
      * 全部的权限内容
@@ -43,11 +43,11 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
      * key表示模块头
      * value表示 表示该模块有的权限信息
      */
-    private static Map<String,Set<String>> allPrivilege = new ConcurrentHashMap<>(200);
+    private static Map<String,Set<String>> allPermission = new ConcurrentHashMap<>(200);
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        PrivilegeAuthorizeProvider.applicationContext = applicationContext;
+        PermissionAuthorizeProvider.applicationContext = applicationContext;
         writeHandlerMappingAuthorize(applicationContext);
     }
 
@@ -57,14 +57,14 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
      * @param applicationContext applicationContext
      */
     public void writeHandlerMappingAuthorize(ApplicationContext applicationContext){
-        ISysPrivilegeDictService privilegeDict = applicationContext.getBean(ISysPrivilegeDictService.class);
+        ISysPermissionDictService privilegeDict = applicationContext.getBean(ISysPermissionDictService.class);
         //获取到全部到权限字典
-        List<SysPrivilegeDict> privilegeUnitDicts = privilegeDict.selectByType(PrivilegeUtils.BASIC_UNIT);
+        List<SysPermissionDict> privilegeUnitDicts = privilegeDict.selectByType(PermissionUtils.BASIC_UNIT);
         if (privilegeUnitDicts == null){
             return;
         }
         //获取模块的目录信息
-        List<SysPrivilegeDict> privilegeModuleDicts = privilegeDict.selectByType(PrivilegeUtils.BASIC_MODULE);
+        List<SysPermissionDict> privilegeModuleDicts = privilegeDict.selectByType(PermissionUtils.BASIC_MODULE);
 
         RequestMappingHandlerMapping bean = applicationContext.getBean(RequestMappingHandlerMapping.class);
         //获取到全部到Mapping信息
@@ -89,7 +89,7 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
      * @param handlerMethod 方法地址
      * @param privilegeUnitDicts list信息
      */
-    public void resolveHandlerMethod(String urlPath,HandlerMethod handlerMethod,List<SysPrivilegeDict> privilegeUnitDicts,List<SysPrivilegeDict> privilegeModuleDicts){
+    public void resolveHandlerMethod(String urlPath, HandlerMethod handlerMethod, List<SysPermissionDict> privilegeUnitDicts, List<SysPermissionDict> privilegeModuleDicts){
         //模块到key
         String moduleKey = null;
         //权限到基础key
@@ -106,12 +106,12 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
         }
 
         if(privilegeUnitKey == null){
-            SysPrivilegeDict unit = PrivilegeUtils.findByValue(handlerMethod.getMethod().getName(), privilegeUnitDicts);
+            SysPermissionDict unit = PermissionUtils.findByValue(handlerMethod.getMethod().getName(), privilegeUnitDicts);
             if(unit != null){
                 privilegeUnitKey = unit.getDictKey();
             }
             if(StrUtil.isEmpty(privilegeUnitKey)){
-                privilegeUnitKey = PrivilegeUtils.DEFAULT_UNIT_KEY;
+                privilegeUnitKey = PermissionUtils.DEFAULT_UNIT_KEY;
             }
         }
         //写入url的权限字段
@@ -128,19 +128,19 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
      *
      */
     public void writeUrlPermissionDict(String urlPath,String moduleKey,String privilegeUnitKey){
-        String authorizeKey = PrivilegeUtils.createAuthorizeKey(moduleKey,privilegeUnitKey);
-        urlPrivilegeDict.putIfAbsent(urlPath,authorizeKey);
+        String authorizeKey = PermissionUtils.createAuthorizeKey(moduleKey,privilegeUnitKey);
+        urlPermissionDict.putIfAbsent(urlPath,authorizeKey);
     }
 
 
 
     public synchronized void writeAllPermission(String moduleKey,String unitKey){
-        Set<String> privilegeBean = allPrivilege.get(moduleKey);
+        Set<String> privilegeBean = allPermission.get(moduleKey);
         if(privilegeBean == null){
             privilegeBean = new HashSet<>(20);
         }
         privilegeBean.add(unitKey);
-        allPrivilege.put(moduleKey,privilegeBean);
+        allPermission.put(moduleKey,privilegeBean);
     }
 
 
@@ -160,8 +160,8 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
                 return name;
             }
         }
-        String urlHeadKey = PrivilegeUtils.getUrlHeadKey(url);
-        return StrUtil.nullToDefault(urlHeadKey,PrivilegeUtils.DEFAULT_MODEL_KEY);
+        String urlHeadKey = PermissionUtils.getUrlHeadKey(url);
+        return StrUtil.nullToDefault(urlHeadKey, PermissionUtils.DEFAULT_MODEL_KEY);
     }
 
 
@@ -174,7 +174,7 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
      * @return  返回handleMapping中的权限标示
      */
     public static Map<String, String> getMappingAuthorize() {
-        return urlPrivilegeDict;
+        return urlPermissionDict;
     }
 
 
@@ -182,6 +182,6 @@ public class PrivilegeAuthorizeProvider implements ApplicationContextAware {
      * @return  返回handleMapping中的权限标示
      */
     public static Map<String,Set<String>> getAllAuthorize() {
-        return allPrivilege;
+        return allPermission;
     }
 }

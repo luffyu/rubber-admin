@@ -22,7 +22,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class SysPrivilegeDict extends BaseEntity {
+public class SysPermissionDict extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 

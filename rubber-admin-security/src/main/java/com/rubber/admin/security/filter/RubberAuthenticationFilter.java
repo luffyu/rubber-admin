@@ -1,7 +1,8 @@
 package com.rubber.admin.security.filter;
 
-import com.rubber.admin.core.plugins.security.PrivilegeAuthorizeProvider;
-import com.rubber.admin.core.plugins.security.PrivilegeUtils;
+import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
+import com.rubber.admin.core.plugins.security.PermissionUtils;
+import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -47,14 +48,20 @@ public class RubberAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String servletPath = httpServletRequest.getServletPath();
-        //通过http请求获取用户必须要的权限
-        String authorizeKey = PrivilegeAuthorizeProvider.getMappingAuthorize().get(servletPath);
         //获取用户的基本信息
         LoginUserDetail loginUserDetail = LoginUserDetail.getByHttp(httpServletRequest);
-        //验证是否有权限
-        if(!PrivilegeUtils.havePermission(loginUserDetail.getSysUser().getPermissions(),authorizeKey)){
-           throw new AuthenticationCredentialsNotFoundException("not have this permission");
+        SysUser sysUser = loginUserDetail.getSysUser();
+        if(sysUser == null){
+            throw new AuthenticationCredentialsNotFoundException("Permission denied");
+        }
+        if(sysUser.getSuperUser() == null || sysUser.getSuperUser() != PermissionUtils.SUPER_ADMIN_FLAG){
+            String servletPath = httpServletRequest.getServletPath();
+            //通过http请求获取用户必须要的权限
+            String authorizeKey = PermissionAuthorizeProvider.getMappingAuthorize().get(servletPath);
+            //验证是否有权限
+            if(!PermissionUtils.havePermission(sysUser.getPermissions(),authorizeKey)){
+                throw new AuthenticationCredentialsNotFoundException("Permission denied");
+            }
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
 

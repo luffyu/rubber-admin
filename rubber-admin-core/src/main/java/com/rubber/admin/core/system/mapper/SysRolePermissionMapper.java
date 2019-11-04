@@ -1,6 +1,6 @@
 package com.rubber.admin.core.system.mapper;
 
-import com.rubber.admin.core.system.entity.SysRolePrivilege;
+import com.rubber.admin.core.system.entity.SysRolePermission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author luffyu-auto
  * @since 2019-11-01
  */
-public interface SysRolePrivilegeMapper extends BaseMapper<SysRolePrivilege> {
+public interface SysRolePermissionMapper extends BaseMapper<SysRolePermission> {
 
 }

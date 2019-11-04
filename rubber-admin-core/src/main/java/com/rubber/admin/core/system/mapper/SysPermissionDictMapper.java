@@ -1,7 +1,7 @@
 package com.rubber.admin.core.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.rubber.admin.core.system.entity.SysPrivilegeDict;
+import com.rubber.admin.core.system.entity.SysPermissionDict;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.rubber.admin.core.system.entity.SysPrivilegeDict;
  * @author luffyu-auto
  * @since 2019-10-31
  */
-public interface SysPrivilegeDictMapper extends BaseMapper<SysPrivilegeDict> {
+public interface SysPermissionDictMapper extends BaseMapper<SysPermissionDict> {
 
 }

@@ -1,9 +1,10 @@
 package com.rubber.admin.core.system.model;
 
 import cn.hutool.core.util.StrUtil;
-import com.rubber.admin.core.system.entity.SysPrivilegeDict;
+import com.rubber.admin.core.system.entity.SysPermissionDict;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * 全部的权限信息
  */
 @Data
-public class PrivilegeBean {
+public class PermissionBean implements Serializable {
 
     /**
      * 模块key
@@ -31,13 +32,13 @@ public class PrivilegeBean {
     private List<UnitBean> unitBeans;
 
 
-    public PrivilegeBean(String moduleKey, String moduleName) {
+    public PermissionBean(String moduleKey, String moduleName) {
         this.moduleKey = moduleKey;
         this.moduleName = moduleName;
         this.unitBeans = new ArrayList<>();
     }
 
-    public PrivilegeBean(String moduleKey, SysPrivilegeDict module) {
+    public PermissionBean(String moduleKey, SysPermissionDict module) {
         this.moduleKey = moduleKey;
         if(module != null && StrUtil.isNotEmpty( module.getDictName())){
             this.moduleName = module.getDictName();
@@ -49,7 +50,7 @@ public class PrivilegeBean {
 
 
     @Data
-    public static class UnitBean{
+    public static class UnitBean implements Serializable{
         /**
          * 单个权限的key
          */
@@ -71,7 +72,7 @@ public class PrivilegeBean {
             this.authorizeKey = authorizeKey;
         }
 
-        public UnitBean(String unitKey, SysPrivilegeDict unit,String authorizeKey) {
+        public UnitBean(String unitKey, SysPermissionDict unit, String authorizeKey) {
             this.unitKey = unitKey;
             if(unit != null && StrUtil.isNotEmpty(unit.getDictName())){
                 this.unitName = unit.getDictName();

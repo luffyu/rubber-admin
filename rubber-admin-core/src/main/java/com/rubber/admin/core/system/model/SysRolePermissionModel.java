@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.model;
 
 import com.rubber.admin.core.base.BaseModel;
 import com.rubber.admin.core.system.entity.SysRole;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -14,7 +15,8 @@ import java.util.List;
  * 用户角色有的权限列表信息
  */
 @Data
-public class SysRolePrivilegeModel extends BaseModel {
+@AllArgsConstructor
+public class SysRolePermissionModel extends BaseModel {
 
     /**
      * 角色信息
@@ -24,6 +26,6 @@ public class SysRolePrivilegeModel extends BaseModel {
     /**
      * 角色的权限信息
      */
-    private List<PrivilegeBean> privilegeList;
+    private List<PermissionBean> permissionList;
 
 }

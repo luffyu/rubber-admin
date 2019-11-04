@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created on 2019-10-23
  */
 @RestController
-@RequestMapping(value = "/sys-menu",name = "sys-menu")
+@RequestMapping(value = "/sys/menu",name = "menu")
 public class MenuController  {
 
     @GetMapping("/list")
