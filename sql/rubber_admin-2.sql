@@ -11,7 +11,7 @@
  Target Server Version : 50727
  File Encoding         : 65001
 
- Date: 31/10/2019 21:25:34
+ Date: 04/11/2019 21:07:10
 */
 
 SET NAMES utf8mb4;
@@ -53,6 +53,7 @@ CREATE TABLE `sys_menu` (
   `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单,B 按钮）',
   `auth_key` varchar(50) DEFAULT NULL COMMENT '权限标示key',
   `status` tinyint(3) DEFAULT '0' COMMENT '状态（0正常 -1表示停用）',
+  `del_flag` tinyint(3) DEFAULT '0' COMMENT '是否删除 0表示没有 -1表示被删除',
   `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
   `create_by` int(11) DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
@@ -60,13 +61,23 @@ CREATE TABLE `sys_menu` (
   `update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
   `remark` varchar(500) DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='菜单权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='菜单权限表';
 
 -- ----------------------------
--- Table structure for sys_privilege_dict
+-- Records of sys_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_privilege_dict`;
-CREATE TABLE `sys_privilege_dict` (
+BEGIN;
+INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 0, '#', 'M', NULL, 0, 0, '#', NULL, NULL, NULL, NULL, '');
+INSERT INTO `sys_menu` VALUES (2, '菜单管理', 1, 1, '#', 'C', NULL, 0, 0, '#', NULL, NULL, NULL, NULL, '');
+INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 2, '#', 'C', NULL, 0, 0, '#', NULL, NULL, NULL, NULL, '');
+INSERT INTO `sys_menu` VALUES (4, '用户管理', 1, 3, '#', 'C', NULL, 0, 0, '#', NULL, NULL, NULL, NULL, '');
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_permission_dict
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_permission_dict`;
+CREATE TABLE `sys_permission_dict` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `dict_key` varchar(100) NOT NULL COMMENT '字典关键值',
   `dict_name` varchar(50) DEFAULT NULL COMMENT '字典名称',
@@ -80,25 +91,27 @@ CREATE TABLE `sys_privilege_dict` (
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`),
   KEY `idx_pri_key` (`dict_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='权限字典名称';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='权限字典名称';
 
 -- ----------------------------
--- Records of sys_privilege_dict
+-- Records of sys_permission_dict
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_privilege_dict` VALUES (1, 'select', '查询', 'list,query,get,find,page,info,download,export,select', 'basic_unit', 0, NULL, NULL, NULL, NULL, '');
-INSERT INTO `sys_privilege_dict` VALUES (2, 'edit', '编辑', 'edit,update,modify,mod', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (3, 'add', '新增', 'add,save,install,saving,copy', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (4, 'delect', '删除', 'del,delete,remove,rf', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (5, 'verify', '审核', 'auth,online,offline,verify', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (6, 'upload', '上传', 'upload,import', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (7, 'download', '下载', 'down,download,export', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (8, 'active', '活动管理', 'active', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (9, 'award', '奖品管理', 'award', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (10, 'task', '任务管理', 'task', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (11, 'sys-menu', '菜单管理', 'sys-menu,menu', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (12, 'test', '测试管理', 'test', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_privilege_dict` VALUES (13, 'sys-privilege', '权限管理', 'sys-privilege', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (1, 'select', '查询', 'list,query,get,find,page,info,download,export,select', 'basic_unit', 0, NULL, NULL, NULL, NULL, '');
+INSERT INTO `sys_permission_dict` VALUES (2, 'edit', '编辑', 'edit,update,modify,mod', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (3, 'add', '新增', 'add,save,install,saving,copy', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (4, 'delect', '删除', 'del,delete,remove,rf', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (5, 'verify', '审核', 'auth,online,offline,verify', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (6, 'upload', '上传', 'upload,import', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (7, 'download', '下载', 'down,download,export', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (8, 'active', '活动管理', 'active', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (9, 'award', '奖品管理', 'award', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (10, 'task', '任务管理', 'task', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (11, 'menu', '菜单管理', 'menu', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (12, 'test', '测试管理', 'test', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (13, 'permission', '权限管理', 'permission', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (14, 'role', '角色管理', 'role', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (15, 'user', '用户管理', 'user', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -118,7 +131,14 @@ CREATE TABLE `sys_role` (
   `update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='角色信息表';
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_role` VALUES (1, '系统管理员', 'admin', 1, 0, '0', NULL, NULL, NULL, NULL, NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for sys_role_dept
@@ -141,22 +161,38 @@ CREATE TABLE `sys_role_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色和菜单关联表';
 
 -- ----------------------------
--- Table structure for sys_role_privilege
+-- Records of sys_role_menu
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_role_privilege`;
-CREATE TABLE `sys_role_privilege` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
-  `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
-  `permission` tinyint(3) unsigned DEFAULT '0' COMMENT '权限字段',
-  `status` tinyint(3) DEFAULT '0' COMMENT '状态（0正常 -1停用）',
+BEGIN;
+INSERT INTO `sys_role_menu` VALUES (1, 1);
+INSERT INTO `sys_role_menu` VALUES (1, 3);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_permission`;
+CREATE TABLE `sys_role_permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `role_id` varchar(100) DEFAULT NULL COMMENT '角色id',
+  `module` varchar(50) DEFAULT NULL COMMENT '权限模块key',
+  `unit_array` varchar(255) DEFAULT NULL COMMENT '权限单元操作key数组',
   `create_by` int(11) DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` int(11) DEFAULT NULL COMMENT '最后一次更新人id',
   `update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`),
-  KEY `idx_role` (`role_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色权限列表';
+  KEY `idx_role` (`role_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='角色权限列表';
+
+-- ----------------------------
+-- Records of sys_role_permission
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_role_permission` VALUES (1, '1', 'menu', 'setect,add,edit', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_role_permission` VALUES (2, '1', 'u', 'select', NULL, NULL, NULL, NULL, NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -187,13 +223,14 @@ CREATE TABLE `sys_user` (
   `version` int(11) DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `uniq_login` (`login_account`) USING HASH
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` VALUES (1, '系统管理员', NULL, 'admin', '$2a$10$rNY0Tb3p2gcNc69IXUJ5B.jZhyB84eI5sEyTFllJOm3YueJ7H9W3.', '798835', NULL, NULL, NULL, NULL, '2019-10-31 20:57:24', '0:0:0:0:0:0:0:1', 18, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 12);
+INSERT INTO `sys_user` VALUES (1, '超级管理员', NULL, 'admin', '$2a$10$rNY0Tb3p2gcNc69IXUJ5B.jZhyB84eI5sEyTFllJOm3YueJ7H9W3.', '798835', NULL, NULL, NULL, NULL, '2019-11-04 21:00:53', '0:0:0:0:0:0:0:1', 28, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, 22);
+INSERT INTO `sys_user` VALUES (4, '余高峰', NULL, 'yugaofeng', '$2a$10$rNY0Tb3p2gcNc69IXUJ5B.jZhyB84eI5sEyTFllJOm3YueJ7H9W3.', '798835', NULL, NULL, NULL, NULL, '2019-11-04 19:55:36', '0:0:0:0:0:0:0:1', 17, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 17);
 COMMIT;
 
 -- ----------------------------
@@ -205,5 +242,12 @@ CREATE TABLE `sys_user_role` (
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`user_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和角色关联表';
+
+-- ----------------------------
+-- Records of sys_user_role
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_user_role` VALUES (4, 1);
+COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
