@@ -3,6 +3,7 @@ package com.rubber.admin.test.controller;
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.system.model.PermissionBean;
+import com.rubber.admin.core.system.model.SysUserRoleModel;
 import com.rubber.admin.core.system.service.impl.SysPermissionDictServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,7 @@ public class TestController {
     }
 
     @RequestMapping("/sys-time-2")
-    public ResultMsg getSysTime2(){
+    public ResultMsg getSysTime2(SysUserRoleModel roleModel){
 
         Map<String, String> mappingAuthorize = PermissionAuthorizeProvider.getMappingAuthorize();
 

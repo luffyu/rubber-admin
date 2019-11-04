@@ -30,6 +30,6 @@ public interface StatusEnums {
     /**
      * 删除状态
      */
-    int DELETE = -2;
+    int DELETE = -1;
 
 }

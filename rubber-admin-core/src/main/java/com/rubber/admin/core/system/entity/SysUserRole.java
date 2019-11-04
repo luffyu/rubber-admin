@@ -1,6 +1,7 @@
 package com.rubber.admin.core.system.entity;
 
 import com.rubber.admin.core.base.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Data;
  * @since 2019-05-13
  */
 @Data
+@AllArgsConstructor
 public class SysUserRole extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

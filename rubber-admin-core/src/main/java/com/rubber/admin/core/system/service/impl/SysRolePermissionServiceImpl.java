@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -82,6 +83,21 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
         List<SysRolePermission> rolePermissions = queryByRole(roleId);
         List<PermissionBean> privilegeBeans = doChangeEntityToModel(rolePermissions);
         return new SysRolePermissionModel(dbRole,privilegeBeans);
+    }
+
+
+
+    @Override
+    public List<PermissionBean> getRolesPermission(Set<Integer> roleIds) throws RoleException {
+        if(CollectionUtil.isEmpty(roleIds)){
+            return null;
+        }
+        List<SysRolePermission> sysRolePermissions = new ArrayList<>();
+        for (Integer roleId:roleIds){
+            sysRoleService.getAndVerifyById(roleId);
+            sysRolePermissions.addAll(queryByRole(roleId));
+        }
+        return doChangeEntityToModel(sysRolePermissions);
     }
 
 
@@ -190,23 +206,33 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
         if(CollectionUtil.isEmpty(rolePermissionList)){
             return null;
         }
-        List<PermissionBean> privilegeBeans = new ArrayList<>(rolePermissionList.size());
+        Map<String,Set<String>> unRepeatPermission = new HashMap<>(rolePermissionList.size());
         for(SysRolePermission sysRolePermission:rolePermissionList){
             String modelKey = sysRolePermission.getModule();
-            PermissionBean privilegeBean = new PermissionBean(modelKey,modelKey);
+            Set<String> unitBeansUnRepeat = unRepeatPermission.get(modelKey);
+            if(unitBeansUnRepeat == null){
+                unitBeansUnRepeat = new HashSet<>();
+            }
             String unitArray = sysRolePermission.getUnitArray();
             if(StrUtil.isNotEmpty(unitArray)){
-                List<PermissionBean.UnitBean> unitBeans = new ArrayList<>();
-                for(String unitKey:unitArray.split(PermissionUtils.UNIT_LINK_KEY)){
-                    String authorizeKey = PermissionUtils.createAuthorizeKey(modelKey, unitKey);
-                    PermissionBean.UnitBean unitBean = new PermissionBean.UnitBean(unitKey,unitKey,authorizeKey);
-                    unitBeans.add(unitBean);
-                }
-                privilegeBean.setUnitBeans(unitBeans);
+                String[] split = StrUtil.split(unitArray, PermissionUtils.UNIT_LINK_KEY);
+                HashSet<String> hashSet = CollectionUtil.newHashSet(split);
+                unitBeansUnRepeat.addAll(hashSet);
             }
-            privilegeBeans.add(privilegeBean);
         }
-        return privilegeBeans;
+        List<PermissionBean> permissionBeans = new ArrayList<>();
+        if(CollectionUtil.isNotEmpty(unRepeatPermission)){
+            for (String modelKey:unRepeatPermission.keySet()){
+                PermissionBean permissionBean = new PermissionBean(modelKey,modelKey);
+                Set<String> unitBeans = unRepeatPermission.get(modelKey);
+                List<PermissionBean.UnitBean> unitBeansList = unitBeans.stream().map(i -> {
+                    return new PermissionBean.UnitBean(i, i, PermissionUtils.createAuthorizeKey(modelKey, i));
+                }).collect(Collectors.toList());
+                permissionBean.setUnitBeans(unitBeansList);
+                permissionBeans.add(permissionBean);
+            }
+        }
+        return permissionBeans;
     }
 
 }

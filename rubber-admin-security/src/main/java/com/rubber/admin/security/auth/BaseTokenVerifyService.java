@@ -75,7 +75,7 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
         if(sysUser == null){
             sysUser = getUserService().getByLoginAccount(verifyBean.getSubject());
             if(sysUser == null){
-                throw new TokenVerifyException(AdminCode.LOGIN_USER_NOT_EXIST);
+                throw new TokenVerifyException(AdminCode.USER_NOT_EXIST);
             }
             updateCache = true;
         }

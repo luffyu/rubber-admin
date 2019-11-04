@@ -1,7 +1,8 @@
 package com.rubber.admin.core.system.service;
 
-import com.rubber.admin.core.system.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.rubber.admin.core.system.entity.SysUser;
+import com.rubber.admin.core.system.exception.UserException;
 
 /**
  * <p>
@@ -30,11 +31,8 @@ public interface ISysUserService extends IService<SysUser> {
 
 
 
-    /**
-     * 保存用户的基本信息
-     * @param sysUser 系统的用户信息
-     */
-    void checkAndUpdate(SysUser sysUser);
+
+    SysUser getAndVerifyById(Integer userId) throws UserException;
 
 
 }

@@ -44,11 +44,11 @@ public class RubberAuthenticationProvider implements AuthenticationProvider {
         SysUser userInfo = iUserFindService.findByAccount(loginBean);
         if (userInfo == null){
             //抛出用户的信息
-            throw new LoginException(AdminCode.LOGIN_USER_NOT_EXIST,"用户{}不存在", loginBean.getAccount());
+            throw new LoginException(AdminCode.USER_NOT_EXIST,"用户{}不存在", loginBean.getAccount());
         }else if (userInfo.getStatus() == null || StatusEnums.DISABLE == userInfo.getStatus()){
             //抛出用户的信息
             throw new LoginException(AdminCode.USER_IS_DISABLE,"用户{}被禁用", loginBean.getAccount());
-        }else if(StatusEnums.DELETE == userInfo.getStatus()){
+        }else if(StatusEnums.DELETE == userInfo.getDelFlag()){
             throw new LoginException(AdminCode.USER_IS_DELETE,"用户{}被删除", loginBean.getAccount());
         }
         LoginUserDetail userDetails = new LoginUserDetail(userInfo);

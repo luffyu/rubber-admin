@@ -1,14 +1,14 @@
 package com.rubber.admin.core.system.service.impl;
 
-import cn.hutool.coocaa.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
-import com.rubber.admin.core.exceptions.AdminRunTimeException;
+import com.rubber.admin.core.enums.AdminCode;
+import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysUser;
+import com.rubber.admin.core.system.exception.UserException;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
 import com.rubber.admin.core.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -37,22 +37,24 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     }
 
 
-    @Transactional(
-            rollbackFor = Throwable.class
-    )
+
     @Override
-    public void checkAndUpdate(SysUser sysUser) {
-        checkSysUser(sysUser);
-        if(!updateById(sysUser)){
-            throw new AdminRunTimeException(SysCode.SYSTEM_ERROR,"更新系统失败");
+    public SysUser getAndVerifyById(Integer userId) throws UserException {
+        if(userId == null || userId <= 0){
+            throw new UserException(AdminCode.PARAM_ERROR,"查询的用户id为空");
         }
+        SysUser sysUser = getById(userId);
+        if(sysUser == null){
+            throw new UserException(AdminCode.USER_NOT_EXIST);
+        }
+        if(StatusEnums.DELETE == sysUser.getDelFlag()){
+            throw new UserException(AdminCode.USER_IS_DELETE);
+        }
+        if(StatusEnums.DISABLE == sysUser.getStatus()){
+            throw new UserException(AdminCode.USER_IS_DISABLE);
+        }
+        return sysUser;
     }
 
-    /**
-     * 检测用户的基本信息
-     * @param sysUser
-     */
-    private void checkSysUser(SysUser sysUser){
 
-    }
 }

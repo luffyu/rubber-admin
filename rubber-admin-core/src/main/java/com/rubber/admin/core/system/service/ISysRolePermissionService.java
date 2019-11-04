@@ -4,7 +4,11 @@ import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysRolePermission;
 import com.rubber.admin.core.system.exception.PermissionException;
 import com.rubber.admin.core.system.exception.RoleException;
+import com.rubber.admin.core.system.model.PermissionBean;
 import com.rubber.admin.core.system.model.SysRolePermissionModel;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -30,4 +34,13 @@ public interface ISysRolePermissionService extends IBaseService<SysRolePermissio
      * @return 返回角色的id信息
      */
     SysRolePermissionModel getRolePermission(Integer roleId) throws RoleException;
+
+
+    /**
+     * 查询多个角色的权限信息 并合并返回
+     * @param roleIds 角色ids
+     * @return 返回角色的id信息
+     * @throws RoleException 异常信息
+     */
+    List<PermissionBean> getRolesPermission(Set<Integer> roleIds) throws RoleException;
 }
