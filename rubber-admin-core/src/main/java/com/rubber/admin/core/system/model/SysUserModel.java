@@ -34,6 +34,11 @@ public class SysUserModel extends BaseModel {
      */
     private String loginAccount;
 
+    /**
+     * 密码 明文 非加密字段
+     */
+    private String psw;
+
 
     /**
      * 邮件地址

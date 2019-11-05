@@ -1,8 +1,8 @@
 package com.rubber.admin.security.login.service.find;
 
-import cn.hutool.core.util.RandomUtil;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.model.SysUserModel;
 import com.rubber.admin.core.system.service.ISysUserService;
@@ -10,7 +10,6 @@ import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.bean.LoginException;
 import com.rubber.admin.security.login.bean.LoginType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,8 +29,6 @@ public class RubberUserFindService implements IUserFindService {
     private ExpandUserFindProvider expandUserFindService;
 
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -96,12 +93,14 @@ public class RubberUserFindService implements IUserFindService {
      * @return
      */
     public SysUser doRegister(LoginBean loginBean,SysUserModel sysUserModel){
-
-        SysUser sysUser = doCreateByModel(loginBean,sysUserModel);
-        sysUser.setSalt(RandomUtil.randomNumbers(6));
-        String encode = passwordEncoder.encode(sysUser.getEncodeKey(loginBean.getPassword()));
-        sysUser.setLoginPwd(encode);
-        return sysUser;
+        try {
+            SysUser sysUser = doCreateByModel(loginBean, sysUserModel);
+            sysUserService.addUser(sysUser);
+            return sysUser;
+        } catch (AdminException e) {
+            e.printStackTrace();
+            throw new LoginException(e.getResult());
+        }
     }
 
     private SysUser doCreateByModel(LoginBean loginBean,SysUserModel sysUserModel){
@@ -114,9 +113,6 @@ public class RubberUserFindService implements IUserFindService {
         sysUser.setSex(sysUserModel.getSex());
         sysUser.setAvatar(sysUserModel.getAvatar());
         sysUser.setEmail(sysUserModel.getEmail());
-        sysUser.setStatus(StatusEnums.NORMAL);
-        sysUser.setCreateTime(loginBean.getLoginTime());
-        sysUser.setSuperUser(StatusEnums.NORMAL);
         return sysUser;
     }
 

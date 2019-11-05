@@ -1,5 +1,6 @@
 package com.rubber.admin.security.login.bean;
 
+import cn.hutool.coocaa.util.result.IResultHandle;
 import cn.hutool.coocaa.util.result.code.ICodeHandle;
 import com.rubber.admin.core.exceptions.AdminRunTimeException;
 
@@ -9,6 +10,9 @@ import com.rubber.admin.core.exceptions.AdminRunTimeException;
  */
 public class LoginException extends AdminRunTimeException {
 
+    public LoginException(IResultHandle handle) {
+        super(handle);
+    }
 
     public LoginException(ICodeHandle handle) {
         super(handle);

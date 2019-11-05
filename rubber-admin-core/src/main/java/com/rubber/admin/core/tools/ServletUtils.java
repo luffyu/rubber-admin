@@ -1,5 +1,6 @@
 package com.rubber.admin.core.tools;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author luffyu
  * Created on 2019-11-01
  */
-public class ServletUtils {
+public class ServletUtils extends ServletUtil {
 
     /**
      * 登陆用户的Key
@@ -17,6 +18,7 @@ public class ServletUtils {
     public static final String LOGIN_KEY = "login_user_id";
 
 
+    private static final String X_FORWARDED_FOR = "x-forwarded-for";
 
     /**
      * 获取当前线程的http请求
@@ -48,6 +50,15 @@ public class ServletUtils {
             return null;
         }
         return (Integer) attribute;
+    }
+
+
+    /**
+     * 返回登陆的ip
+     * @return
+     */
+    public static String getLoginIp(){
+        return getClientIP(getRequest(),X_FORWARDED_FOR);
     }
 
 }

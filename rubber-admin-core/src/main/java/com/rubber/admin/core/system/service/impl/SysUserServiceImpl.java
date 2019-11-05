@@ -1,11 +1,15 @@
 package com.rubber.admin.core.system.service.impl;
 
+import cn.hutool.coocaa.util.result.code.SysCode;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.plugins.encrypt.IEncryptHandler;
 import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.entity.SysRole;
@@ -14,16 +18,16 @@ import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.exception.UserException;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
 import com.rubber.admin.core.system.model.PermissionBean;
-import com.rubber.admin.core.system.model.SysUserModel;
+import com.rubber.admin.core.system.model.SysUserRoleModel;
 import com.rubber.admin.core.system.model.UserInfoModel;
-import com.rubber.admin.core.system.service.ISysMenuService;
-import com.rubber.admin.core.system.service.ISysRolePermissionService;
-import com.rubber.admin.core.system.service.ISysRoleService;
-import com.rubber.admin.core.system.service.ISysUserService;
+import com.rubber.admin.core.system.service.*;
+import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,6 +51,14 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
 
     @Resource
     private ISysRolePermissionService sysRolePermissionService;
+
+    @Resource
+    private ISysUserRoleService sysUserRoleService;
+
+
+    @Resource
+    private IEncryptHandler iEncryptHandler;
+
 
     @Override
     public SysUser getByLoginAccount(String loginName) {
@@ -87,7 +99,7 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     @Override
     public UserInfoModel getUserAllInfo(Integer userId) throws AdminException {
         SysUser sysUser = getAndVerifyById(userId);
-        UserInfoModel userInfoModel = new UserInfoModel(new SysUserModel(sysUser));
+        UserInfoModel userInfoModel = new UserInfoModel(sysUser);
         if(sysUser.getSuperUser() == PermissionUtils.SUPER_ADMIN_FLAG){
             doFindSuperUserAllInfo(userInfoModel);
             return userInfoModel;
@@ -153,14 +165,146 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     }
 
 
+    /**
+     * 添加用户的基本信息
+     * @param userInfoModel 用户信息
+     */
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+    @Override
+    public void saveOrUpdateUserInfo(UserInfoModel userInfoModel) throws AdminException {
+        SysUser sysUser = userInfoModel.getSysUser();
+        //验证用户信息
+        saveUser(sysUser);
+
+        //更新角色信息
+        Set<Integer> roleIds = null;
+        List<SysRole> sysRoles = userInfoModel.getSysRoles();
+        if (CollectionUtil.isNotEmpty(sysRoles)) {
+            roleIds = sysRoles.stream().map(SysRole::getRoleId).collect(Collectors.toSet());
+        }
+        sysUserRoleService.saveUserRole(new SysUserRoleModel(sysUser.getUserId(),roleIds));
+    }
+
 
 
     @Override
-    public void addUser(SysUser sysUser) {
-
-
+    public void saveUser(SysUser sysUser) throws AdminException {
+        if(sysUser.getUserId() == null){
+            doAddUser(sysUser);
+        }else {
+            doUpdateUser(sysUser);
+        }
     }
 
+
+
+    @Override
+    public void delUser(Integer userId) throws UserException {
+        SysUser sysUser = getAndVerifyById(userId);
+        sysUser.setDelFlag(StatusEnums.DELETE);
+        if(!updateById(sysUser)){
+            throw new UserException(SysCode.SYSTEM_ERROR,"删除用户信息异常");
+        }
+    }
+
+
+    /**
+     * 新增用户信息
+     * @param sysUser
+     * @throws AdminException
+     */
+    private void doAddUser(SysUser sysUser) throws AdminException {
+        //验证用户信息
+        verifyAndInitUserParam(sysUser);
+        //设置用户的角色
+        doCreateUserPsw(sysUser);
+
+        if(!save(sysUser)){
+            throw new UserException(SysCode.SYSTEM_ERROR,"保存用户信息异常");
+        }
+    }
+
+
+    /**
+     * 更新用户的基本信息
+     * @param sysUser
+     * @throws AdminException
+     */
+    private void doUpdateUser(SysUser sysUser) throws AdminException {
+        SysUser dbUser = getAndVerifyById(sysUser.getUserId());
+        if(!dbUser.getLoginCount().equals(sysUser.getLoginCount())){
+            throw new UserException(AdminCode.PARAM_ERROR,"无法修改用户的登陆账户");
+        }
+        dbUser.setLoginPwd(sysUser.getLoginPwd());
+        dbUser.setStatus(sysUser.getStatus());
+        dbUser.setUserName(sysUser.getUserName());
+        dbUser.setSex(sysUser.getSex());
+        dbUser.setEmail(sysUser.getEmail());
+        dbUser.setPhone(sysUser.getPhone());
+        Date now = new Date();
+        Integer loginUserId = ServletUtils.getLoginUserId();
+        dbUser.setUpdateBy(loginUserId);
+        dbUser.setUpdateTime(now);
+        doCreateUserPsw(sysUser);
+        if(!updateById(dbUser)){
+            throw new UserException(SysCode.SYSTEM_ERROR,"更新用户信息异常");
+        }
+    }
+
+
+    /**
+     * 创建用户的密码信息
+     * @param sysUser 系统的用户信息
+     */
+    private void doCreateUserPsw(SysUser sysUser){
+        String salt = iEncryptHandler.createSalt(6);
+        sysUser.setSalt(salt);
+        String encrypt = iEncryptHandler.encrypt(sysUser.getLoginPwd(), salt);
+        sysUser.setLoginPwd(encrypt);
+    }
+
+    /**
+     * 验证系统中的用户信息
+     * @param sysUser
+     */
+    private void verifyAndInitUserParam(SysUser sysUser) throws UserException {
+        if (StrUtil.isEmpty(sysUser.getLoginAccount()) || StrUtil.isEmpty(sysUser.getLoginAccount())){
+            throw new UserException(AdminCode.PARAM_ERROR);
+        }
+        SysUser oldAccount = getByLoginAccount(sysUser.getLoginAccount());
+        if(oldAccount != null){
+            throw new UserException(AdminCode.ACCOUNT_IS_EXIST);
+        }
+        sysUser.setLoginCount(0);
+        sysUser.setStatus(StatusEnums.NORMAL);
+        sysUser.setDelFlag(StatusEnums.NORMAL);
+        sysUser.setSalt(RandomUtil.randomNumbers(6));
+        sysUser.setSuperUser(StatusEnums.NORMAL);
+
+        Date now = new Date();
+        Integer loginUserId = ServletUtils.getLoginUserId();
+
+        sysUser.setCreateBy(loginUserId);
+        sysUser.setCreateTime(now);
+        sysUser.setUpdateBy(loginUserId);
+        sysUser.setUpdateTime(now);
+    }
+
+
+
+    @Override
+    public boolean updateById(SysUser entity) {
+        if(entity == null){
+            return false;
+        }
+        Date now = new Date();
+        Integer loginUserId = ServletUtils.getLoginUserId();
+        entity.setUpdateBy(loginUserId);
+        entity.setUpdateTime(now);
+        return super.updateById(entity);
+    }
 
 
 

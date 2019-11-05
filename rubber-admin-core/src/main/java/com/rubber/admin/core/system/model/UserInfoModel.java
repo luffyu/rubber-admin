@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.model;
 
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.entity.SysRole;
+import com.rubber.admin.core.system.entity.SysUser;
 import lombok.Data;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class UserInfoModel {
     /**
      * 用户的基本信息
      */
-    private SysUserModel sysUser;
+    private SysUser sysUser;
 
     /**
      * 菜单的基本信息
@@ -37,7 +38,7 @@ public class UserInfoModel {
 
 
 
-    public UserInfoModel(SysUserModel sysUser) {
+    public UserInfoModel(SysUser sysUser) {
         this.sysUser = sysUser;
     }
 }

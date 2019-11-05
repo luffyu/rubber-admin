@@ -46,6 +46,7 @@ public enum AdminCode implements ICodeHandle {
     TOKEN_IS_EXPIRED("20105","登陆token过期"),
     TOKEN_IS_ERROR("20106","登陆token错误"),
     LOGIN_TYPE_NOT_SUPPORT("20107","不支持的登陆类型"),
+    ACCOUNT_IS_EXIST("20108","账户已经存在"),
 
     /**
      * 202** 角色类型的错误

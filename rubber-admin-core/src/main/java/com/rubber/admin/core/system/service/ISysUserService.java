@@ -36,7 +36,7 @@ public interface ISysUserService extends IBaseService<SysUser> {
      * 获取用户的基本信息 并且验证
      * @param userId 用户的id
      * @return 返回用户信息
-     * @throws UserException
+     * @throws UserException 异常信息
      */
     SysUser getAndVerifyById(Integer userId) throws UserException;
 
@@ -58,9 +58,26 @@ public interface ISysUserService extends IBaseService<SysUser> {
 
 
     /**
+     * 注册用户的全部信息
+     * @param userInfoModel 用户信息
+     * @throws AdminException 异常信息
+     */
+    void saveOrUpdateUserInfo(UserInfoModel userInfoModel) throws AdminException;
+
+
+    /**
      * 注册用户的基本信息
      * @param sysUser 用户信息
+     * @throws AdminException 异常信息
      */
-    void addUser(SysUser sysUser);
+    void saveUser(SysUser sysUser) throws AdminException;
+
+
+    /**
+     * 逻辑删除用户
+     * @param userId 用户id
+     * @throws UserException 异常的信息
+     */
+    void delUser(Integer userId) throws UserException;
 
 }

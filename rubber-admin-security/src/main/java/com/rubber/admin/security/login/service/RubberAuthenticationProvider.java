@@ -1,8 +1,8 @@
 package com.rubber.admin.security.login.service;
 
 import com.rubber.admin.core.enums.AdminCode;
+import com.rubber.admin.core.plugins.encrypt.IEncryptHandler;
 import com.rubber.admin.core.system.entity.SysUser;
-import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.auth.ITokenVerifyService;
 import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.bean.LoginException;
@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -32,10 +31,7 @@ public class RubberAuthenticationProvider implements AuthenticationProvider {
     private IUserFindService iUserFindService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Resource
-    private ISysUserService sysUserService;
+    private IEncryptHandler encryptHandler;
 
 
     @Override
@@ -46,7 +42,7 @@ public class RubberAuthenticationProvider implements AuthenticationProvider {
         //找到用户信息
         SysUser userInfo = iUserFindService.findByAccount(loginBean);
         //验证密码是否相同
-        if(!passwordEncoder.matches(userInfo.getEncodeKey(password),userInfo.getLoginPwd())){
+        if(!encryptHandler.matches(password,userInfo.getSalt(),userInfo.getLoginPwd())){
             throw new LoginException(AdminCode.LOGIN_AUTH_ERROR);
         }
         LoginUserDetail userDetails = new LoginUserDetail(userInfo);

@@ -3,6 +3,7 @@ package com.rubber.admin.core.system.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
 
@@ -46,11 +47,13 @@ public class SysUser extends BaseEntity {
     /**
      * 密码
      */
+    @JsonIgnore
     private String loginPwd;
 
     /**
      * 盐值
      */
+    @JsonIgnore
     private String salt;
 
     /**
