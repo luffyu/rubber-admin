@@ -65,6 +65,14 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+
+        <!-- 获取系统信息 -->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>${oshi.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
