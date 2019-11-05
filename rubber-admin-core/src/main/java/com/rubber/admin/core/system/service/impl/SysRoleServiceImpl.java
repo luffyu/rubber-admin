@@ -11,6 +11,7 @@ import com.rubber.admin.core.system.mapper.SysRoleMapper;
 import com.rubber.admin.core.system.service.ISysRoleService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
@@ -68,6 +69,9 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
         if(byId == null){
             throw new RoleException(AdminCode.ROLE_NOT_EXIST);
         }
+        if (byId.getDelFlag() == StatusEnums.DISABLE){
+            throw new RoleException(AdminCode.ROLE_IS_DELETE);
+        }
         return byId;
     }
 
@@ -80,6 +84,9 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
     }
 
 
+    @Transactional(
+            rollbackFor = Exception.class
+    )
     @Override
     public boolean saveOrUpdateRole(SysRole sysRole) throws RoleException {
         if(sysRole == null){
@@ -92,15 +99,14 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
         }
     }
 
-
+    @Transactional(
+            rollbackFor = Exception.class
+    )
     @Override
     public void delRoleById(Integer roleId) throws RoleException {
-        SysRole dbRole = getById(roleId);
-        if(dbRole == null){
-            throw new RoleException(AdminCode.ROLE_NOT_EXIST,"更新的角色id是{}",roleId);
-        }
+        SysRole dbRole = getAndVerifyById(roleId);
         dbRole.setDelFlag(StatusEnums.DELETE);
-        if(updateById(dbRole)){
+        if(!updateById(dbRole)){
             throw new RoleException(AdminCode.ROLE_NOT_EXIST,"删除角色信息失败",dbRole);
         }
     }
@@ -132,25 +138,17 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
 
 
     private boolean doUpdate(SysRole sysRole) throws RoleException {
-        SysRole dbRole = getById(sysRole.getRoleId());
-        if(dbRole == null){
-            throw new RoleException(AdminCode.ROLE_NOT_EXIST,"更新的角色id是{}",sysRole.getRoleId());
-        }
-        //验证key是否已经存在
-        SysRole byRoleKey = getByRoleKey(sysRole.getRoleKey());
-        if(byRoleKey != null){
-            throw new RoleException(AdminCode.ROLE_KEY_EXIST);
-        }
-        dbRole.setRoleKey(sysRole.getRoleKey());
+        SysRole dbRole = getAndVerifyById(sysRole.getRoleId());
+
         dbRole.setRoleName(sysRole.getRoleName());
         dbRole.setRemark(sysRole.getRemark());
         dbRole.setSeq(sysRole.getSeq());
         dbRole.setStatus(sysRole.getStatus());
 
-        if(updateById(dbRole)){
+        if(!updateById(dbRole)){
             throw new RoleException(AdminCode.ROLE_NOT_EXIST,"更新角色信息失败",dbRole);
         }
-        return false;
+        return true;
     }
 
 

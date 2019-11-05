@@ -95,7 +95,7 @@ public class RubberUserFindService implements IUserFindService {
     public SysUser doRegister(LoginBean loginBean,SysUserModel sysUserModel){
         try {
             SysUser sysUser = doCreateByModel(loginBean, sysUserModel);
-            sysUserService.addUser(sysUser);
+            sysUserService.saveUser(sysUser);
             return sysUser;
         } catch (AdminException e) {
             e.printStackTrace();

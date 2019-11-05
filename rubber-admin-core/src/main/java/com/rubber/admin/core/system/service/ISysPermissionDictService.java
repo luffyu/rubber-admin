@@ -3,8 +3,10 @@ package com.rubber.admin.core.system.service;
 import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysPermissionDict;
 import com.rubber.admin.core.system.model.PermissionBean;
+import com.rubber.admin.core.system.model.PermissionDictModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,4 +35,9 @@ public interface ISysPermissionDictService extends IBaseService<SysPermissionDic
     List<PermissionBean> allPermission();
 
 
+    /**
+     * 获取全部的权限字典列表
+     * @return 返回权限信息
+     */
+    Map<String, PermissionDictModel> allPermissionDict();
 }

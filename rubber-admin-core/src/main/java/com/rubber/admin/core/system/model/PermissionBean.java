@@ -1,6 +1,7 @@
 package com.rubber.admin.core.system.model;
 
 import cn.hutool.core.util.StrUtil;
+import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.system.entity.SysPermissionDict;
 import lombok.Data;
 
@@ -32,10 +33,22 @@ public class PermissionBean implements Serializable {
     private List<UnitBean> unitBeans;
 
 
+    public PermissionBean() {
+    }
+
     public PermissionBean(String moduleKey, String moduleName) {
         this.moduleKey = moduleKey;
         this.moduleName = moduleName;
         this.unitBeans = new ArrayList<>();
+    }
+
+
+    public PermissionBean(String moduleKey, PermissionDictModel dictModel) {
+        this.moduleKey = moduleKey;
+        this.moduleName = moduleKey;
+        if(dictModel != null ){
+            this.moduleName = StrUtil.nullToDefault(dictModel.getName(),moduleKey);
+        }
     }
 
     public PermissionBean(String moduleKey, SysPermissionDict module) {
@@ -66,11 +79,30 @@ public class PermissionBean implements Serializable {
          */
         private String authorizeKey;
 
+        public UnitBean() {
+        }
+
         public UnitBean(String unitKey, String unitName, String authorizeKey) {
             this.unitKey = unitKey;
             this.unitName = unitName;
             this.authorizeKey = authorizeKey;
         }
+
+
+        public UnitBean(String unitKey, String moduleKey,PermissionDictModel dictModel) {
+            this.unitKey = unitKey;
+            this.unitName = unitKey;
+            if(dictModel.getUnitKey() != null){
+                PermissionDictModel unitModel = dictModel.getUnitKey().get(unitKey);
+                if(unitModel != null){
+                    this.unitKey = StrUtil.nullToDefault(unitModel.getKey(),unitKey);
+                    this.unitName = StrUtil.nullToDefault(unitModel.getName(),unitKey);
+                }
+            }
+            this.authorizeKey = PermissionUtils.createAuthorizeKey(moduleKey, unitKey);
+        }
+
+
 
         public UnitBean(String unitKey, SysPermissionDict unit, String authorizeKey) {
             this.unitKey = unitKey;

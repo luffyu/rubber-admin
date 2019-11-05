@@ -13,6 +13,7 @@ import com.rubber.admin.core.system.mapper.SysMenuMapper;
 import com.rubber.admin.core.system.service.ISysMenuService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -102,6 +103,9 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
      * 保存或者目录值
      * @param sysMenu 系统的目录
      */
+    @Transactional(
+            rollbackFor = Exception.class
+    )
     @Override
     public void saveOrUpdateMenu(SysMenu sysMenu) throws MenuException {
         if(sysMenu == null){
@@ -126,6 +130,9 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
 
 
 
+    @Transactional(
+            rollbackFor = Exception.class
+    )
     @Override
     public void delMenu(Integer menuId) throws MenuException {
         SysMenu dbMenu = getById(menuId);
@@ -133,13 +140,13 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
             throw new MenuException(AdminCode.MENU_NOT_EXIST,"菜单{}不存在",menuId);
         }
         //查询有没有子目录
-        int childNum = countChildNum(dbMenu.getParentId());
+        int childNum = countChildNum(dbMenu.getMenuId());
         if(childNum > 0){
             throw new MenuException(AdminCode.MENU_HAVE_CHILD,"菜单{}存在{}子目录，无法删除",menuId,childNum);
         }
         dbMenu.setDelFlag(StatusEnums.DELETE);
-        if(updateById(dbMenu)){
-            throw new MenuException(AdminCode.ROLE_NOT_EXIST,"删除菜单信息失败");
+        if(!updateById(dbMenu)){
+            throw new MenuException(SysCode.SYSTEM_ERROR,"删除菜单信息失败");
         }
     }
 
@@ -187,8 +194,8 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         if(dbMenu == null){
             throw new MenuException(AdminCode.MENU_NOT_EXIST,"菜单{}不存在",sysMenu.getMenuId());
         }
-        if(updateById(sysMenu)){
-            throw new MenuException(AdminCode.ROLE_NOT_EXIST,"更新菜单信息失败");
+        if(!updateById(sysMenu)){
+            throw new MenuException(SysCode.SYSTEM_ERROR,"更新菜单信息失败");
         }
     }
 

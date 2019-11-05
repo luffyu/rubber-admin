@@ -5,6 +5,7 @@ import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysUser;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  * 用户的全部信息
  */
 @Data
-public class UserInfoModel {
+public class UserInfoModel implements Serializable {
 
     /**
      * 用户的基本信息
@@ -36,7 +37,8 @@ public class UserInfoModel {
      */
     private List<PermissionBean> permissions;
 
-
+    public UserInfoModel() {
+    }
 
     public UserInfoModel(SysUser sysUser) {
         this.sysUser = sysUser;

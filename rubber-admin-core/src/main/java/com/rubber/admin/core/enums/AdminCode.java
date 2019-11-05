@@ -54,6 +54,7 @@ public enum AdminCode implements ICodeHandle {
     ROLE_NOT_EXIST("20200","角色不存在"),
     ROLE_PRIVILEGE_ILLEGAL("20201","角色权限信息不合法"),
     ROLE_KEY_EXIST("20202","角色的key值已经存在"),
+    ROLE_IS_DELETE("20203","角色已经被删除"),
 
     /**
      * 菜单不存在

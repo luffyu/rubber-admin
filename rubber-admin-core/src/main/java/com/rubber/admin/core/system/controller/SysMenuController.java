@@ -29,7 +29,7 @@ public class SysMenuController {
      * @return 返回菜单的信息
      */
     @GetMapping("/list")
-    public ResultMsg list(@RequestParam PageModel pageModel){
+    public ResultMsg list(@RequestBody PageModel pageModel){
         IPage<SysMenu> sysRoleIPage = sysMenuService.pageBySelect(pageModel, SysMenu.class, null);
         return ResultMsg.success(sysRoleIPage);
     }
@@ -52,7 +52,7 @@ public class SysMenuController {
      * @return 返回添加菜单的基本信息
      */
     @PostMapping("/add")
-    public ResultMsg addMenu(SysMenu sysMenu) throws MenuException {
+    public ResultMsg addMenu(@RequestBody SysMenu sysMenu) throws MenuException {
         if(sysMenu.getMenuId() != null){
             throw new MenuException(AdminCode.PARAM_ERROR,"保存的菜单id必须为空");
         }
@@ -67,11 +67,11 @@ public class SysMenuController {
      * @return 返回菜单更新的值
      */
     @PostMapping("/{menuId}/update")
-    public ResultMsg updateMenu(@PathVariable("menuId")Integer menuId,SysMenu sysMenu) throws MenuException {
+    public ResultMsg updateMenu(@PathVariable("menuId")Integer menuId,@RequestBody SysMenu sysMenu) throws MenuException {
         if(menuId == null || menuId <= 0 ){
             throw new MenuException(AdminCode.PARAM_ERROR,"菜单id不存在");
         }
-        if(menuId.equals(sysMenu.getMenuId())){
+        if(!menuId.equals(sysMenu.getMenuId())){
             throw new MenuException(AdminCode.PARAM_ERROR,"菜单id不存在");
         }
         sysMenuService.saveOrUpdateMenu(sysMenu);

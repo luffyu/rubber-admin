@@ -33,7 +33,7 @@ public class SysUserController {
      * @return 返回
      */
     @GetMapping("/list")
-    public ResultMsg list(@RequestParam PageModel pageModel, HttpServletRequest request){
+    public ResultMsg list(@RequestBody PageModel pageModel, HttpServletRequest request){
         IPage<SysUser> sysRoleIPage = sysUserService.pageBySelect(pageModel, SysUser.class, null);
         return ResultMsg.success(sysRoleIPage);
     }
@@ -46,7 +46,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping("/add")
-    public ResultMsg addUser(UserInfoModel userInfoModel) throws AdminException {
+    public ResultMsg addUser(@RequestBody UserInfoModel userInfoModel) throws AdminException {
         sysUserService.saveOrUpdateUserInfo(userInfoModel);
         return ResultMsg.success();
     }
@@ -59,7 +59,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping("/{userId}/update")
-    public ResultMsg updateUser(@PathVariable("userId")Integer userId,UserInfoModel userInfoModel) throws AdminException {
+    public ResultMsg updateUser(@PathVariable("userId")Integer userId,@RequestBody UserInfoModel userInfoModel) throws AdminException {
         if(userId == null || userInfoModel.getSysUser() == null || userId <= 0){
             throw new UserException(AdminCode.PARAM_ERROR,"用户id为空");
         }

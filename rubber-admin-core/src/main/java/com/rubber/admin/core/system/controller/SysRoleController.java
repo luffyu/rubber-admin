@@ -32,7 +32,7 @@ public class SysRoleController {
      * @return 返回
      */
     @GetMapping("/list")
-    public ResultMsg list(@RequestParam PageModel pageModel, HttpServletRequest request){
+    public ResultMsg list(@RequestBody PageModel pageModel, HttpServletRequest request){
         IPage<SysRole> sysRoleIPage = iSysRoleService.pageBySelect(pageModel, SysRole.class, null);
         return ResultMsg.success(sysRoleIPage);
     }
@@ -44,7 +44,7 @@ public class SysRoleController {
      * @return
      */
     @PostMapping("/add")
-    public ResultMsg addRole(SysRole sysRole) throws RoleException {
+    public ResultMsg addRole(@RequestBody SysRole sysRole) throws RoleException {
         iSysRoleService.saveOrUpdateRole(sysRole);
         return ResultMsg.success();
     }
@@ -57,7 +57,7 @@ public class SysRoleController {
      * @return
      */
     @PostMapping("/{roleId}/update")
-    public ResultMsg updateRole(@PathVariable("roleId")Integer roleId,SysRole sysRole) throws RoleException {
+    public ResultMsg updateRole(@PathVariable("roleId")Integer roleId,@RequestBody SysRole sysRole) throws RoleException {
         if(roleId == null || roleId <= 0 ){
             throw new RoleException(AdminCode.PARAM_ERROR,"角色id不存在");
         }
@@ -79,6 +79,7 @@ public class SysRoleController {
         if(roleId == null || roleId <= 0 ){
             throw new RoleException(AdminCode.PARAM_ERROR,"角色id不存在");
         }
+        iSysRoleService.delRoleById(roleId);
         return ResultMsg.success();
     }
 

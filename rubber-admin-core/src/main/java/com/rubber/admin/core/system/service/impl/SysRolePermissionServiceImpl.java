@@ -15,7 +15,9 @@ import com.rubber.admin.core.system.exception.PermissionException;
 import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.mapper.SysRolePermissionMapper;
 import com.rubber.admin.core.system.model.PermissionBean;
+import com.rubber.admin.core.system.model.PermissionDictModel;
 import com.rubber.admin.core.system.model.SysRolePermissionModel;
+import com.rubber.admin.core.system.service.ISysPermissionDictService;
 import com.rubber.admin.core.system.service.ISysRolePermissionService;
 import com.rubber.admin.core.system.service.ISysRoleService;
 import com.rubber.admin.core.tools.ServletUtils;
@@ -41,6 +43,9 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
 
     @Resource
     private ISysRoleService sysRoleService;
+
+    @Resource
+    private ISysPermissionDictService sysPermissionDictService;
 
 
     /**
@@ -158,7 +163,7 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
                 if(!allUnits.contains(unitBean.getUnitKey())){
                     throw new RoleException(AdminCode.ROLE_PRIVILEGE_ILLEGAL,"权限模块{}下不存在权限单元{}",moduleKey,unitBean.getUnitKey());
                 }
-                if (!roleModuleUnit.contains(unitBean.getUnitKey())){
+                if (roleModuleUnit.contains(unitBean.getUnitKey())){
                     throw new RoleException(AdminCode.ROLE_PRIVILEGE_ILLEGAL,"权限模块{}下配置的权限单元{}重复",moduleKey,unitBean.getUnitKey());
                 }
                 roleModuleUnit.add(unitBean.getUnitKey());
@@ -217,11 +222,7 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
         Map<String,Set<String>> unRepeatPermission = new HashMap<>(rolePermissionList.size());
         for(SysRolePermission sysRolePermission:rolePermissionList){
             String modelKey = sysRolePermission.getModule();
-            Set<String> unitBeansUnRepeat = unRepeatPermission.get(modelKey);
-            if(unitBeansUnRepeat == null){
-                unitBeansUnRepeat = new HashSet<>();
-                unRepeatPermission.put(modelKey,unitBeansUnRepeat);
-            }
+            Set<String> unitBeansUnRepeat = unRepeatPermission.computeIfAbsent(modelKey, k -> new HashSet<>());
             String unitArray = sysRolePermission.getUnitArray();
             if(StrUtil.isNotEmpty(unitArray)){
                 String[] split = StrUtil.split(unitArray, PermissionUtils.UNIT_LINK_KEY);
@@ -229,13 +230,17 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
                 unitBeansUnRepeat.addAll(hashSet);
             }
         }
+        //获取权限字典
+        Map<String, PermissionDictModel> permissionDict = sysPermissionDictService.allPermissionDict();
         List<PermissionBean> permissionBeans = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(unRepeatPermission)){
             for (String modelKey:unRepeatPermission.keySet()){
-                PermissionBean permissionBean = new PermissionBean(modelKey,modelKey);
+                PermissionDictModel dictModel = permissionDict.get(modelKey);
+                PermissionBean permissionBean = new PermissionBean(modelKey,dictModel);
+
                 Set<String> unitBeans = unRepeatPermission.get(modelKey);
                 List<PermissionBean.UnitBean> unitBeansList = unitBeans.stream().map(i -> {
-                    return new PermissionBean.UnitBean(i, i, PermissionUtils.createAuthorizeKey(modelKey, i));
+                    return new PermissionBean.UnitBean(i, modelKey, dictModel);
                 }).collect(Collectors.toList());
                 permissionBean.setUnitBeans(unitBeansList);
                 permissionBeans.add(permissionBean);
