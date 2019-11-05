@@ -11,7 +11,7 @@
  Target Server Version : 50727
  File Encoding         : 65001
 
- Date: 04/11/2019 21:07:10
+ Date: 05/11/2019 20:58:22
 */
 
 SET NAMES utf8mb4;
@@ -61,7 +61,7 @@ CREATE TABLE `sys_menu` (
   `update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
   `remark` varchar(500) DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='菜单权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='菜单权限表';
 
 -- ----------------------------
 -- Records of sys_menu
@@ -71,6 +71,7 @@ INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 0, '#', 'M', NULL, 0, 0, '#
 INSERT INTO `sys_menu` VALUES (2, '菜单管理', 1, 1, '#', 'C', NULL, 0, 0, '#', NULL, NULL, NULL, NULL, '');
 INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 2, '#', 'C', NULL, 0, 0, '#', NULL, NULL, NULL, NULL, '');
 INSERT INTO `sys_menu` VALUES (4, '用户管理', 1, 3, '#', 'C', NULL, 0, 0, '#', NULL, NULL, NULL, NULL, '');
+INSERT INTO `sys_menu` VALUES (6, '部门管理', 1, 0, '#', 'C', NULL, 0, 0, '#', 1, '2019-11-05 18:05:59', 1, '2019-11-05 18:12:45', '这是一个词而是');
 COMMIT;
 
 -- ----------------------------
@@ -100,7 +101,7 @@ BEGIN;
 INSERT INTO `sys_permission_dict` VALUES (1, 'select', '查询', 'list,query,get,find,page,info,download,export,select', 'basic_unit', 0, NULL, NULL, NULL, NULL, '');
 INSERT INTO `sys_permission_dict` VALUES (2, 'edit', '编辑', 'edit,update,modify,mod', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_permission_dict` VALUES (3, 'add', '新增', 'add,save,install,saving,copy', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (4, 'delect', '删除', 'del,delete,remove,rf', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_permission_dict` VALUES (4, 'delete', '删除', 'del,delete,remove,rf', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_permission_dict` VALUES (5, 'verify', '审核', 'auth,online,offline,verify', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_permission_dict` VALUES (6, 'upload', '上传', 'upload,import', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_permission_dict` VALUES (7, 'download', '下载', 'down,download,export', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
@@ -124,20 +125,21 @@ CREATE TABLE `sys_role` (
   `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
   `seq` tinyint(3) unsigned DEFAULT '0' COMMENT '显示顺序',
   `status` tinyint(3) DEFAULT '0' COMMENT '状态（0正常 -1停用）',
-  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 -1代表删除）',
+  `del_flag` tinyint(3) DEFAULT '0' COMMENT '删除标志（0代表存在 -1代表删除）',
   `create_by` int(11) DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` int(11) DEFAULT NULL COMMENT '最后一次更新人id',
   `update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='角色信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='角色信息表';
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_role` VALUES (1, '系统管理员', 'admin', 1, 0, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_role` VALUES (1, '系统管理员', 'admin', 1, 0, 0, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_role` VALUES (2, '开发人员', 'developers', 1, 0, 0, 1, '2019-11-05 17:18:26', 1, '2019-11-05 17:36:34', '开发人员测-2试');
 COMMIT;
 
 -- ----------------------------
@@ -184,14 +186,15 @@ CREATE TABLE `sys_role_permission` (
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`),
   KEY `idx_role` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='角色权限列表';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='角色权限列表';
 
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_role_permission` VALUES (1, '1', 'menu', 'setect,add,edit', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_role_permission` VALUES (2, '1', 'u', 'select', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_role_permission` VALUES (9, '1', 'menu', 'add,select,edit,delete', 1, '2019-11-05 20:29:52', NULL, NULL, NULL);
+INSERT INTO `sys_role_permission` VALUES (10, '1', 'user', 'add,select,edit,delete', 1, '2019-11-05 20:29:52', NULL, NULL, NULL);
+INSERT INTO `sys_role_permission` VALUES (11, '1', 'u', 'select', 1, '2019-11-05 20:29:52', NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -204,7 +207,7 @@ CREATE TABLE `sys_user` (
   `dept_id` int(11) DEFAULT NULL COMMENT '所属部门编号',
   `login_account` varchar(50) NOT NULL COMMENT '账号',
   `login_pwd` varchar(100) NOT NULL COMMENT '密码',
-  `salt` varchar(6) DEFAULT NULL COMMENT '盐值',
+  `salt` varchar(50) DEFAULT NULL COMMENT '盐值',
   `email` varchar(100) DEFAULT NULL COMMENT '邮件地址',
   `phone` varchar(100) DEFAULT NULL COMMENT '手机号码',
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像信息',
@@ -223,14 +226,15 @@ CREATE TABLE `sys_user` (
   `version` int(11) DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `uniq_login` (`login_account`) USING HASH
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` VALUES (1, '超级管理员', NULL, 'admin', '$2a$10$rNY0Tb3p2gcNc69IXUJ5B.jZhyB84eI5sEyTFllJOm3YueJ7H9W3.', '798835', NULL, NULL, NULL, NULL, '2019-11-04 21:00:53', '0:0:0:0:0:0:0:1', 28, 0, 0, 1, NULL, NULL, NULL, NULL, NULL, 22);
-INSERT INTO `sys_user` VALUES (4, '余高峰', NULL, 'yugaofeng', '$2a$10$rNY0Tb3p2gcNc69IXUJ5B.jZhyB84eI5sEyTFllJOm3YueJ7H9W3.', '798835', NULL, NULL, NULL, NULL, '2019-11-04 19:55:36', '0:0:0:0:0:0:0:1', 17, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 17);
+INSERT INTO `sys_user` VALUES (1, '超级管理员', NULL, 'admin', '$2a$10$DddJsIctDNwGHiucMB90HegUa4iX.oszYhfQe8hXQ1nCANZfMeBeW', '$2a$04$FKmd8XmZ4xBp0vlTPAZ1NO', NULL, NULL, NULL, NULL, '2019-11-05 20:51:36', '0:0:0:0:0:0:0:1', 34, 0, 0, 1, NULL, NULL, NULL, NULL, '2019-11-05 20:51:36', 28);
+INSERT INTO `sys_user` VALUES (4, '余高峰', NULL, 'yugaofeng', '$2a$10$DddJsIctDNwGHiucMB90HegUa4iX.oszYhfQe8hXQ1nCANZfMeBeW', '$2a$04$FKmd8XmZ4xBp0vlTPAZ1NO', NULL, NULL, NULL, NULL, '2019-11-05 20:29:58', '0:0:0:0:0:0:0:1', 19, 0, 0, 0, NULL, NULL, NULL, 1, '2019-11-05 20:29:58', 19);
+INSERT INTO `sys_user` VALUES (5, '测试2', NULL, 'test', '$2a$10$DOGuiddH00MgYd45CkI3qeadTXtZD40xy80yh92J7HsQ59luLj//G', '$2a$06$QmfL/6EC9IDSH4x/Mem7O.', '919134@qq.com', '18617181471', 'http://safaf/test/avater', 1, NULL, NULL, 0, 0, 0, 0, '开发人员测试', 1, '2019-11-05 17:53:49', 1, '2019-11-05 20:27:29', 0);
 COMMIT;
 
 -- ----------------------------
@@ -248,6 +252,9 @@ CREATE TABLE `sys_user_role` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_user_role` VALUES (4, 1);
+INSERT INTO `sys_user_role` VALUES (4, 2);
+INSERT INTO `sys_user_role` VALUES (5, 1);
+INSERT INTO `sys_user_role` VALUES (5, 2);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
