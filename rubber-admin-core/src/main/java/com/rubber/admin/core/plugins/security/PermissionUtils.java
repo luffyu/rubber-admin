@@ -1,6 +1,7 @@
 package com.rubber.admin.core.plugins.security;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.system.entity.SysPermissionDict;
 import org.springframework.util.StringUtils;
@@ -56,6 +57,11 @@ public class PermissionUtils {
      */
     public static final String UNIT_LINK_KEY = ",";
 
+    /**
+     * url中的版本字段
+     */
+    public static final String URL_VERION_REGEX = "^(v[0-9])";
+
 
     /**
      * 生成验证的key
@@ -100,6 +106,9 @@ public class PermissionUtils {
         if(url.startsWith(URL_LINK_KEY)){
             url = url.substring(1);
         }
+        if(ReUtil.contains(URL_VERION_REGEX,url)){
+            url = StrUtil.subAfter(url, URL_LINK_KEY, false);
+        }
         return StrUtil.subBefore(url,URL_LINK_KEY,false);
     }
 
@@ -116,4 +125,6 @@ public class PermissionUtils {
         }
         return userPermission.contains(requestPermission);
     }
+
+
 }

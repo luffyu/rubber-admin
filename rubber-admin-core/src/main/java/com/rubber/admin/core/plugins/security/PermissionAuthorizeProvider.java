@@ -103,6 +103,10 @@ public class PermissionAuthorizeProvider implements ApplicationContextAware {
         //获取默认的handlerMethod
         if(StrUtil.isEmpty(moduleKey)){
             moduleKey = doCreateDefaultKey(handlerMethod,urlPath);
+            SysPermissionDict moduleDict = PermissionUtils.findByValue(moduleKey, privilegeModuleDicts);
+            if(moduleDict != null && moduleDict.getDictKey() != null){
+                moduleKey = moduleDict.getDictKey();
+            }
         }
 
         if(privilegeUnitKey == null){

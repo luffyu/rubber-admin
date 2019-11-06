@@ -80,5 +80,9 @@ public class BaseAdminService<M extends BaseMapper<T>,T extends BaseEntity> exte
         }
     }
 
+    public M getBaseMapper(){
+        return baseMapper;
+    }
+
 
 }
