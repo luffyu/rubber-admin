@@ -7,7 +7,7 @@ import com.rubber.admin.security.auth.BaseTokenVerifyService;
 import com.rubber.admin.security.auth.TokenVerifyBean;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
-import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
+import com.rubber.admin.security.config.properties.RubberSecurityProperties;
 import com.rubber.admin.security.handle.PropertiesHandle;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
 import io.jsonwebtoken.Claims;
@@ -25,7 +25,7 @@ public class JwtTokenVerifyService extends BaseTokenVerifyService {
 
     @Override
     public TokenVerifyBean doVerify(HttpServletRequest request) throws TokenVerifyException {
-        RubbeSecurityProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
+        RubberSecurityProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
         String jwtToken = request.getHeader(jwtConfig.getHeaderKey());
         if(StrUtil.isEmpty(jwtToken)){
             throw new TokenVerifyException(AdminCode.USER_NOT_LOGIN);
@@ -48,7 +48,7 @@ public class JwtTokenVerifyService extends BaseTokenVerifyService {
     @Override
     public String doCreate(LoginUserDetail loginUserDetail) throws TokenCreateException {
         long now = System.currentTimeMillis();
-        RubbeSecurityProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
+        RubberSecurityProperties.JwtProperties jwtConfig = PropertiesHandle.config.getJwt();
         HashMap<String,Object> map = new HashMap<>(4);
         map.put("version",loginUserDetail.getSysUser().getVersion());
         String jwtDefault = JwtUtil.createJwtDefault(loginUserDetail.getSysUser().getLoginAccount(), now, jwtConfig.getTimeOut(),map, jwtConfig.getSecretKey());

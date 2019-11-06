@@ -1,9 +1,7 @@
 package com.rubber.admin.security.config;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.rubber.admin.core.plugins.cache.ICacheProvider;
-import com.rubber.admin.core.plugins.cache.CacheProviderFactory;
-import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
+import com.rubber.admin.security.config.properties.RubberSecurityProperties;
 import com.rubber.admin.security.filter.AuthenticationTokenVerifyFilter;
 import com.rubber.admin.security.filter.RubberAuthenticationFilter;
 import com.rubber.admin.security.handle.AuthenticationEntryPointImpl;
@@ -38,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LogoutSuccessHandlerImpl logoutSuccessHandler;
 
     @Autowired
-    private RubbeSecurityProperties rubberConfigProperties;
+    private RubberSecurityProperties rubberConfigProperties;
 
 
     @Override
@@ -107,16 +105,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
-
-    /**
-     * 解决 无法直接注入 AuthenticationManager
-     * @return
-     * @throws Exception
-     */
-    @Bean
-    public ICacheProvider userCacheProvider() throws Exception {
-        return CacheProviderFactory.builder();
-    }
 
 }

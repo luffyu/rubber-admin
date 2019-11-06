@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>com.rubber.admin</groupId>
-            <artifactId>rubber-admin-security</artifactId>
+            <artifactId>springboot-rubber-admin-start</artifactId>
             <version>${rubber-admin.version}</version>
         </dependency>
     </dependencies>

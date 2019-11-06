@@ -25,12 +25,12 @@ public class RubberPropertiesUtils {
 
 
     @Resource
-    private RubbeSecurityProperties rubbeSecurityProperties;
+    private RubberSecurityProperties rubbeSecurityProperties;
 
     /**
      * rubber的配置信息
      */
-    private static RubbeSecurityProperties securityProperties;
+    private static RubberSecurityProperties securityProperties;
 
     /**
      * 配置的不需要进行验证的url
@@ -39,7 +39,7 @@ public class RubberPropertiesUtils {
 
 
 
-    private static OrRequestMatcher unPermessionFilterRequest;
+    private static OrRequestMatcher unPermissionFilterRequest;
 
 
 
@@ -62,7 +62,7 @@ public class RubberPropertiesUtils {
     /**
      * @return 返回配置信息
      */
-    public static RubbeSecurityProperties getSecurityProperties() {
+    public static RubberSecurityProperties getSecurityProperties() {
         return securityProperties;
     }
 
@@ -79,7 +79,7 @@ public class RubberPropertiesUtils {
 
         Set<String> defaultPermission = securityProperties.getAllDefaultPermissionUrl();
         List<RequestMatcher> defaultPermissionMatchers =defaultPermission.stream().map(AntPathRequestMatcher::new).collect(Collectors.toList());
-        unPermessionFilterRequest = new OrRequestMatcher(defaultPermissionMatchers);
+        unPermissionFilterRequest = new OrRequestMatcher(defaultPermissionMatchers);
     }
 
 
@@ -103,10 +103,10 @@ public class RubberPropertiesUtils {
      * @return 返回true标示该请求在不需要验证的url中
      */
     public static boolean verifyNotPermessionFilter(HttpServletRequest request){
-        if(unPermessionFilterRequest == null){
+        if(unPermissionFilterRequest == null){
             log.error("不过滤的url请求为空");
             return false;
         }
-        return unPermessionFilterRequest.matches(request);
+        return unPermissionFilterRequest.matches(request);
     }
 }

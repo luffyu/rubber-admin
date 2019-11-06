@@ -1,7 +1,7 @@
 package com.rubber.admin.security.auth;
 
 import com.rubber.admin.security.auth.jwt.JwtTokenVerifyService;
-import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
+import com.rubber.admin.security.config.properties.RubberSecurityProperties;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 public class SpringTokenVerifyFactory implements FactoryBean<ITokenVerifyService> {
 
     @Autowired
-    private RubbeSecurityProperties rubbeSecurityProperties;
+    private RubberSecurityProperties rubberSecurityProperties;
 
     @Override
     public ITokenVerifyService getObject() throws Exception {
-        AuthType authType = rubbeSecurityProperties.getAuthType();
+        AuthType authType = rubberSecurityProperties.getAuthType();
         switch (authType){
             case jwt:
                 return new JwtTokenVerifyService();

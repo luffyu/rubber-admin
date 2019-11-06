@@ -10,7 +10,7 @@ import com.rubber.admin.core.system.model.SysUserModel;
 import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.auth.TokenVerifyBean;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
-import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
+import com.rubber.admin.security.config.properties.RubberSecurityProperties;
 import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.bean.LoginException;
 import com.rubber.admin.security.login.bean.LoginType;
@@ -32,7 +32,7 @@ public class RubberUserFindService implements IUserFindService {
     private ISysUserService sysUserService;
 
     @Resource
-    private RubbeSecurityProperties rubbeSecurityProperties;
+    private RubberSecurityProperties rubbeSecurityProperties;
 
 
     @Autowired(required = false)

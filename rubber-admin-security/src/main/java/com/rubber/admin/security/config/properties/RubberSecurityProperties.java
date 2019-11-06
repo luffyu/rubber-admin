@@ -17,7 +17,7 @@ import java.util.Set;
 @Data
 @Component
 @ConfigurationProperties("rubber.security")
-public class RubbeSecurityProperties {
+public class RubberSecurityProperties {
 
 
     /**
@@ -114,6 +114,7 @@ public class RubbeSecurityProperties {
     public Set<String> getAllDefaultPermissionUrl() {
         Set<String> defaultPermissionUrl = getAllAnonymous();
         defaultPermissionUrl.addAll(this.defaultPermissionUrl);
+        defaultPermissionUrl.add("/u/**");
         return defaultPermissionUrl;
     }
 

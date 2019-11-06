@@ -25,7 +25,7 @@ public class LocalCacheProvider implements ICacheProvider {
     private AtomicInteger cacheVersion = new AtomicInteger(0);
 
 
-    private LocalCacheProvider() {
+    public LocalCacheProvider() {
         /**
          * LFU(least frequently used) 最少使用率缓存<br>
          * 根据使用次数来判定对象是否被持续缓存<br>

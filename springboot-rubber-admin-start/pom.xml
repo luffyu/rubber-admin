@@ -17,6 +17,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.rubber.admin</groupId>
+            <artifactId>rubber-admin-security</artifactId>
+            <version>${rubber-admin.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
