@@ -82,7 +82,7 @@ public class RubberUserFindService implements IUserFindService {
         }
         //验证版本是否合法
         if (!sysUser.getVersion().equals(verifyBean.getVersion())){
-            throw new TokenVerifyException(AdminCode.TOKEN_IS_EXPIRED);
+            throw new TokenVerifyException(AdminCode.LOGIN_VERSION_ILLEGAL,"账户{}在{}在另外一台设备ip{}上登陆",sysUser.getLoginAccount(),sysUser.getLoginTime(),sysUser.getLoginIp());
         }
         if(updateCache){
             doUpdateUserCache(sysUser);

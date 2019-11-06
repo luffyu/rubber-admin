@@ -13,4 +13,8 @@ public class TokenVerifyException extends AdminRunTimeException {
     public TokenVerifyException(ICodeHandle handle) {
         super(handle);
     }
+
+    public TokenVerifyException(ICodeHandle handle, String msg, Object... arguments) {
+        super(handle, msg, arguments);
+    }
 }

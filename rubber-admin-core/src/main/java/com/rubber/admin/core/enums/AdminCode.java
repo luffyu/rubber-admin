@@ -47,6 +47,7 @@ public enum AdminCode implements ICodeHandle {
     TOKEN_IS_ERROR("20106","登陆token错误"),
     LOGIN_TYPE_NOT_SUPPORT("20107","不支持的登陆类型"),
     ACCOUNT_IS_EXIST("20108","账户已经存在"),
+    LOGIN_VERSION_ILLEGAL("20109","账户登陆状态异常"),
 
 
     /**
