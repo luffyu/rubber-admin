@@ -12,14 +12,14 @@ import lombok.Data;
  * @since 2019-05-13
  */
 @Data
-public class SysRoleDept extends BaseEntity {
+public class SysUserDept extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色ID
+     * 用户ID
      */
-    private Integer roleId;
+    private Integer userId;
 
     /**
      * 部门ID

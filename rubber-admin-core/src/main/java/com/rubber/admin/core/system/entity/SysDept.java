@@ -1,11 +1,11 @@
 package com.rubber.admin.core.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -30,11 +30,6 @@ public class SysDept extends BaseEntity {
      * 父部门id 0表示根目录
      */
     private Integer parentId;
-
-    /**
-     * 祖级列表
-     */
-    private String ancestors;
 
     /**
      * 部门名称
@@ -79,17 +74,17 @@ public class SysDept extends BaseEntity {
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 最后一次更新人id
      */
-    private Integer lastUpdateBy;
+    private Integer updateBy;
 
     /**
      * 最好一个更新时间
      */
-    private LocalDateTime lastUpdateTime;
+    private Date updateTime;
 
     /**
      * 备注

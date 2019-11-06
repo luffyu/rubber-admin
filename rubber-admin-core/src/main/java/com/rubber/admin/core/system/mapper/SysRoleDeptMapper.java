@@ -1,6 +1,6 @@
 package com.rubber.admin.core.system.mapper;
 
-import com.rubber.admin.core.system.entity.SysRoleDept;
+import com.rubber.admin.core.system.entity.SysUserDept;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author luffyu-auto
  * @since 2019-05-13
  */
-public interface SysRoleDeptMapper extends BaseMapper<SysRoleDept> {
+public interface SysRoleDeptMapper extends BaseMapper<SysUserDept> {
 
 }

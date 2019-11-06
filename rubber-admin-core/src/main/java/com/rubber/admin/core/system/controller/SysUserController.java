@@ -84,4 +84,20 @@ public class SysUserController {
         sysUserService.delUser(userId);
         return ResultMsg.success();
     }
+
+
+
+    /**
+     * 更新角色的信息
+     * @param userId 角色id
+     * @return
+     */
+    @GetMapping("/{userId}/info")
+    public ResultMsg getUser(@PathVariable("userId")Integer userId) throws RoleException, UserException {
+        if(userId == null || userId <= 0){
+            throw new UserException(AdminCode.PARAM_ERROR,"用户id为空");
+        }
+        SysUser sysUser = sysUserService.getAndVerifyById(userId);
+        return ResultMsg.success(sysUser);
+    }
 }

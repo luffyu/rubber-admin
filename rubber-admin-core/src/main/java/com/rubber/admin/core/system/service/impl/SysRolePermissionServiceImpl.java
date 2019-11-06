@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
+import com.rubber.admin.core.plugins.cache.ICacheProvider;
 import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.system.entity.SysRole;
@@ -22,6 +23,7 @@ import com.rubber.admin.core.system.service.ISysRolePermissionService;
 import com.rubber.admin.core.system.service.ISysRoleService;
 import com.rubber.admin.core.tools.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,9 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
 
     @Resource
     private ISysPermissionDictService sysPermissionDictService;
+
+    @Autowired(required = false)
+    private ICacheProvider cacheProvider;
 
 
     /**
@@ -72,9 +77,18 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
                 throw new PermissionException(SysCode.SYSTEM_ERROR,"添加角色{}[{}]的权限失败",rolePermissionModel.getRole().getRoleName(),rolePermissionModel.getRole().getRoleId());
             }
         }
+        doUpdateCacheVersion();
     }
 
 
+    /**
+     * 角色的权限发生变化 则更新缓存的版本号 让所有用户重新获取版本信息
+     */
+    private void doUpdateCacheVersion(){
+        if(cacheProvider != null){
+            cacheProvider.incrVersion();
+        }
+    }
 
 
     /**

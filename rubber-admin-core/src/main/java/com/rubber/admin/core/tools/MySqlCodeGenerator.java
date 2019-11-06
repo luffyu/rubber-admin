@@ -19,7 +19,7 @@ public class MySqlCodeGenerator {
     //作者名称
     private static final String author = "luffyu-auto";
     //链接的数据库配置
-    private static final String jdbcUrl = "jdbc:mysql://127.0.0.1/rubber_admin?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true";
+    private static final String jdbcUrl = "jdbc:mysql://127.0.0.1:3308/rubber_admin?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true";
     private static final String dbUserName = "root";
     private static final String dbPassword = "root";
 
@@ -35,7 +35,7 @@ public class MySqlCodeGenerator {
 
 
     public static void main(String[] args) {
-        createCode("sys_role_privilege");
+        createCode("sys_dept");
     }
 
 

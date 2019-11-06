@@ -1,31 +1,29 @@
 package com.rubber.admin.core.plugins.cache;
 
-import com.rubber.admin.core.system.entity.SysUser;
-
 /**
  * @author luffyu
  * Created on 2019-10-28
  * 对用户信息的缓存
  */
-public interface IUserCacheProvider {
+public interface ICacheProvider {
 
 
     /**
      * 写入用户的缓存信息
-     * @param sysUser 用户的信息
+     * @param cacheAble 用户的信息
      * @param time 缓存时间 单位是毫秒
      * @return false表示更新失败
      */
-    boolean write(SysUser sysUser,long time);
+    boolean write(CacheAble cacheAble,long time);
 
 
     /**
      * 更新用户的缓存信息
-     * @param sysUser 用户的信息
+     * @param cacheAble 用户的信息
      * @param time 缓存时间 单位是毫秒
      * @return true表示更新成功
      */
-    boolean update(SysUser sysUser,long time);
+    boolean update(CacheAble cacheAble,long time);
 
 
     /**
@@ -41,6 +39,18 @@ public interface IUserCacheProvider {
      * @param key 缓存key
      * @return 返回用户的基本信息
      */
-    SysUser findByKey(String key);
+    CacheAble findByKey(String key);
+
+
+    /**
+     * 更新version
+     */
+    int incrVersion();
+
+    /**
+     * 获取当前的缓存版本号
+     * @return
+     */
+    int version();
 
 }

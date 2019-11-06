@@ -36,7 +36,7 @@ public enum AdminCode implements ICodeHandle {
      * 已  2-**-** 开头
      */
     /**
-     * 201** 登陆类型的错误code
+     * 201** 用户类型的错误code
      */
     USER_NOT_LOGIN("20100","用户未登陆"),
     LOGIN_AUTH_ERROR("20101","登陆密码错误"),
@@ -48,6 +48,7 @@ public enum AdminCode implements ICodeHandle {
     LOGIN_TYPE_NOT_SUPPORT("20107","不支持的登陆类型"),
     ACCOUNT_IS_EXIST("20108","账户已经存在"),
 
+
     /**
      * 202** 角色类型的错误
      */
@@ -57,11 +58,18 @@ public enum AdminCode implements ICodeHandle {
     ROLE_IS_DELETE("20203","角色已经被删除"),
 
     /**
-     * 菜单不存在
+     * 203** 菜单类型的错误
      */
     MENU_NOT_EXIST("20300","菜单不存在"),
     MENU_HAVE_CHILD("20301","菜单存在子菜单"),
 
+
+
+    /**
+     * 204** 部门类型的错误
+     */
+    DEPT_NOT_EXIST("20300","部门不存在"),
+    DEPT_HAVE_CHILD("20301","部门存在子部门"),
 
     ;
     /**

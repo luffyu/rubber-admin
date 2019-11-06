@@ -83,4 +83,19 @@ public class SysRoleController {
         return ResultMsg.success();
     }
 
+
+    /**
+     * 删除角色的信息
+     * @param roleId 角色信息
+     * @return
+     */
+    @GetMapping("/{roleId}/info")
+    public ResultMsg getRole(@PathVariable("roleId")Integer roleId) throws RoleException {
+        if(roleId == null || roleId <= 0 ){
+            throw new RoleException(AdminCode.PARAM_ERROR,"角色id不存在");
+        }
+        SysRole sysRole = iSysRoleService.getAndVerifyById(roleId);
+        return ResultMsg.success(sysRole);
+    }
+
 }

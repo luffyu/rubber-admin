@@ -2,10 +2,12 @@ package com.rubber.admin.security.login.service;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.rubber.admin.core.plugins.cache.ICacheProvider;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ public class RubberUserLoginService {
 
     @Resource
     private AuthenticationManager authenticationManager;
+
 
 
     /**

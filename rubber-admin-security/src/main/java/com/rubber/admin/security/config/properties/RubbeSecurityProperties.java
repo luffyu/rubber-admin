@@ -29,6 +29,7 @@ public class RubbeSecurityProperties {
 
     /**
      * 匿名访问认证
+     * 不登陆也不用选择 也不用验证权限信息
      */
     private Set<String> anonymous = new HashSet<>(10);
 
@@ -48,6 +49,12 @@ public class RubbeSecurityProperties {
      * 登出的url
      */
     private String logoutUrl = "/logout";
+
+
+    /**
+     * 默认的权限列表信息
+     */
+    private Set<String> defaultPermissionUrl = new HashSet<>(10);
 
 
     /**
@@ -85,6 +92,10 @@ public class RubbeSecurityProperties {
         private long timeOut = 10000000;
     }
 
+    /**
+     * 获取全部不需要登陆验证的url
+     * @return 返回 不需要登陆就可以直接验证的url
+     */
     public Set<String> getAllAnonymous() {
         Set<String> allAnonymous = new HashSet<>(this.anonymous);
         if(CollectionUtil.isNotEmpty(permitAll)){
@@ -94,4 +105,16 @@ public class RubbeSecurityProperties {
         allAnonymous.add(this.logoutUrl);
         return allAnonymous;
     }
+
+
+    /**
+     * 获取全部的用户默认访问的url
+     * @return 返回默认的权限url
+     */
+    public Set<String> getAllDefaultPermissionUrl() {
+        Set<String> defaultPermissionUrl = getAllAnonymous();
+        defaultPermissionUrl.addAll(this.defaultPermissionUrl);
+        return defaultPermissionUrl;
+    }
+
 }

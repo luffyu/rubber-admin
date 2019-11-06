@@ -35,7 +35,12 @@ public class RubberPropertiesUtils {
     /**
      * 配置的不需要进行验证的url
      */
-    private static OrRequestMatcher unFilterRequest;
+    private static OrRequestMatcher unLoginFilterRequest;
+
+
+
+    private static OrRequestMatcher unPermessionFilterRequest;
+
 
 
     @PostConstruct
@@ -69,7 +74,12 @@ public class RubberPropertiesUtils {
     private static void initRequestMatcher(){
         Set<String> anonymous = securityProperties.getAllAnonymous();
         List<RequestMatcher> matchers =anonymous.stream().map(AntPathRequestMatcher::new).collect(Collectors.toList());
-        unFilterRequest = new OrRequestMatcher(matchers);
+        unLoginFilterRequest = new OrRequestMatcher(matchers);
+
+
+        Set<String> defaultPermission = securityProperties.getAllDefaultPermissionUrl();
+        List<RequestMatcher> defaultPermissionMatchers =defaultPermission.stream().map(AntPathRequestMatcher::new).collect(Collectors.toList());
+        unPermessionFilterRequest = new OrRequestMatcher(defaultPermissionMatchers);
     }
 
 
@@ -78,11 +88,25 @@ public class RubberPropertiesUtils {
      * @param request 当前的请求
      * @return 返回true标示该请求在不需要验证的url中
      */
-    public static boolean verifyNotFilter(HttpServletRequest request){
-        if(unFilterRequest == null){
+    public static boolean verifyNotLoginFilter(HttpServletRequest request){
+        if(unLoginFilterRequest == null){
             log.error("不过滤的url请求为空");
             return false;
         }
-        return unFilterRequest.matches(request);
+        return unLoginFilterRequest.matches(request);
+    }
+
+
+    /**
+     * 验证是否在不验证的url中
+     * @param request 当前的请求
+     * @return 返回true标示该请求在不需要验证的url中
+     */
+    public static boolean verifyNotPermessionFilter(HttpServletRequest request){
+        if(unPermessionFilterRequest == null){
+            log.error("不过滤的url请求为空");
+            return false;
+        }
+        return unPermessionFilterRequest.matches(request);
     }
 }

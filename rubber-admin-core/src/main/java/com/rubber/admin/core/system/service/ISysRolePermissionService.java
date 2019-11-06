@@ -1,8 +1,8 @@
 package com.rubber.admin.core.system.service;
 
 import com.rubber.admin.core.base.IBaseService;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysRolePermission;
-import com.rubber.admin.core.system.exception.PermissionException;
 import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.model.PermissionBean;
 import com.rubber.admin.core.system.model.SysRolePermissionModel;
@@ -24,8 +24,9 @@ public interface ISysRolePermissionService extends IBaseService<SysRolePermissio
     /**
      * 保存用户的角色权限
      * @param rolePermissionModel 具体的角色权限信息
+     * @throws AdminException 异常信息
      */
-    void saveRolePermission(SysRolePermissionModel rolePermissionModel) throws RoleException, PermissionException;
+    void saveRolePermission(SysRolePermissionModel rolePermissionModel) throws AdminException;
 
 
     /**

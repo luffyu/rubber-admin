@@ -2,23 +2,30 @@ package com.rubber.admin.core.plugins.cache;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
-import com.rubber.admin.core.system.entity.SysUser;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author luffyu
  * Created on 2019-10-28
  * 需要一个单例模式
  */
-public class LocalUserCacheProvider implements IUserCacheProvider {
+public class LocalCacheProvider implements ICacheProvider {
 
     /**
      * 创建一个单例的cache信息
      */
-    private static LocalUserCacheProvider securityCache = new LocalUserCacheProvider();
+    private static LocalCacheProvider securityCache = new LocalCacheProvider();
 
-    private static LFUCache<String, SysUser> cache;
+    private static LFUCache<String, CacheAble> cache;
 
-    private LocalUserCacheProvider() {
+    /**
+     * 版本号
+     */
+    private AtomicInteger cacheVersion = new AtomicInteger(0);
+
+
+    private LocalCacheProvider() {
         /**
          * LFU(least frequently used) 最少使用率缓存<br>
          * 根据使用次数来判定对象是否被持续缓存<br>
@@ -29,24 +36,25 @@ public class LocalUserCacheProvider implements IUserCacheProvider {
         cache = CacheUtil.newLFUCache(400);
     }
 
-    public static LocalUserCacheProvider create(){
+    public static LocalCacheProvider create(){
         return securityCache;
     }
 
 
     @Override
-    public boolean write(SysUser sysUser, long time) {
-        if(sysUser == null){
+    public boolean write(CacheAble cacheAble, long time) {
+        if(cacheAble == null){
             return false;
         }
-        cache.put(sysUser.getLoginAccount(),sysUser,time);
+        cacheAble.setCacheVersion(version());
+        cache.put(cacheAble.getKey(),cacheAble,time);
         return true;
     }
 
     @Override
-    public boolean update(SysUser sysUser, long time) {
-        delete(sysUser.getLoginAccount());
-        return write(sysUser,time);
+    public boolean update(CacheAble cacheAble, long time) {
+        delete(cacheAble.getKey());
+        return write(cacheAble,time);
     }
 
     @Override
@@ -56,8 +64,22 @@ public class LocalUserCacheProvider implements IUserCacheProvider {
     }
 
     @Override
-    public SysUser findByKey(String key) {
+    public CacheAble findByKey(String key) {
         return cache.get(key);
     }
 
+
+    @Override
+    public int incrVersion() {
+        return cacheVersion.getAndIncrement();
+    }
+
+    /**
+     * 返回当前的版本信息
+     * @return 返回版本信息
+     */
+    @Override
+    public int version(){
+        return cacheVersion.get();
+    }
 }

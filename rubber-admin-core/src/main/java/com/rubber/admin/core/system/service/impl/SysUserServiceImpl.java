@@ -9,6 +9,8 @@ import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.plugins.cache.CacheAble;
+import com.rubber.admin.core.plugins.cache.ICacheProvider;
 import com.rubber.admin.core.plugins.encrypt.IEncryptHandler;
 import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.system.entity.SysMenu;
@@ -22,6 +24,7 @@ import com.rubber.admin.core.system.model.SysUserRoleModel;
 import com.rubber.admin.core.system.model.UserInfoModel;
 import com.rubber.admin.core.system.service.*;
 import com.rubber.admin.core.tools.ServletUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,9 +58,11 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     @Resource
     private ISysUserRoleService sysUserRoleService;
 
-
     @Resource
     private IEncryptHandler iEncryptHandler;
+
+    @Autowired(required = false)
+    private ICacheProvider cacheProvider;
 
 
     @Override
@@ -303,9 +308,21 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         Integer loginUserId = ServletUtils.getLoginUserId();
         entity.setUpdateBy(loginUserId);
         entity.setUpdateTime(now);
-        return super.updateById(entity);
+        boolean updateFlag = super.updateById(entity);
+        if(updateFlag){
+            doClearCache(entity);
+        }
+        return updateFlag;
     }
 
 
+    /**
+     * 清空缓存信息
+     */
+    private void doClearCache(CacheAble cacheAble){
+        if(cacheProvider != null){
+            cacheProvider.delete(cacheAble.getKey());
+        }
+    }
 
 }

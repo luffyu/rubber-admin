@@ -100,7 +100,7 @@ public class AuthenticationTokenVerifyFilter extends OncePerRequestFilter {
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return RubberPropertiesUtils.verifyNotFilter(request);
+        return RubberPropertiesUtils.verifyNotLoginFilter(request);
     }
 
 }

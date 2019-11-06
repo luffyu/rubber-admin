@@ -3,12 +3,18 @@ package com.rubber.admin.security.login.service.find;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.plugins.cache.CacheAble;
+import com.rubber.admin.core.plugins.cache.ICacheProvider;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.model.SysUserModel;
 import com.rubber.admin.core.system.service.ISysUserService;
+import com.rubber.admin.security.auth.TokenVerifyBean;
+import com.rubber.admin.security.auth.exception.TokenVerifyException;
+import com.rubber.admin.security.config.properties.RubbeSecurityProperties;
 import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.bean.LoginException;
 import com.rubber.admin.security.login.bean.LoginType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +24,25 @@ import javax.annotation.Resource;
  * @author luffyu
  * Created on 2019-10-31
  */
+@Slf4j
 @Service
 public class RubberUserFindService implements IUserFindService {
 
     @Resource
     private ISysUserService sysUserService;
 
+    @Resource
+    private RubbeSecurityProperties rubbeSecurityProperties;
+
 
     @Autowired(required = false)
     private ExpandUserFindProvider expandUserFindService;
 
+    /**
+     * 缓存配置信息
+     */
+    @Autowired(required = false)
+    private ICacheProvider cacheProvider;
 
 
 
@@ -52,6 +67,28 @@ public class RubberUserFindService implements IUserFindService {
         return sysUser;
     }
 
+
+
+    @Override
+    public SysUser findByAccount(LoginBean loginBean, TokenVerifyBean verifyBean) {
+        boolean updateCache = false;
+        SysUser sysUser = doReadFormCache(loginBean.getAccount());
+        if(sysUser == null){
+            sysUser = findByAccount(loginBean);
+            updateCache = true;
+        }
+        if(sysUser == null){
+            throw new TokenVerifyException(AdminCode.USER_NOT_EXIST);
+        }
+        //验证版本是否合法
+        if (!sysUser.getVersion().equals(verifyBean.getVersion())){
+            throw new TokenVerifyException(AdminCode.TOKEN_IS_EXPIRED);
+        }
+        if(updateCache){
+            doUpdateUserCache(sysUser);
+        }
+        return findByAccount(loginBean);
+    }
 
 
     /**
@@ -114,6 +151,37 @@ public class RubberUserFindService implements IUserFindService {
         sysUser.setAvatar(sysUserModel.getAvatar());
         sysUser.setEmail(sysUserModel.getEmail());
         return sysUser;
+    }
+
+
+    /**
+     * 冲缓存中读取 用户信息
+     * @param account 账户信息
+     * @return 返回用户的全部信息
+     */
+    private SysUser doReadFormCache(String account){
+        if(cacheProvider == null){
+            return null;
+        }
+        CacheAble byKey = cacheProvider.findByKey(account);
+        if(byKey != null){
+            if(cacheProvider.version() != byKey.getCacheVersion()){
+                log.warn("用户{}缓存信息的版本号{}和当前的版本号{}不一致",account,byKey.getCacheVersion(),cacheProvider.version());
+                return null;
+            }
+            return (SysUser)byKey;
+        }
+        return null;
+    }
+
+    /**
+     * 返回超时时间
+     * @param sysUser 用户的基本信息
+     */
+    private void doUpdateUserCache(SysUser sysUser){
+        if(cacheProvider != null && sysUser != null){
+            cacheProvider.update(sysUser,rubbeSecurityProperties.getSessionTime());
+        }
     }
 
 }

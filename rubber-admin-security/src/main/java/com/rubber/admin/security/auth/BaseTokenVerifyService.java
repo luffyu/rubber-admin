@@ -1,8 +1,5 @@
 package com.rubber.admin.security.auth;
 
-import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.plugins.cache.IUserCacheProvider;
-import com.rubber.admin.core.plugins.cache.UserCacheNoProvider;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.security.auth.exception.TokenCreateException;
 import com.rubber.admin.security.auth.exception.TokenVerifyException;
@@ -11,7 +8,6 @@ import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
 import com.rubber.admin.security.login.service.find.IUserFindService;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -20,22 +16,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public abstract class BaseTokenVerifyService implements ITokenVerifyService {
 
-    @Resource
     private IUserFindService userFindService;
 
-    /**
-     * 缓存配置信息
-     */
-    private IUserCacheProvider userCacheProvider;
 
 
-
-    public BaseTokenVerifyService(IUserCacheProvider userCacheProvider) {
-        this.userCacheProvider = userCacheProvider;
-    }
-
-
-    public IUserFindService getUserService(){
+    public IUserFindService getFindUserService(){
         if(userFindService == null){
             userFindService = RubberPropertiesUtils.getApplicationContext().getBean(IUserFindService.class);
         }
@@ -69,25 +54,11 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
      */
     @Override
     public LoginUserDetail verify(HttpServletRequest request) throws TokenVerifyException {
-        boolean updateCache = false;
         //获取验证的信息
         TokenVerifyBean verifyBean = doVerify(request);
-        SysUser sysUser = doFindByCache(verifyBean.getSubject());
-        if(sysUser == null){
-            sysUser = getUserService().findByAccount(new LoginBean(verifyBean.getSubject()));
-            if(sysUser == null){
-                throw new TokenVerifyException(AdminCode.USER_NOT_EXIST);
-            }
-            updateCache = true;
-        }
-        //验证版本是否合法
-        if (!sysUser.getVersion().equals(verifyBean.getVersion())){
-            throw new TokenVerifyException(AdminCode.TOKEN_IS_EXPIRED);
-        }
-        if(updateCache){
-            //token写入到缓存中
-            doUpdateByCache(sysUser);
-        }
+        //返回账户信息
+        SysUser sysUser = getFindUserService().findByAccount(new LoginBean(verifyBean.getSubject()),verifyBean);
+
         return createUserDetail(sysUser);
     }
 
@@ -103,20 +74,9 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
         loginUserDetail.getSysUser().addVersion();
         //创建token
         String s = doCreate(loginUserDetail);
-        //token写入到缓存中
-        doUpdateByCache(loginUserDetail.getSysUser());
         //写入token
         loginUserDetail.setToken(s);
         return s;
-    }
-
-
-    /**
-     * 返回session的设置时间
-     * @return 返回异常的信息
-     */
-    protected long getTokenTimeOut(){
-        return  RubberPropertiesUtils.getSecurityProperties().getSessionTime();
     }
 
     /**
@@ -126,47 +86,6 @@ public abstract class BaseTokenVerifyService implements ITokenVerifyService {
      */
     protected LoginUserDetail createUserDetail(SysUser sysUser){
         return new LoginUserDetail(sysUser);
-    }
-
-
-    /**
-     * 通过缓存更新参数
-     * @param subject
-     */
-    private void doUpdateByCache(SysUser subject){
-        if(checkCacheAble()){
-            if(subject != null){
-                userCacheProvider.update(subject,getTokenTimeOut());
-            }
-
-        }
-    }
-
-    /**
-     * 通过缓存查询缓存
-     * @param subject 查询缓存的基本信息
-     * @return 返回具体的对象信息
-     */
-    private SysUser doFindByCache(String subject){
-        if(!checkCacheAble()){
-            return null;
-        }
-        return userCacheProvider.findByKey(subject);
-    }
-
-    /**
-     * 检测是否配置了缓存
-     * 如果没有配置则不在使用
-     * @return 返回true表示可以使用缓存 false表示不用使用缓存
-     */
-    private boolean checkCacheAble(){
-        if(userCacheProvider == null){
-            return false;
-        }
-        if(userCacheProvider instanceof UserCacheNoProvider){
-            return false;
-        }
-        return true;
     }
 
 }

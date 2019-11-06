@@ -91,4 +91,18 @@ public class SysMenuController {
         sysMenuService.delMenu(menuId);
         return ResultMsg.success();
     }
+
+
+    /**
+     * 获取菜单详情
+     * @return 返回菜单更新的值
+     */
+    @GetMapping("/{menuId}/info")
+    public ResultMsg getMenu(@PathVariable("menuId")Integer menuId) throws MenuException {
+        if(menuId == null || menuId <= 0 ){
+            throw new MenuException(AdminCode.PARAM_ERROR,"菜单id不存在");
+        }
+        SysMenu sysMenu = sysMenuService.getAndVerifyById(menuId);
+        return ResultMsg.success(sysMenu);
+    }
 }

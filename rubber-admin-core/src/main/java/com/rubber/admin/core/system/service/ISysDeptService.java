@@ -2,7 +2,7 @@ package com.rubber.admin.core.system.service;
 
 import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysDept;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.rubber.admin.core.system.exception.DeptException;
 
 /**
  * <p>
@@ -14,4 +14,31 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISysDeptService extends IBaseService<SysDept> {
 
+
+
+
+    /**
+     * 保存或者更新部门信息
+     * @param sysDept 系统的部门信息
+     * @throws DeptException 部门的异常
+     */
+    void saveOrUpdateDept(SysDept sysDept) throws DeptException;
+
+
+
+    /**
+     * 获取并验证一个部门信息
+     * @param deptId deptId
+     * @return
+     * @throws DeptException
+     */
+    SysDept getAndVerifyById(Integer deptId) throws DeptException;
+
+
+    /**
+     * 通过id删除部门信息
+     * @param deptId 部门信息
+     * @throws DeptException
+     */
+    void delById(Integer deptId) throws DeptException;
 }

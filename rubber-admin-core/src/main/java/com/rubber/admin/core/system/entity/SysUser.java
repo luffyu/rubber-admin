@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubber.admin.core.base.BaseEntity;
+import com.rubber.admin.core.plugins.cache.CacheAble;
 import lombok.Data;
 
 import java.util.Date;
@@ -19,7 +20,7 @@ import java.util.Set;
  * @since 2019-05-13
  */
 @Data
-public class SysUser extends BaseEntity {
+public class SysUser extends BaseEntity implements CacheAble {
 
     private static final long serialVersionUID = 1L;
 
@@ -149,6 +150,12 @@ public class SysUser extends BaseEntity {
     @TableField(exist = false)
     private Set<String> roleKeys;
 
+    /**
+     * 缓存的版本号
+     */
+    @TableField(exist = false)
+    private int cacheVersion;
+
 
     /**
      * 获取加密的key值
@@ -175,5 +182,10 @@ public class SysUser extends BaseEntity {
         }else {
             this.version ++ ;
         }
+    }
+
+    @Override
+    public String getKey() {
+        return this.loginAccount;
     }
 }
