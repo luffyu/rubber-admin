@@ -73,4 +73,20 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
      * @throws MenuException
      */
     SysMenu getAndVerifyById(Integer menuId) throws MenuException;
+
+
+    /**
+     * 补全菜单的树形结构
+     * @return 返回补全之后的菜单信息
+     */
+    List<SysMenu> completionMenuTree(List<SysMenu> sysMenus) throws MenuException;
+
+
+    /**
+     * 通过菜单id批量查询菜单信息
+     * @param menuIds 菜单ids
+     * @return 返回菜单信息
+     * @throws MenuException
+     */
+    List<SysMenu> queryVerifyByIds(Set<Integer> menuIds) throws MenuException;
 }

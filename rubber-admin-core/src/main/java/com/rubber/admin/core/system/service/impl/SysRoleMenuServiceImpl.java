@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
+import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysRoleMenu;
 import com.rubber.admin.core.system.exception.MenuException;
@@ -21,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -50,12 +52,14 @@ public class SysRoleMenuServiceImpl extends BaseAdminService<SysRoleMenuMapper, 
         SysRole sysRole = sysRoleService.getAndVerifyById(sysRoleMenuModel.getRoleId());
         //全部的菜单信息
         Set<Integer> sysMenuIds = sysRoleMenuModel.getMenuIds();
+
         //验证菜单是否存在
         if(CollectionUtil.isNotEmpty(sysMenuIds)){
-            for (Integer menuId:sysMenuIds){
-                sysMenuService.getAndVerifyById(menuId);
-                sysRoleMenus.add(new SysRoleMenu(sysRole.getRoleId(), menuId));
-            }
+            List<SysMenu> sysMenus = sysMenuService.queryVerifyByIds(sysMenuIds);
+            List<SysMenu> completionMenuTree = sysMenuService.completionMenuTree(sysMenus);
+            sysRoleMenus = completionMenuTree.stream().map(i -> {
+                return new SysRoleMenu(sysRole.getRoleId(), i.getMenuId());
+            }).collect(Collectors.toList());
         }
         doRemoveByRoleId(sysRoleMenuModel.getRoleId());
         if (CollectionUtil.isNotEmpty(sysRoleMenus)) {
@@ -64,7 +68,6 @@ public class SysRoleMenuServiceImpl extends BaseAdminService<SysRoleMenuMapper, 
             }
         }
     }
-
 
 
     private void doRemoveByRoleId(Integer roleId) throws MenuException {

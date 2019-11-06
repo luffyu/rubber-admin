@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.service.impl;
 
 import cn.hutool.coocaa.util.result.code.SysCode;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
@@ -18,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -163,6 +165,65 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         }
         return byId;
     }
+
+
+
+    @Override
+    public List<SysMenu> completionMenuTree(List<SysMenu> sysMenus) throws MenuException {
+        if(CollectionUtil.isEmpty(sysMenus)){
+            return sysMenus;
+        }
+        //获取菜单结构信息
+        Map<Integer, SysMenu> collect = sysMenus.stream().collect(Collectors.toMap(SysMenu::getMenuId, menu -> menu));
+        completionMenuTree(collect);
+        return new ArrayList<>(collect.values());
+    }
+
+
+    @Override
+    public List<SysMenu> queryVerifyByIds(Set<Integer> menuIds) throws MenuException {
+        if(CollectionUtil.isEmpty(menuIds)){
+            return null;
+        }
+        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("menu_id",menuIds);
+        List<SysMenu> list = list(queryWrapper);
+        if(CollectionUtil.isEmpty(list)){
+            throw new MenuException(AdminCode.MENU_NOT_EXIST,menuIds);
+        }
+        if(list.size() != menuIds.size()){
+            throw new MenuException(AdminCode.MENU_NOT_EXIST,menuIds);
+        }
+        return list;
+    }
+
+    /**
+     *
+     * @param sysMenus
+     * @return
+     * @throws MenuException
+     */
+    private Map<Integer, SysMenu> completionMenuTree(Map<Integer, SysMenu> sysMenus) throws MenuException {
+        if(MapUtil.isEmpty(sysMenus)){
+            return sysMenus;
+        }
+        SysMenu completionParentMenu = null;
+        for(SysMenu sysMenu:sysMenus.values()){
+            if(sysMenu.getParentId() == 0){
+                continue;
+            }
+            if (sysMenus.get(sysMenu.getParentId()) == null){
+                completionParentMenu = getAndVerifyById(sysMenu.getParentId());
+                break;
+            }
+        }
+        if(completionParentMenu != null){
+            sysMenus.put(completionParentMenu.getMenuId(),completionParentMenu);
+            completionMenuTree(sysMenus);
+        }
+        return sysMenus;
+    }
+
 
 
     /**
