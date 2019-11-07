@@ -9,6 +9,8 @@ import com.rubber.admin.core.system.service.ISysPermissionDictService;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author luffyu
@@ -30,27 +32,44 @@ public class PermissionAuthorizeProvider {
      */
     private static Map<String, PermissionDictModel> allPermissionDictModel = new ConcurrentHashMap<>(100);
 
+    /**
+     * 添加锁
+     */
+    private static Lock lock = new ReentrantLock();
 
     /**
      * 返回请求的对照表字典
      * @return
      */
     public static Map<String, String> getUrlPermissionDict() {
-        if(MapUtil.isEmpty(allPermissionDictModel)){
-            // TODO: 2019-11-07 需要加锁
-            createUrlPermissionDict();
+        if(MapUtil.isEmpty(urlPermissionDict)){
+            initAllMap(urlPermissionDict);
         }
         return urlPermissionDict;
     }
 
-
     public static Map<String, PermissionDictModel> getAllPermissionDictModel() {
         if(MapUtil.isEmpty(allPermissionDictModel)){
-            // TODO: 2019-11-07 需要加锁
-            createUrlPermissionDict();
+            initAllMap(allPermissionDictModel);
         }
         return allPermissionDictModel;
     }
+
+    /**
+     * 添加锁
+     * @param map map参数信息
+     */
+    private static void initAllMap(Map map){
+        lock.lock();
+        try {
+            if(MapUtil.isEmpty(map)) {
+                createUrlPermissionDict();
+            }
+        }finally {
+            lock.unlock();
+        }
+    }
+
 
 
     /**
@@ -74,7 +93,6 @@ public class PermissionAuthorizeProvider {
      */
     public static void createUrlPermissionDict() {
         clearCache();
-
         List<MappingUrlOriginBean> mappingOriginBeans = MappingUrlOriginHandler.getMappingOriginBeans();
         if(CollectionUtil.isNotEmpty(mappingOriginBeans)){
             ISysPermissionDictService permissionDict = MappingUrlOriginHandler.getApplicationContext().getBean(ISysPermissionDictService.class);
