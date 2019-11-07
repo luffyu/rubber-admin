@@ -2,190 +2,128 @@ package com.rubber.admin.core.plugins.security;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.system.entity.SysPermissionDict;
+import com.rubber.admin.core.system.model.PermissionDictModel;
 import com.rubber.admin.core.system.service.ISysPermissionDictService;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author luffyu
- * Created on 2019-10-23
+ * Created on 2019-11-07
  */
-@Component
-public class PermissionAuthorizeProvider implements ApplicationContextAware {
+public class PermissionAuthorizeProvider {
 
-    private static ApplicationContext applicationContext;
 
     /**
      * url的权限字典
      * key表示urlPath
      * value表示该url需要的权限字段key
      */
-    private static Map<String,String> urlPermissionDict = new ConcurrentHashMap<>(40);
-
-    /**
-     * 全部的权限内容
-     *
-     * key表示模块头
-     * value表示 表示该模块有的权限信息
-     */
-    private static Map<String,Set<String>> allPermission = new ConcurrentHashMap<>(200);
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        PermissionAuthorizeProvider.applicationContext = applicationContext;
-        writeHandlerMappingAuthorize(applicationContext);
-    }
+    private static Map<String,String> urlPermissionDict =  new ConcurrentHashMap<>(100);
 
 
     /**
-     * 写入权限标示符到内存中
-     * @param applicationContext applicationContext
+     * 全部的字典值
      */
-    public void writeHandlerMappingAuthorize(ApplicationContext applicationContext){
-        ISysPermissionDictService privilegeDict = applicationContext.getBean(ISysPermissionDictService.class);
-        //获取到全部到权限字典
-        List<SysPermissionDict> privilegeUnitDicts = privilegeDict.selectByType(PermissionUtils.BASIC_UNIT);
-        if (privilegeUnitDicts == null){
-            return;
-        }
-        //获取模块的目录信息
-        List<SysPermissionDict> privilegeModuleDicts = privilegeDict.selectByType(PermissionUtils.BASIC_MODULE);
-
-        RequestMappingHandlerMapping bean = applicationContext.getBean(RequestMappingHandlerMapping.class);
-        //获取到全部到Mapping信息
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = bean.getHandlerMethods();
-        if(MapUtil.isNotEmpty(handlerMethods)){
-            for(Map.Entry<RequestMappingInfo, HandlerMethod> map:handlerMethods.entrySet()){
-                //获取到请求到url
-                PatternsRequestCondition pc = map.getKey().getPatternsCondition();
-                Set<String> pSet = pc.getPatterns();
-                if (CollectionUtil.isEmpty(pSet)){
-                    continue;
-                }
-                String urlPath = pSet.iterator().next();
-                resolveHandlerMethod(urlPath,map.getValue(),privilegeUnitDicts,privilegeModuleDicts);
-            }
-        }
-    }
-
-    /**
-     * 解析handlerMethod方法
-     * @param urlPath url地址
-     * @param handlerMethod 方法地址
-     * @param privilegeUnitDicts list信息
-     */
-    public void resolveHandlerMethod(String urlPath, HandlerMethod handlerMethod, List<SysPermissionDict> privilegeUnitDicts, List<SysPermissionDict> privilegeModuleDicts){
-        //模块到key
-        String moduleKey = null;
-        //权限到基础key
-        String privilegeUnitKey = null;
-        //获取配置到权限认证字段
-        RubberAuthorize methodAnnotation = handlerMethod.getMethodAnnotation(RubberAuthorize.class);
-        if(methodAnnotation != null){
-            moduleKey = methodAnnotation.moduleKey();
-            privilegeUnitKey = methodAnnotation.unitKey();
-        }
-        //获取默认的handlerMethod
-        if(StrUtil.isEmpty(moduleKey)){
-            moduleKey = doCreateDefaultKey(handlerMethod,urlPath);
-            SysPermissionDict moduleDict = PermissionUtils.findByValue(moduleKey, privilegeModuleDicts);
-            if(moduleDict != null && moduleDict.getDictKey() != null){
-                moduleKey = moduleDict.getDictKey();
-            }
-        }
-
-        if(privilegeUnitKey == null){
-            SysPermissionDict unit = PermissionUtils.findByValue(handlerMethod.getMethod().getName(), privilegeUnitDicts);
-            if(unit != null){
-                privilegeUnitKey = unit.getDictKey();
-            }
-            if(StrUtil.isEmpty(privilegeUnitKey)){
-                privilegeUnitKey = PermissionUtils.DEFAULT_UNIT_KEY;
-            }
-        }
-        //写入url的权限字段
-        writeUrlPermissionDict(urlPath,moduleKey,privilegeUnitKey);
-        writeAllPermission(moduleKey,privilegeUnitKey);
-    }
-
-    /**
-     * 获取mapping的权限key
-     * 用 key:Permission 来表示
-     * @param urlPath 请求的url
-     * @param moduleKey handlerMethod的方法 privilegeUnitKey
-     * @return 返回  moduleKey:privilegeUnitKey 接口的key值
-     *
-     */
-    public void writeUrlPermissionDict(String urlPath,String moduleKey,String privilegeUnitKey){
-        String authorizeKey = PermissionUtils.createAuthorizeKey(moduleKey,privilegeUnitKey);
-        urlPermissionDict.putIfAbsent(urlPath,authorizeKey);
-    }
-
-
-
-    public synchronized void writeAllPermission(String moduleKey,String unitKey){
-        Set<String> privilegeBean = allPermission.get(moduleKey);
-        if(privilegeBean == null){
-            privilegeBean = new HashSet<>(20);
-        }
-        privilegeBean.add(unitKey);
-        allPermission.put(moduleKey,privilegeBean);
-    }
+    private static Map<String, PermissionDictModel> allPermissionDictModel = new ConcurrentHashMap<>(100);
 
 
     /**
-     * 获取默认的 权限key
-     * @param handlerMethod handlerMethod的方法
-     * @param url 当前handleMapping请求的url
-     *             如果 RequestMapping没有设置name熟悉 则默认去请求的 前半部分值
-     * @return 返回key只
+     * 返回请求的对照表字典
+     * @return
      */
-    private String doCreateDefaultKey(HandlerMethod handlerMethod,String url){
-        Class<?> beanType = handlerMethod.getBeanType();
-        RequestMapping annotation = beanType.getAnnotation(RequestMapping.class);
-        if(annotation != null){
-            String name = annotation.name();
-            if(StrUtil.isNotEmpty(name)){
-                return name;
-            }
+    public static Map<String, String> getUrlPermissionDict() {
+        if(MapUtil.isEmpty(allPermissionDictModel)){
+            // TODO: 2019-11-07 需要加锁
+            createUrlPermissionDict();
         }
-        String urlHeadKey = PermissionUtils.getUrlHeadKey(url);
-        return StrUtil.nullToDefault(urlHeadKey, PermissionUtils.DEFAULT_MODEL_KEY);
-    }
-
-
-    public static ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-
-    /**
-     * @return  返回handleMapping中的权限标示
-     */
-    public static Map<String, String> getMappingAuthorize() {
         return urlPermissionDict;
     }
 
 
-    /**
-     * @return  返回handleMapping中的权限标示
-     */
-    public static Map<String,Set<String>> getAllAuthorize() {
-        return allPermission;
+    public static Map<String, PermissionDictModel> getAllPermissionDictModel() {
+        if(MapUtil.isEmpty(allPermissionDictModel)){
+            // TODO: 2019-11-07 需要加锁
+            createUrlPermissionDict();
+        }
+        return allPermissionDictModel;
     }
+
+
+    /**
+     * 清除缓存信息
+     * @return 返回是否清除成功
+     */
+    public static boolean clearCache(){
+        if(urlPermissionDict != null){
+            urlPermissionDict.clear();
+        }
+        if(allPermissionDictModel != null){
+            allPermissionDictModel.clear();
+        }
+        return true;
+    }
+
+
+    /**
+     * 创建url对照表的权限列表信息
+     * @return 返回全部的权限信息
+     */
+    public static void createUrlPermissionDict() {
+        clearCache();
+
+        List<MappingUrlOriginBean> mappingOriginBeans = MappingUrlOriginHandler.getMappingOriginBeans();
+        if(CollectionUtil.isNotEmpty(mappingOriginBeans)){
+            ISysPermissionDictService permissionDict = MappingUrlOriginHandler.getApplicationContext().getBean(ISysPermissionDictService.class);
+
+            //获取模块的目录信息
+            List<SysPermissionDict> privilegeModuleDicts = permissionDict.selectByType(PermissionUtils.BASIC_MODULE);
+            //获取Unit的目录信息
+            List<SysPermissionDict> privilegeUnitDicts = permissionDict.selectByType(PermissionUtils.BASIC_UNIT);
+
+            for (MappingUrlOriginBean mappingUrlOriginBean : mappingOriginBeans) {
+                String moduleKey = mappingUrlOriginBean.getModule();
+                String unitKey = mappingUrlOriginBean.getUnit();
+
+                SysPermissionDict moduleDict = PermissionUtils.findByValue(moduleKey, privilegeModuleDicts);
+                SysPermissionDict unitKeyDict = PermissionUtils.findByValue(unitKey, privilegeUnitDicts);
+                moduleKey = moduleDict==null?moduleKey:moduleDict.getDictKey();
+                unitKey = unitKeyDict==null?PermissionUtils.DEFAULT_UNIT_KEY:unitKeyDict.getDictKey();
+
+                doWriteUrlPermissionDict(mappingUrlOriginBean.getUrl(),moduleKey,unitKey);
+                doWritePermissionDictModel(moduleKey,unitKey,moduleDict,unitKeyDict);
+            }
+        }
+    }
+
+
+
+    private static void doWriteUrlPermissionDict(String url,String moduleKey,String unitKey){
+        urlPermissionDict.putIfAbsent(url,PermissionUtils.createAuthorizeKey(moduleKey,unitKey));
+    }
+    private static void doWritePermissionDictModel(String moduleKey,String unitKey, SysPermissionDict moduleDict, SysPermissionDict unitKeyDict){
+        PermissionDictModel dictModel = allPermissionDictModel.get(moduleKey);
+        if(dictModel == null){
+            dictModel = new PermissionDictModel(moduleKey,moduleDict);
+        }
+        Map<String, PermissionDictModel> dictModelUnitKey = dictModel.getUnitKey();
+        if(dictModelUnitKey == null){
+            dictModelUnitKey = new ConcurrentHashMap<>(10);
+        }
+        PermissionDictModel unitDict = dictModelUnitKey.get(unitKey);
+        if(unitDict == null){
+            unitDict = new PermissionDictModel(unitKey,unitKeyDict);
+        }
+        dictModelUnitKey.putIfAbsent(unitKey,unitDict);
+        dictModel.setUnitKey(dictModelUnitKey);
+
+        allPermissionDictModel.putIfAbsent(moduleKey,dictModel);
+    }
+
+
+
+
 }

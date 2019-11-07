@@ -53,8 +53,9 @@ public class PermissionBean implements Serializable {
 
     public PermissionBean(String moduleKey, SysPermissionDict module) {
         this.moduleKey = moduleKey;
-        if(module != null && StrUtil.isNotEmpty( module.getDictName())){
-            this.moduleName = module.getDictName();
+        if(module != null){
+            this.moduleKey = StrUtil.nullToDefault(module.getDictKey(),moduleKey);
+            this.moduleName = StrUtil.nullToDefault(module.getDictName(),moduleKey);
         }else {
             this.moduleName = moduleKey;
         }
@@ -92,7 +93,7 @@ public class PermissionBean implements Serializable {
         public UnitBean(String unitKey, String moduleKey,PermissionDictModel dictModel) {
             this.unitKey = unitKey;
             this.unitName = unitKey;
-            if(dictModel.getUnitKey() != null){
+            if(dictModel !=null && dictModel.getUnitKey() != null){
                 PermissionDictModel unitModel = dictModel.getUnitKey().get(unitKey);
                 if(unitModel != null){
                     this.unitKey = StrUtil.nullToDefault(unitModel.getKey(),unitKey);

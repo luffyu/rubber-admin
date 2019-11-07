@@ -2,7 +2,7 @@ package com.rubber.admin.core.system.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.rubber.admin.core.exceptions.AdminException;
-import com.rubber.admin.core.system.model.PermissionBean;
+import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.system.model.PermissionDictModel;
 import com.rubber.admin.core.system.model.SysRoleMenuModel;
 import com.rubber.admin.core.system.model.SysRolePermissionModel;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,24 +36,23 @@ public class SysPermissionController {
     private ISysRoleMenuService sysRoleMenuService;
 
 
+//    /**
+//     * 获取系统中所有的权限列表
+//     * @return 返回权限列表
+//     */
+//    @GetMapping("/list")
+//    public ResultMsg listAll(){
+//        //List<PermissionBean> privilegeBeans = sysPermissionDictService.allPermission();
+//        return ResultMsg.success(privilegeBeans);
+//    }
+
     /**
      * 获取系统中所有的权限列表
      * @return 返回权限列表
      */
     @GetMapping("/list")
     public ResultMsg listAll(){
-        List<PermissionBean> privilegeBeans = sysPermissionDictService.allPermission();
-        return ResultMsg.success(privilegeBeans);
-    }
-
-
-    /**
-     * 获取系统中所有的权限列表
-     * @return 返回权限列表
-     */
-    @GetMapping("/list-dict")
-    public ResultMsg listDict(){
-        Map<String, PermissionDictModel> m =  sysPermissionDictService.allPermissionDict();
+        Map<String, PermissionDictModel> m = PermissionAuthorizeProvider.getAllPermissionDictModel();
         return ResultMsg.success(m);
     }
 
@@ -92,6 +90,19 @@ public class SysPermissionController {
     @PostMapping("/role-menu/add")
     public ResultMsg saveRoleMenu(@RequestBody SysRoleMenuModel sysRoleMenuModel) throws AdminException {
         sysRoleMenuService.addMenuByRole(sysRoleMenuModel);
+        return ResultMsg.success();
+    }
+
+
+
+
+    /**
+     * 给角色设置权限列表
+     * @return 返回保存的角色权限
+     */
+    @PostMapping("/clear")
+    public ResultMsg clearCache() throws AdminException {
+        PermissionAuthorizeProvider.clearCache();
         return ResultMsg.success();
     }
 

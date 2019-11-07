@@ -1,7 +1,7 @@
 package com.rubber.admin.security.filter;
 
-import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.plugins.security.PermissionUtils;
+import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
@@ -57,7 +57,7 @@ public class RubberAuthenticationFilter extends OncePerRequestFilter {
         if(sysUser.getSuperUser() == null || sysUser.getSuperUser() != PermissionUtils.SUPER_ADMIN_FLAG){
             String servletPath = httpServletRequest.getServletPath();
             //通过http请求获取用户必须要的权限
-            String authorizeKey = PermissionAuthorizeProvider.getMappingAuthorize().get(servletPath);
+            String authorizeKey = PermissionAuthorizeProvider.getUrlPermissionDict().get(servletPath);
             //验证是否有权限
             if(!PermissionUtils.havePermission(sysUser.getPermissions(),authorizeKey)){
                 throw new AuthenticationCredentialsNotFoundException("Permission denied");

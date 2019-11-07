@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.cache.ICacheProvider;
-import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.plugins.security.PermissionUtils;
+import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysRolePermission;
 import com.rubber.admin.core.system.exception.PermissionException;
@@ -167,14 +167,16 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
                 throw new RoleException(AdminCode.ROLE_PRIVILEGE_ILLEGAL,"配置的权限模块{}重复",moduleKey);
             }
             //验证module 和 unit的合法性
-            Set<String> allUnits = PermissionAuthorizeProvider.getAllAuthorize().get(moduleKey);
-            if(allUnits == null){
+            PermissionDictModel dictModel = PermissionAuthorizeProvider.getAllPermissionDictModel().get(moduleKey);
+            if(dictModel == null){
                 throw new RoleException(AdminCode.ROLE_PRIVILEGE_ILLEGAL,"权限不存在模块{}",moduleKey);
             }
             roleModuleUnit = new HashSet<>();
             List<PermissionBean.UnitBean> unitBeans = privilegeBean.getUnitBeans();
             for(PermissionBean.UnitBean unitBean:unitBeans){
-                if(!allUnits.contains(unitBean.getUnitKey())){
+                Map<String, PermissionDictModel> dictModelUnitKey = dictModel.getUnitKey();
+
+                if(dictModelUnitKey == null || dictModelUnitKey.get(unitBean.getUnitKey()) == null){
                     throw new RoleException(AdminCode.ROLE_PRIVILEGE_ILLEGAL,"权限模块{}下不存在权限单元{}",moduleKey,unitBean.getUnitKey());
                 }
                 if (roleModuleUnit.contains(unitBean.getUnitKey())){
@@ -245,7 +247,7 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
             }
         }
         //获取权限字典
-        Map<String, PermissionDictModel> permissionDict = sysPermissionDictService.allPermissionDict();
+        Map<String, PermissionDictModel> permissionDict = PermissionAuthorizeProvider.getAllPermissionDictModel();
         List<PermissionBean> permissionBeans = new ArrayList<>();
         if(CollectionUtil.isNotEmpty(unRepeatPermission)){
             for (String modelKey:unRepeatPermission.keySet()){
