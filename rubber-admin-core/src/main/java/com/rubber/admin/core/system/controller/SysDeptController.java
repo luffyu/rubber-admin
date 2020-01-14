@@ -2,7 +2,7 @@ package com.rubber.admin.core.system.controller;
 
 
 import cn.hutool.coocaa.util.result.ResultMsg;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.page.PageModel;
 import com.rubber.admin.core.system.entity.SysDept;
@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping(value = "/sys/dept",name = "dept")
-public class SysDeptController {
+public class SysDeptController extends BaseAdminController {
 
     @Resource
     private ISysDeptService sysDeptService;
@@ -32,13 +32,13 @@ public class SysDeptController {
 
     /**
      * 部门的分页查询
-     * @param pageModel 部门的查询信息
+     * @param json 部门的查询信息的json字符串
      * @return 返回部门的信息
      */
     @GetMapping("/list")
-    public ResultMsg list(@RequestBody PageModel pageModel){
-        IPage<SysDept> sysRoleIPage = sysDeptService.pageBySelect(pageModel, SysDept.class, null);
-        return ResultMsg.success(sysRoleIPage);
+    public ResultMsg list(String json){
+        PageModel pageModel = decodeForJsonString(json);
+        return ResultMsg.success(sysDeptService.pageBySelect(pageModel, SysDept.class, null));
     }
 
 

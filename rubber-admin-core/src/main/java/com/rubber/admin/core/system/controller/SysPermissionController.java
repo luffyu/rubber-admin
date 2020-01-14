@@ -1,6 +1,7 @@
 package com.rubber.admin.core.system.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
+import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.system.model.PermissionDictModel;
@@ -23,7 +24,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/sys/permission",name = "permission")
-public class SysPermissionController {
+public class SysPermissionController extends BaseAdminController {
 
 
     @Resource

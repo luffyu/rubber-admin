@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.page.PageModel;
 import com.rubber.admin.core.system.entity.SysRole;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping(value = "/sys/role",name = "role")
-public class SysRoleController {
+public class SysRoleController extends BaseAdminController {
 
 
     @Resource
@@ -27,14 +28,14 @@ public class SysRoleController {
 
     /**
      * 角色的分页查询
-     * @param pageModel 分页查询组件
+     * @param json 分页查询组件
      * @param request 请求参数
      * @return 返回
      */
     @GetMapping("/list")
-    public ResultMsg list(@RequestBody PageModel pageModel, HttpServletRequest request){
-        IPage<SysRole> sysRoleIPage = iSysRoleService.pageBySelect(pageModel, SysRole.class, null);
-        return ResultMsg.success(sysRoleIPage);
+    public ResultMsg list(String json, HttpServletRequest request){
+        PageModel pageModel = decodeForJsonString(json);
+        return ResultMsg.success(iSysRoleService.pageBySelect(pageModel, SysRole.class, null));
     }
 
 

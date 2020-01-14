@@ -1,7 +1,7 @@
 package com.rubber.admin.core.system.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.plugins.page.PageModel;
@@ -21,21 +21,21 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping(value = "/sys/user",name = "user")
-public class SysUserController {
+public class SysUserController extends BaseAdminController {
 
     @Resource
     private ISysUserService sysUserService;
 
     /**
      * 角色的分页查询
-     * @param pageModel 分页查询组件
+     * @param json 分页查询组件 的json字符串
      * @param request 请求参数
      * @return 返回
      */
     @GetMapping("/list")
-    public ResultMsg list(@RequestBody PageModel pageModel, HttpServletRequest request){
-        IPage<SysUser> sysRoleIPage = sysUserService.pageBySelect(pageModel, SysUser.class, null);
-        return ResultMsg.success(sysRoleIPage);
+    public ResultMsg list(String json,HttpServletRequest request){
+        PageModel pageModel = decodeForJsonString(json);
+        return ResultMsg.success(sysUserService.pageBySelect(pageModel, SysUser.class, null));
     }
 
 

@@ -1,7 +1,7 @@
 package com.rubber.admin.core.system.controller;
 
 import cn.hutool.coocaa.util.result.ResultMsg;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.page.PageModel;
 import com.rubber.admin.core.system.entity.SysMenu;
@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping(value = "/sys/menu",name = "menu")
-public class SysMenuController {
+public class SysMenuController extends BaseAdminController {
 
     @Resource
     private ISysMenuService sysMenuService;
@@ -25,13 +25,13 @@ public class SysMenuController {
 
     /**
      * 菜单的分页查询
-     * @param pageModel 菜单的查询信息
+     * @param json 菜单的查询信息json字符串
      * @return 返回菜单的信息
      */
     @GetMapping("/list")
-    public ResultMsg list(@RequestBody PageModel pageModel){
-        IPage<SysMenu> sysRoleIPage = sysMenuService.pageBySelect(pageModel, SysMenu.class, null);
-        return ResultMsg.success(sysRoleIPage);
+    public ResultMsg list(String json){
+        PageModel pageModel = decodeForJsonString(json);
+        return ResultMsg.success(sysMenuService.pageBySelect(pageModel, SysMenu.class, null));
     }
 
 
