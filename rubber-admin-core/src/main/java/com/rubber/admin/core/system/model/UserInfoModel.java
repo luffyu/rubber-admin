@@ -1,5 +1,6 @@
 package com.rubber.admin.core.system.model;
 
+import com.rubber.admin.core.system.entity.SysDept;
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysUser;
@@ -23,9 +24,14 @@ public class UserInfoModel implements Serializable {
     private SysUser sysUser;
 
     /**
+     * 部门的基本信息
+     */
+    private SysDept sysDept;
+
+    /**
      * 菜单的基本信息
      */
-    private SysMenu sysMenu;
+    private List<SysMenu> sysMenus;
 
     /**
      * 用户的角色基本信息

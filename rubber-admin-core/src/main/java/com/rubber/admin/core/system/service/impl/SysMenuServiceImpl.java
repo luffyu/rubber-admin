@@ -334,7 +334,7 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
     public static SysMenu getRoot(){
         SysMenu sysMenu = new SysMenu();
         sysMenu.setMenuId(0);
-        sysMenu.setMenuName("我的桌面");
+        sysMenu.setMenuName("Root");
         sysMenu.setStatus(StatusEnums.NORMAL);
         sysMenu.setMenuType(MenuTypeEnums.M);
         return sysMenu;

@@ -119,8 +119,8 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         if(CollectionUtil.isNotEmpty(userRole)){
             roleIds = userRole.stream().map(SysRole::getRoleId).collect(Collectors.toSet());
         }
-        SysMenu userMenu = sysMenuService.findMenuByRoleId(roleIds);
-        userInfoModel.setSysMenu(userMenu);
+        SysMenu rootMenu = sysMenuService.findMenuByRoleId(roleIds);
+        userInfoModel.setSysMenus(rootMenu.getChildMenus());
 
         List<PermissionBean> rolesPermission = sysRolePermissionService.getRolesPermission(roleIds);
         userInfoModel.setPermissions(rolesPermission);
@@ -133,8 +133,8 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
      * @param userInfoModel
      */
     private void doFindSuperUserAllInfo(UserInfoModel userInfoModel){
-        SysMenu allTree = sysMenuService.getAllTree();
-        userInfoModel.setSysMenu(allTree);
+        SysMenu rootTree = sysMenuService.getAllTree();
+        userInfoModel.setSysMenus(rootTree.getChildMenus());
     }
 
 

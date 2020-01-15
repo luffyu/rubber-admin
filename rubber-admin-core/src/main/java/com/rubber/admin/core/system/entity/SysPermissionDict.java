@@ -58,6 +58,12 @@ public class SysPermissionDict extends BaseEntity {
     private Integer status;
 
     /**
+     * 关联的菜单ids
+     * 多个菜单id 用英文逗号隔开
+     */
+    private String menuIds;
+
+    /**
     * 创建人id
     */
     private Integer createBy;
