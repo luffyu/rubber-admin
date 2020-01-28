@@ -1,6 +1,6 @@
 package com.rubber.admin.test.controller;
 
-import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.system.model.SysUserRoleModel;
 import com.rubber.admin.core.system.service.impl.SysPermissionDictServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;

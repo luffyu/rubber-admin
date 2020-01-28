@@ -1,6 +1,6 @@
 package com.rubber.admin.security.auth.exception;
 
-import cn.hutool.coocaa.util.result.code.ICodeHandle;
+import cn.hutool.luffyu.util.result.code.ICodeHandle;
 import org.springframework.security.core.AuthenticationException;
 
 /**

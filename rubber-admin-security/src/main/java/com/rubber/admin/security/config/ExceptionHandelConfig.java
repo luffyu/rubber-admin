@@ -1,9 +1,9 @@
 package com.rubber.admin.security.config;
 
-import cn.hutool.coocaa.util.exception.ExceptionUtils;
-import cn.hutool.coocaa.util.result.IResultHandle;
-import cn.hutool.coocaa.util.result.ResultMsg;
-import cn.hutool.coocaa.util.result.exception.IResultException;
+import cn.hutool.luffyu.util.exception.ExceptionUtils;
+import cn.hutool.luffyu.util.result.IResultHandle;
+import cn.hutool.luffyu.util.result.ResultMsg;
+import cn.hutool.luffyu.util.result.exception.IResultException;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.exceptions.AdminRunTimeException;
 import lombok.extern.slf4j.Slf4j;

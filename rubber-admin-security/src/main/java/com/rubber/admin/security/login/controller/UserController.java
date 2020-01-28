@@ -1,6 +1,6 @@
 package com.rubber.admin.security.login.controller;
 
-import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.model.UserInfoModel;
 import com.rubber.admin.core.system.service.ISysUserService;

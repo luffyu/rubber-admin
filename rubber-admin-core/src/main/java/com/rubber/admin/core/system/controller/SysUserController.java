@@ -1,6 +1,6 @@
 package com.rubber.admin.core.system.controller;
 
-import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
@@ -33,7 +33,7 @@ public class SysUserController extends BaseAdminController {
      * @return 返回
      */
     @GetMapping("/list")
-    public ResultMsg list(String json,HttpServletRequest request){
+    public ResultMsg list(String json, HttpServletRequest request){
         PageModel pageModel = decodeForJsonString(json);
         return ResultMsg.success(sysUserService.pageBySelect(pageModel, SysUser.class, null));
     }

@@ -1,7 +1,7 @@
 package com.rubber.admin.security.login.bean;
 
-import cn.hutool.coocaa.util.result.IResultHandle;
-import cn.hutool.coocaa.util.result.code.ICodeHandle;
+import cn.hutool.luffyu.util.result.IResultHandle;
+import cn.hutool.luffyu.util.result.code.ICodeHandle;
 import com.rubber.admin.core.exceptions.AdminRunTimeException;
 
 /**

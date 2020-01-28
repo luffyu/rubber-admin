@@ -39,7 +39,7 @@
         <!-- github地址:https://github.com/luffyu/hutool -->
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all-coocaa</artifactId>
+            <artifactId>hutool-all-luffyu</artifactId>
             <version>5.0.4-SNAPSHOT</version>
         </dependency>
 

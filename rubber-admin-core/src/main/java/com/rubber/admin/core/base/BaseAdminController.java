@@ -1,8 +1,8 @@
 package com.rubber.admin.core.base;
 
-import cn.hutool.coocaa.util.result.code.SysCode;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.luffyu.util.result.code.SysCode;
 import com.alibaba.fastjson.JSON;
 import com.rubber.admin.core.exceptions.AdminRunTimeException;
 import com.rubber.admin.core.plugins.page.PageModel;

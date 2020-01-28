@@ -1,8 +1,8 @@
 package com.rubber.admin.security.filter;
 
-import cn.hutool.coocaa.util.result.IResultHandle;
-import cn.hutool.coocaa.util.result.ResultMsg;
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.luffyu.util.result.IResultHandle;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.alibaba.fastjson.JSON;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminRunTimeException;

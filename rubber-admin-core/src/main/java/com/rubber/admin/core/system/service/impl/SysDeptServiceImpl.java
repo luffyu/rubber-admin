@@ -1,6 +1,6 @@
 package com.rubber.admin.core.system.service.impl;
 
-import cn.hutool.coocaa.util.result.code.SysCode;
+import cn.hutool.luffyu.util.result.code.SysCode;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
@@ -55,7 +55,7 @@ public class SysDeptServiceImpl extends BaseAdminService<SysDeptMapper, SysDept>
         return byId;
     }
 
-    
+
     @Override
     public void delById(Integer deptId) throws DeptException {
         SysDept dbDept = getAndVerifyById(deptId);

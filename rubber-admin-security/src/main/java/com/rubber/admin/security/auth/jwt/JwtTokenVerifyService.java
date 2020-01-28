@@ -1,7 +1,7 @@
 package com.rubber.admin.security.auth.jwt;
 
-import cn.hutool.coocaa.util.jwt.JwtUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.luffyu.util.jwt.JwtUtil;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.security.auth.BaseTokenVerifyService;
 import com.rubber.admin.security.auth.TokenVerifyBean;

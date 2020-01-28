@@ -1,6 +1,6 @@
 package com.rubber.admin.core.system.exception;
 
-import cn.hutool.coocaa.util.result.code.ICodeHandle;
+import cn.hutool.luffyu.util.result.code.ICodeHandle;
 import com.rubber.admin.core.exceptions.AdminException;
 
 /**

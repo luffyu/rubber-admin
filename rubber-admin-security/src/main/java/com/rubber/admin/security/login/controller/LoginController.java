@@ -1,6 +1,6 @@
 package com.rubber.admin.security.login.controller;
 
-import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.security.login.bean.LoginBean;
 import com.rubber.admin.security.login.service.RubberUserLoginService;

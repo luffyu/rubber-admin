@@ -1,6 +1,6 @@
 package com.rubber.admin.core.monitor.controller;
 
-import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.monitor.Server;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

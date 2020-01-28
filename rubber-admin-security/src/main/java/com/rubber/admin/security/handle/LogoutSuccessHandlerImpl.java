@@ -1,7 +1,7 @@
 package com.rubber.admin.security.handle;
 
-import cn.hutool.coocaa.util.result.ResultMsg;
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.alibaba.fastjson.JSON;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

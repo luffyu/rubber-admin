@@ -1,7 +1,7 @@
 package com.rubber.admin.core.system.controller;
 
 
-import cn.hutool.coocaa.util.result.ResultMsg;
+import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.page.PageModel;

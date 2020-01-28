@@ -1,9 +1,9 @@
 package com.rubber.admin.core.system.service.impl;
 
-import cn.hutool.coocaa.util.result.code.SysCode;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;

@@ -1,15 +1,15 @@
 package com.rubber.admin.core.system.service.impl;
 
-import cn.hutool.coocaa.util.result.code.SysCode;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.plugins.cache.ICacheProvider;
-import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
+import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysRolePermission;
 import com.rubber.admin.core.system.exception.PermissionException;
