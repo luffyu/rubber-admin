@@ -1,6 +1,9 @@
 package com.rubber.admin.core.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.luffyu.util.ArrayHashMap;
 import cn.hutool.luffyu.util.result.code.SysCode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
@@ -11,7 +14,9 @@ import com.rubber.admin.core.system.service.ISysDeptService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -24,6 +29,46 @@ import java.util.Date;
 @Service
 public class SysDeptServiceImpl extends BaseAdminService<SysDeptMapper, SysDept> implements ISysDeptService {
 
+
+
+    @Override
+    public List<SysDept> treeList() {
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("seq");
+        List<SysDept> list = list(queryWrapper);
+        return handleListToTree(list);
+    }
+
+    /**
+     * 获取菜单的树形结果
+     * @param list 结果信息
+     * @return
+     */
+    public List<SysDept> handleListToTree(List<SysDept> list){
+        if(CollUtil.isEmpty(list)){
+            return null;
+        }
+        ArrayHashMap<Integer,SysDept> arrayHashMap = new ArrayHashMap<>();
+        list.forEach(i -> arrayHashMap.putAndAdd(i.getParentId(),i));
+        SysDept rootDept = new SysDept();
+        rootDept.setDeptId(0);
+        findChildren(rootDept,arrayHashMap);
+        return rootDept.getChildren();
+    }
+    /**
+     * 查询出list的结果信息
+     * @param sysDept 系统的部门
+     * @param arrayHashMap 整理的结果信息
+     */
+    private void findChildren(SysDept sysDept,ArrayHashMap<Integer,SysDept> arrayHashMap){
+        ArrayList<SysDept> children = arrayHashMap.get(sysDept.getDeptId());
+        if(children != null){
+            for(SysDept dept:children){
+                findChildren(dept,arrayHashMap);
+            }
+            sysDept.setChildren(children);
+        }
+    }
 
 
     @Override

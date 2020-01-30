@@ -1,11 +1,13 @@
 package com.rubber.admin.core.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -90,5 +92,12 @@ public class SysDept extends BaseEntity {
      * 备注
      */
     private String remark;
+
+
+    /**
+     * 子结构
+     */
+    @TableField(exist = false)
+    private List<SysDept> children;
 
 }

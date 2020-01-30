@@ -43,6 +43,16 @@ public class SysDeptController extends BaseAdminController {
 
 
 
+    /**
+     * 部门的分页查询
+     * @return 返回部门的信息
+     */
+    @GetMapping("/tree")
+    public ResultMsg tree(){
+        return ResultMsg.success(sysDeptService.treeList());
+    }
+
+
 
     /**
      * 添加部门
