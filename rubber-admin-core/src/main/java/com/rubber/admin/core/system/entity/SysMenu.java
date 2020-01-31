@@ -2,12 +2,11 @@ package com.rubber.admin.core.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.rubber.admin.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.rubber.admin.core.base.BaseEntity;
 import com.rubber.admin.core.enums.MenuTypeEnums;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -114,7 +113,6 @@ public class SysMenu extends BaseEntity {
      * 子节点菜单
      */
     @TableField(exist = false)
-    private List<SysMenu> childMenus = new ArrayList<>();
-
+    private List<SysMenu> children ;
 
 }

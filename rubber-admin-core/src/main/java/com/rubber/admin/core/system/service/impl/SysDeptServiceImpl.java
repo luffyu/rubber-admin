@@ -14,6 +14,7 @@ import com.rubber.admin.core.system.service.ISysDeptService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -104,10 +105,25 @@ public class SysDeptServiceImpl extends BaseAdminService<SysDeptMapper, SysDept>
     @Override
     public void delById(Integer deptId) throws DeptException {
         SysDept dbDept = getAndVerifyById(deptId);
-        dbDept.setDelFlag(StatusEnums.DELETE);
-        if(!updateById(dbDept)){
+        if(countChildrenNum(dbDept) > 0){
+            throw new DeptException(AdminCode.DEPT_HAVE_CHILD,"部门id为{}",deptId);
+        }
+        //删除结构信息
+        if(!removeById(dbDept.getDeptId())){
             throw new DeptException(SysCode.SYSTEM_ERROR,"删除部门信息失败",dbDept);
         }
+    }
+
+
+    /**
+     * 查询某个菜单是否有子菜单
+     * @param sysDept 当前部门信息
+     * @return 返回当前菜单的数量
+     */
+    private int countChildrenNum(@NotNull SysDept sysDept){
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("parent_id",sysDept.getDeptId());
+        return count(queryWrapper);
     }
 
 

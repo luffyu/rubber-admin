@@ -36,7 +36,7 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
      * 获取菜单的全目录 从根目录开始往下读取
      * @return 返回一个跟目录下的所有目录菜单
      */
-    SysMenu getAllTree();
+    SysMenu getAllTree(Integer status);
 
 
     Set<String> findAuthKey(Integer userId);

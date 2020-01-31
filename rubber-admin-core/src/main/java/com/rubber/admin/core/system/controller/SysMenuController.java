@@ -40,8 +40,8 @@ public class SysMenuController extends BaseAdminController {
      * @return 返回系统中全部菜单的树形结构
      */
     @GetMapping("/tree")
-    public ResultMsg getMenuAllTree(){
-        SysMenu allTree = sysMenuService.getAllTree();
+    public ResultMsg getMenuAllTree(Integer status){
+        SysMenu allTree = sysMenuService.getAllTree(status);
         return ResultMsg.success(allTree);
     }
 

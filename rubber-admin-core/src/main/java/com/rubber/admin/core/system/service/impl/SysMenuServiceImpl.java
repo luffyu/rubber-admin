@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.luffyu.util.ArrayHashMap;
 import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.base.BaseAdminService;
@@ -69,8 +70,8 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
      * @return 返回菜单的数型结构
      */
     @Override
-    public SysMenu getAllTree(){
-        List<SysMenu> all = getAll(StatusEnums.NORMAL);
+    public SysMenu getAllTree(Integer status){
+        List<SysMenu> all = getAll(status);
         return getAllTree(all);
     }
 
@@ -97,6 +98,7 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         if(status != null){
             queryWrapper.eq("status",status);
         }
+        queryWrapper.orderByDesc("seq");
         return list(queryWrapper);
     }
 
@@ -146,8 +148,7 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         if(childNum > 0){
             throw new MenuException(AdminCode.MENU_HAVE_CHILD,"菜单{}存在{}子目录，无法删除",menuId,childNum);
         }
-        dbMenu.setDelFlag(StatusEnums.DELETE);
-        if(!updateById(dbMenu)){
+        if(!removeById(menuId)){
             throw new MenuException(SysCode.SYSTEM_ERROR,"删除菜单信息失败");
         }
     }
@@ -270,41 +271,27 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         //获取root根菜单
         SysMenu rootMenu = getRoot();
         if(!CollectionUtils.isEmpty(menus)){
-            //标记整理菜单信息
-            Map<Integer,List<SysMenu>> map = new HashMap<>();
-            menus.forEach(sysMenu -> {
-                Integer parentId = sysMenu.getParentId();
-                List<SysMenu> classifyMenu = map.get(parentId);
-                if(classifyMenu == null){
-                    classifyMenu = new ArrayList<>(menus.size());
-                }
-                classifyMenu.add(sysMenu);
-                map.put(parentId,classifyMenu);
-            });
-            //得到整理的map
-            findChildMenu(rootMenu,map);
+            ArrayHashMap<Integer, SysMenu> arrayHashMap = new ArrayHashMap<>();
+            menus.forEach(i -> arrayHashMap.putAndAdd(i.getParentId(),i));
+            findChildren(rootMenu,arrayHashMap);
         }
         return rootMenu;
     }
 
-
-
     /**
-     * 返回用户的map信息
-     * @param sysMenu 系统的菜单信息
-     * @param map
+     * 查询出list的结果信息
+     * @param sysMenu 系统菜单信息
+     * @param arrayHashMap 整理的结果信息
      */
-    private void findChildMenu(SysMenu sysMenu, Map<Integer,List<SysMenu>> map){
-        List<SysMenu> thisChildMenus = map.get(sysMenu.getMenuId());
-        if(!CollectionUtils.isEmpty(thisChildMenus)){
-            sysMenu.setChildMenus(thisChildMenus);
-            thisChildMenus.forEach( childMenu->{
-                //childMenu.setFatherMenu(sysMenu);
-                findChildMenu(childMenu,map);
-            });
+    private void findChildren(SysMenu sysMenu,ArrayHashMap<Integer, SysMenu> arrayHashMap){
+        ArrayList<SysMenu> children = arrayHashMap.get(sysMenu.getMenuId());
+        if(children != null){
+            for(SysMenu menu:children){
+                findChildren(menu,arrayHashMap);
+            }
+            sysMenu.setChildren(children);
         }
     }
-
 
     /**
      * 从菜单中返回用户到权限字段
