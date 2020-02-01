@@ -72,6 +72,12 @@ public enum AdminCode implements ICodeHandle {
     DEPT_NOT_EXIST("20300","部门不存在"),
     DEPT_HAVE_CHILD("20301","部门存在子部门"),
 
+    /**
+     * 205** 字典类型的错误
+     */
+    DICT_IS_EXIST("20500","该Key值已经存在"),
+    DICT_IS_NOT_EXIST("20501","该Key值已经存在"),
+
     ;
     /**
      * 业务错误码 000000的结构

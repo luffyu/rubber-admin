@@ -42,12 +42,31 @@ public interface ISysUserService extends IBaseService<SysUser> {
 
 
     /**
+     * 验证当前用户是否为null
+     * @param userId
+     * @return
+     * @throws UserException
+     */
+    SysUser getAndVerifyNullById(Integer userId) throws UserException;
+
+    /**
      * 获取用户的全部信息
+     * 包括角色 部门  菜单 权限等信息
      * @param userId 用户的id
      * @return 返回用户的基本信息
      * @throws AdminException 异常信息
      */
     UserInfoModel getUserAllInfo(Integer userId) throws AdminException;
+
+
+    /**
+     * 获取用户的基本信息
+     * 包括角色 部门
+     * @param userId  用户id
+     * @return 返回用户的基本信息
+     * @throws AdminException 异常信息
+     */
+    UserInfoModel getUserInfo(Integer userId) throws AdminException;
 
 
     /**

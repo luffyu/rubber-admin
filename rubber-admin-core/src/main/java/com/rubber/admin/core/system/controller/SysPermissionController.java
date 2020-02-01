@@ -7,14 +7,13 @@ import com.rubber.admin.core.plugins.security.PermissionAuthorizeProvider;
 import com.rubber.admin.core.system.model.PermissionDictModel;
 import com.rubber.admin.core.system.model.SysRoleMenuModel;
 import com.rubber.admin.core.system.model.SysRolePermissionModel;
-import com.rubber.admin.core.system.service.ISysPermissionDictService;
 import com.rubber.admin.core.system.service.ISysRoleMenuService;
 import com.rubber.admin.core.system.service.ISysRolePermissionService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author luffyu
@@ -27,8 +26,6 @@ import java.util.Map;
 public class SysPermissionController extends BaseAdminController {
 
 
-    @Resource
-    private ISysPermissionDictService sysPermissionDictService;
 
     @Resource
     private ISysRolePermissionService sysRolePermissionService;
@@ -53,8 +50,8 @@ public class SysPermissionController extends BaseAdminController {
      */
     @GetMapping("/list")
     public ResultMsg listAll(){
-        Map<String, PermissionDictModel> m = PermissionAuthorizeProvider.getAllPermissionDictModel();
-        return ResultMsg.success(m);
+        List<PermissionDictModel> all = sysRolePermissionService.getAll();
+        return ResultMsg.success(all);
     }
 
 

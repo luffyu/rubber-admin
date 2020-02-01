@@ -49,7 +49,7 @@ public class SysUserRoleServiceImpl extends BaseAdminService<SysUserRoleMapper, 
     )
     @Override
     public void saveUserRole(SysUserRoleModel sysUserRoleModel) throws AdminException {
-        SysUser sysUser = sysUserService.getAndVerifyById(sysUserRoleModel.getUserId());
+        SysUser sysUser = sysUserService.getAndVerifyNullById(sysUserRoleModel.getUserId());
         List<SysUserRole> sysUserRoles = null;
         Set<Integer> roleIds = sysUserRoleModel.getRoleIds();
         if(CollectionUtil.isNotEmpty(roleIds)){

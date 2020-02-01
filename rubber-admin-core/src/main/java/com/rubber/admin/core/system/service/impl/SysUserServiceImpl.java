@@ -84,13 +84,7 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
 
     @Override
     public SysUser getAndVerifyById(Integer userId) throws UserException {
-        if(userId == null || userId <= 0){
-            throw new UserException(AdminCode.PARAM_ERROR,"查询的用户id为空");
-        }
-        SysUser sysUser = getById(userId);
-        if(sysUser == null){
-            throw new UserException(AdminCode.USER_NOT_EXIST);
-        }
+        SysUser sysUser = getAndVerifyNullById(userId);
         if(StatusEnums.DELETE == sysUser.getDelFlag()){
             throw new UserException(AdminCode.USER_IS_DELETE);
         }
@@ -100,30 +94,57 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         return sysUser;
     }
 
+    /**
+     * 验证当前用户是否为null
+     * @param userId
+     * @return
+     * @throws UserException
+     */
+    @Override
+    public SysUser getAndVerifyNullById(Integer userId) throws UserException {
+        if(userId == null || userId <= 0){
+            throw new UserException(AdminCode.PARAM_ERROR,"查询的用户id为空");
+        }
+        SysUser sysUser = getById(userId);
+        if(sysUser == null){
+            throw new UserException(AdminCode.USER_NOT_EXIST);
+        }
+        return sysUser;
+    }
+
 
     @Override
     public UserInfoModel getUserAllInfo(Integer userId) throws AdminException {
-        SysUser sysUser = getAndVerifyById(userId);
-        UserInfoModel userInfoModel = new UserInfoModel(sysUser);
-        if(sysUser.getSuperUser() == PermissionUtils.SUPER_ADMIN_FLAG){
+        UserInfoModel userInfoModel = this.getUserInfo(userId);
+
+        if(userInfoModel.getSysUser().getSuperUser() == PermissionUtils.SUPER_ADMIN_FLAG){
             doFindSuperUserAllInfo(userInfoModel);
             return userInfoModel;
         }
 
-        //获取用户的角色信息
-        List<SysRole> userRole = sysRoleService.findByUserId(userId);
-        userInfoModel.setSysRoles(userRole);
-
         Set<Integer> roleIds = null;
         //获取菜单信息
-        if(CollectionUtil.isNotEmpty(userRole)){
-            roleIds = userRole.stream().map(SysRole::getRoleId).collect(Collectors.toSet());
+        if(CollectionUtil.isNotEmpty(userInfoModel.getSysRoles())){
+            roleIds = userInfoModel.getSysRoles().stream().map(SysRole::getRoleId).collect(Collectors.toSet());
         }
         SysMenu rootMenu = sysMenuService.findMenuByRoleId(roleIds);
         userInfoModel.setSysMenus(rootMenu.getChildren());
 
         List<PermissionBean> rolesPermission = sysRolePermissionService.getRolesPermission(roleIds);
         userInfoModel.setPermissions(rolesPermission);
+
+        return userInfoModel;
+    }
+
+
+    @Override
+    public UserInfoModel getUserInfo(Integer userId) throws AdminException {
+        SysUser sysUser = getAndVerifyById(userId);
+        UserInfoModel userInfoModel = new UserInfoModel(sysUser);
+
+        //获取用户的角色信息
+        List<SysRole> userRole = sysRoleService.findByUserId(userId);
+        userInfoModel.setSysRoles(userRole);
 
         return userInfoModel;
     }
@@ -136,7 +157,6 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         SysMenu rootTree = sysMenuService.getAllTree(StatusEnums.NORMAL);
         userInfoModel.setSysMenus(rootTree.getChildren());
     }
-
 
 
 
@@ -238,21 +258,27 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
      * @throws AdminException
      */
     private void doUpdateUser(SysUser sysUser) throws AdminException {
-        SysUser dbUser = getAndVerifyById(sysUser.getUserId());
+        SysUser dbUser = getAndVerifyNullById(sysUser.getUserId());
         if(!dbUser.getLoginCount().equals(sysUser.getLoginCount())){
             throw new UserException(AdminCode.PARAM_ERROR,"无法修改用户的登陆账户");
         }
-        dbUser.setLoginPwd(sysUser.getLoginPwd());
+        //是否修改用户的密码
+        if(StrUtil.isNotEmpty(sysUser.getLoginPwd())){
+            dbUser.setLoginPwd(sysUser.getLoginPwd());
+            doCreateUserPsw(sysUser);
+        }
         dbUser.setStatus(sysUser.getStatus());
         dbUser.setUserName(sysUser.getUserName());
         dbUser.setSex(sysUser.getSex());
         dbUser.setEmail(sysUser.getEmail());
         dbUser.setPhone(sysUser.getPhone());
+        dbUser.setDeptId(sysUser.getDeptId());
+        dbUser.setAvatar(sysUser.getAvatar());
+        dbUser.setRemark(sysUser.getRemark());
         Date now = new Date();
         Integer loginUserId = ServletUtils.getLoginUserId();
         dbUser.setUpdateBy(loginUserId);
         dbUser.setUpdateTime(now);
-        doCreateUserPsw(sysUser);
         if(!updateById(dbUser)){
             throw new UserException(SysCode.SYSTEM_ERROR,"更新用户信息异常");
         }

@@ -93,11 +93,11 @@ public class SysUserController extends BaseAdminController {
      * @return
      */
     @GetMapping("/{userId}/info")
-    public ResultMsg getUser(@PathVariable("userId")Integer userId) throws RoleException, UserException {
+    public ResultMsg getUser(@PathVariable("userId")Integer userId) throws AdminException {
         if(userId == null || userId <= 0){
             throw new UserException(AdminCode.PARAM_ERROR,"用户id为空");
         }
-        SysUser sysUser = sysUserService.getAndVerifyById(userId);
-        return ResultMsg.success(sysUser);
+        UserInfoModel userInfo = sysUserService.getUserInfo(userId);
+        return ResultMsg.success(userInfo);
     }
 }

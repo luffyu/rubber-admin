@@ -128,6 +128,24 @@ public class SysRolePermissionServiceImpl extends BaseAdminService<SysRolePermis
     }
 
 
+
+    @Override
+    public List<PermissionDictModel> getAll() {
+        Map<String, PermissionDictModel> allPermission = PermissionAuthorizeProvider.getAllPermissionDictModel();
+        if(MapUtil.isEmpty(allPermission)){
+            return null;
+        }
+        List<PermissionDictModel> permissionDictModels = new ArrayList<>(allPermission.values());
+
+        for(PermissionDictModel dictModel:permissionDictModels){
+            Map<String, PermissionDictModel> unitKey = dictModel.getUnitKey();
+            if(MapUtil.isNotEmpty(unitKey)){
+                List<PermissionDictModel> models = new ArrayList<>(unitKey.values());
+                dictModel.setChildren(models);
+            }
+        }
+        return permissionDictModels;
+    }
     /**
      * 通过角色id查询全部的配置信息
      * @param roleId 角色信息

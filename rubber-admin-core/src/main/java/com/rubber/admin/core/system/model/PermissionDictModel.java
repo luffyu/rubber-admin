@@ -3,6 +3,7 @@ package com.rubber.admin.core.system.model;
 import com.rubber.admin.core.system.entity.SysPermissionDict;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +34,11 @@ public class PermissionDictModel {
      * 二级权限信息
      */
     private Map<String,PermissionDictModel> unitKey;
+
+    /**
+     * 二级结构信息
+     */
+    private List<PermissionDictModel> children;
 
 
     public PermissionDictModel() {

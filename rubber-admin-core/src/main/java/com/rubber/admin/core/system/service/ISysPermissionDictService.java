@@ -2,6 +2,7 @@ package com.rubber.admin.core.system.service;
 
 import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysPermissionDict;
+import com.rubber.admin.core.system.exception.DictException;
 
 import java.util.List;
 
@@ -24,4 +25,9 @@ public interface ISysPermissionDictService extends IBaseService<SysPermissionDic
     List<SysPermissionDict> selectByType(String type);
 
 
+    /**
+     * 验证并保存
+     * @param sysPermissionDict 当前字典的key值
+     */
+    void verifyAndSave(SysPermissionDict sysPermissionDict) throws DictException;
 }

@@ -5,6 +5,7 @@ import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysRolePermission;
 import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.model.PermissionBean;
+import com.rubber.admin.core.system.model.PermissionDictModel;
 import com.rubber.admin.core.system.model.SysRolePermissionModel;
 
 import java.util.List;
@@ -55,4 +56,10 @@ public interface ISysRolePermissionService extends IBaseService<SysRolePermissio
      */
     List<PermissionBean> getRolesPermission(Set<Integer> roleIds,boolean verifyIds) throws RoleException;
 
+
+    /**
+     * 获取全部的权限信息
+     * @return 异常信息
+     */
+    List<PermissionDictModel> getAll();
 }
