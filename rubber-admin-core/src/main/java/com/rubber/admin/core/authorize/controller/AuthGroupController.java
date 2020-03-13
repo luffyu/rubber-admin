@@ -22,7 +22,7 @@ public class AuthGroupController {
     private RubberAuthorizeGroupCenter rubberAuthorizeGroupCenter;
 
 
-    @GetMapping("/info")
+    @GetMapping("/list")
     public ResultMsg list(){
         return ResultMsg.success(rubberAuthorizeGroupCenter.getAllGroupDict());
 

@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -114,5 +115,9 @@ public class SysMenu extends BaseEntity {
      */
     @TableField(exist = false)
     private List<SysMenu> children ;
+
+
+    @TableField(exist = false)
+    private Set<String> groupAuthMenu;
 
 }
