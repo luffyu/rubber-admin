@@ -19,23 +19,23 @@ public class MySqlCodeGenerator {
     //作者名称
     private static final String author = "luffyu-auto";
     //链接的数据库配置
-    private static final String jdbcUrl = "jdbc:mysql://127.0.0.1:3308/rubber_admin?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true";
+    private static final String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/rubber_admin?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true";
     private static final String dbUserName = "root";
     private static final String dbPassword = "root";
 
     //生成文件所在的包名称
-    private static final String packageParent = "com.rubber.admin.core.system";
+    private static final String packageParent = "com.rubber.admin.core.authorize";
 
     //entity继承的baseEntity地址
     private static final String baseEntityClass = "com.rubber.admin.core.base.BaseEntity";
     //serviceImpl继承的serviceImpl地址
-    private static final String baseServiceImpl = "com.rubber.admin.core.base.IBaseService";
+    private static final String baseServiceImpl = "com.rubber.admin.core.base.BaseAdminService";
     //service继承的service地址
     //private static final String baseService = "com.coocaa.lottery.platform.pojo.base.IBaseService";
 
 
     public static void main(String[] args) {
-        createCode("sys_dept");
+        createCode("auth_group_config");
     }
 
 
