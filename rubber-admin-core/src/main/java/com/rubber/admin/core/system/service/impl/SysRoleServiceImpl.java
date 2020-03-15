@@ -8,17 +8,15 @@ import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.mapper.SysRoleMapper;
+import com.rubber.admin.core.system.service.ISysRoleMenuService;
 import com.rubber.admin.core.system.service.ISysRoleService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,6 +29,8 @@ import java.util.stream.Collectors;
 @Service
 public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole> implements ISysRoleService {
 
+    @Resource
+    private ISysRoleMenuService iSysRoleMenuService;
 
     /**
      * 通过用户的id查询角色信息
@@ -40,21 +40,6 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
     @Override
     public List<SysRole> findByUserId(Integer userId) {
         return getBaseMapper().findByUserId(userId);
-    }
-
-
-    /**
-     * 获取用户的角色信息
-     * @param userId 用户的id
-     * @return 返回用户的角色信息
-     */
-    @Override
-    public Set<String> findRoleNameByUserId(Integer userId){
-        List<SysRole> userRoleEntityList = findByUserId(userId);
-        if(!CollectionUtils.isEmpty(userRoleEntityList)){
-            return userRoleEntityList.stream().map(SysRole::getRoleKey).collect(Collectors.toSet());
-        }
-        return new HashSet<>(1);
     }
 
 
@@ -93,10 +78,12 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
             return false;
         }
         if(sysRole.getRoleId() == null){
-            return doSave(sysRole);
+            doSave(sysRole);
         }else {
-            return doUpdate(sysRole);
+            doUpdate(sysRole);
         }
+        iSysRoleMenuService.addRoleMenuOption(sysRole);
+        return true;
     }
 
     @Transactional(

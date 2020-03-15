@@ -1,17 +1,23 @@
 package com.rubber.admin.core.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.luffyu.util.ArrayHashMap;
 import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.rubber.admin.core.authorize.AuthorizeKeys;
+import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
+import com.rubber.admin.core.authorize.service.IAuthGroupMenuService;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.MenuTypeEnums;
 import com.rubber.admin.core.enums.StatusEnums;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.exception.MenuException;
 import com.rubber.admin.core.system.mapper.SysMenuMapper;
+import com.rubber.admin.core.system.model.TreeDataModel;
 import com.rubber.admin.core.system.service.ISysMenuService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
@@ -19,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,19 +41,12 @@ import java.util.stream.Collectors;
 public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu> implements ISysMenuService {
 
 
-    /**
-     * 获取某个用户的菜单结构
-     * @param userId 用户的id
-     * @return
-     */
-    @Override
-    public SysMenu findMenuByUserId(Integer userId) {
-        if(userId == null || userId <= 0){
-            return getRoot();
-        }
-        List<SysMenu> byUserId = getBaseMapper().findByUserId(userId);
-        return getAllTree(byUserId);
-    }
+    @Resource
+    private IAuthGroupMenuService iAuthGroupMenuService;
+
+    @Resource
+    private IAuthGroupConfigService iAuthGroupConfigService;
+
 
     /**
      * 获取某个角色的菜单结构
@@ -70,20 +70,12 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
      * @return 返回菜单的数型结构
      */
     @Override
-    public SysMenu getAllTree(Integer status){
+    public List<SysMenu> getAllTree(Integer status){
+        if (status == null){
+            status = StatusEnums.NORMAL;
+        }
         List<SysMenu> all = getAll(status);
-        return getAllTree(all);
-    }
-
-    /**
-     * 通过用户id查询到他对应到权限值
-     * @param userId
-     * @return
-     */
-    @Override
-    public Set<String> findAuthKey(Integer userId) {
-        List<SysMenu> byRoleId = getBaseMapper().findByUserId(userId);
-        return findUserAuthKey(byRoleId);
+        return getAllTree(all).getChildren();
     }
 
 
@@ -92,8 +84,7 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
      * @param status 状态信息
      * @return 返回状态列表
      */
-    @Override
-    public List<SysMenu> getAll(Integer status) {
+    private List<SysMenu> getAll(Integer status) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
         if(status != null){
             queryWrapper.eq("status",status);
@@ -111,7 +102,7 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
             rollbackFor = Exception.class
     )
     @Override
-    public void saveOrUpdateMenu(SysMenu sysMenu) throws MenuException {
+    public void saveOrUpdateMenu(SysMenu sysMenu) throws AdminException {
         if(sysMenu == null){
             throw new MenuException(AdminCode.PARAM_ERROR,"菜单的信息为空");
         }
@@ -130,6 +121,9 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         }else {
             doSave(sysMenu);
         }
+        // TODO: 2020/3/14 后面需要通过全局配置参数来确认是否需要执行权限信息
+        iAuthGroupMenuService.saveMenuAuthGroup(sysMenu.getMenuId(),sysMenu.getMenuOptionGroup());
+
     }
 
 
@@ -169,33 +163,73 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
 
 
 
+
     @Override
-    public List<SysMenu> completionMenuTree(List<SysMenu> sysMenus) throws MenuException {
-        if(CollectionUtil.isEmpty(sysMenus)){
-            return sysMenus;
+    public SysMenu getInfoByMenuId(Integer menuIds) throws MenuException {
+        if (menuIds == null){
+            return null;
         }
-        //获取菜单结构信息
-        Map<Integer, SysMenu> collect = sysMenus.stream().collect(Collectors.toMap(SysMenu::getMenuId, menu -> menu));
-        completionMenuTree(collect);
-        return new ArrayList<>(collect.values());
+        SysMenu sysMenu = getAndVerifyById(menuIds);
+        if (sysMenu != null){
+            // TODO: 2020/3/14 需要通过全局参数来判断权限信息
+            Set<String> groupByMenuId = iAuthGroupMenuService.getAuthGroupByMenuId(menuIds);
+            sysMenu.setMenuOptionGroup(groupByMenuId == null ? new HashSet<>(1) : groupByMenuId);
+
+        }
+        return sysMenu;
     }
 
 
+
     @Override
-    public List<SysMenu> queryVerifyByIds(Set<Integer> menuIds) throws MenuException {
-        if(CollectionUtil.isEmpty(menuIds)){
+    public List<TreeDataModel> getMenuOptionKey(Integer menuId) {
+        List<SysMenu> menuAuthGroupList = baseMapper.queryMenuAndAuthGroup(StatusEnums.NORMAL);
+        if (CollUtil.isEmpty(menuAuthGroupList)){
             return null;
         }
-        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("menu_id",menuIds);
-        List<SysMenu> list = list(queryWrapper);
-        if(CollectionUtil.isEmpty(list)){
-            throw new MenuException(AdminCode.MENU_NOT_EXIST,menuIds);
+        //把一个父类放到一起
+        Map<Integer, List<SysMenu>> collect = menuAuthGroupList.stream().collect(Collectors.groupingBy(SysMenu::getParentId));
+        List<SysMenu> rootSysMenu = collect.get(0);
+        if(CollUtil.isEmpty(rootSysMenu)){
+            return null;
         }
-        if(list.size() != menuIds.size()){
-            throw new MenuException(AdminCode.MENU_NOT_EXIST,menuIds);
+        Map<String, String> optionMap = iAuthGroupConfigService.getOptionMap();
+
+        List<TreeDataModel> dataModels = new ArrayList<>();
+        for(SysMenu sysMenu:rootSysMenu){
+            TreeDataModel byMenu = new TreeDataModel(String.valueOf(sysMenu.getMenuId()),sysMenu.getMenuName());
+            findChildren(sysMenu,byMenu,collect,optionMap);
+            dataModels.add(byMenu);
         }
-        return list;
+        return dataModels;
+    }
+
+    /**
+     * 查询出list的结果信息
+     * @param sysMenu 系统菜单信息
+     * @param collect 整理的结果信息
+     */
+    private TreeDataModel findChildren(SysMenu sysMenu,TreeDataModel treeDataModel,Map<Integer, List<SysMenu>> collect,Map<String, String> optionMap){
+        List<SysMenu> childrenList = collect.get(sysMenu.getMenuId());
+        if(childrenList != null){
+            List<TreeDataModel> tmp = new ArrayList<>();
+            for(SysMenu menu:childrenList){
+                TreeDataModel dataModel = findChildren(menu,new TreeDataModel(String.valueOf(menu.getMenuId()),menu.getMenuName()) ,collect,optionMap);
+                tmp.add(dataModel);
+            }
+            treeDataModel.setChildren(tmp);
+        }else {
+            if(CollUtil.isNotEmpty(sysMenu.getOptionKeys())){
+                List<TreeDataModel> treeDataModels = new ArrayList<>();
+                for(String s:sysMenu.getOptionKeys()){
+                    String key = sysMenu.getMenuId() + AuthorizeKeys.AUTH_LINK_KEY + s;
+                    String label = optionMap.get(s);
+                    treeDataModels.add(new TreeDataModel(key,label == null ? s : label));
+                }
+                treeDataModel.setChildren(treeDataModels);
+            }
+        }
+        return treeDataModel;
     }
 
     /**

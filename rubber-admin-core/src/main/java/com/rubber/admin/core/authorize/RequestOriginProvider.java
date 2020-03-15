@@ -101,20 +101,20 @@ public class RequestOriginProvider implements ApplicationContextAware {
      * 处理mapping中的key值
      */
     private void handleOriginAuthKey(RequestOriginBean requestOriginBean, HandlerMethod handlerMethod){
-        String controllerKey= null,mappingKey= null;
+        String applyKey= null,optionKey= null;
         RubberAuth rubberAuth = handlerMethod.getMethodAnnotation(RubberAuth.class);
         if(rubberAuth != null){
-            controllerKey = rubberAuth.controllerKey();
-            mappingKey = rubberAuth.mappingKey();
+            applyKey = rubberAuth.controllerKey();
+            optionKey = rubberAuth.mappingKey();
         }
-        if (StringUtils.isEmpty(controllerKey)){
-            controllerKey = doCreateOriginControllerKey(handlerMethod,requestOriginBean.getUrl());
+        if (StringUtils.isEmpty(applyKey)){
+            applyKey = doCreateOriginControllerKey(handlerMethod,requestOriginBean.getUrl());
         }
-        if (StringUtils.isEmpty(mappingKey)){
-            mappingKey = handlerMethod.getMethod().getName();
+        if (StringUtils.isEmpty(optionKey)){
+            optionKey = handlerMethod.getMethod().getName();
         }
-        requestOriginBean.setControllerKey(controllerKey);
-        requestOriginBean.setMappingKey(mappingKey);
+        requestOriginBean.setApplyKey(applyKey);
+        requestOriginBean.setOptionKey(optionKey);
     }
 
 

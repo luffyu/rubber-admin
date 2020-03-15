@@ -1,5 +1,6 @@
 package com.rubber.admin.core.authorize.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,7 +11,10 @@ import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
 import com.rubber.admin.core.base.BaseAdminService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -48,7 +52,14 @@ public class AuthGroupConfigServiceImpl extends BaseAdminService<AuthGroupConfig
         return null;
     }
 
-
+    @Override
+    public Map<String, String> getOptionMap() {
+        List<AuthGroupConfig> authGroupConfigs = queryByType(RubberGroupEnums.option.toString());
+        if(CollUtil.isEmpty(authGroupConfigs)){
+            return new HashMap<>();
+        }
+        return authGroupConfigs.stream().collect(Collectors.toMap(AuthGroupConfig::getGroupKey,AuthGroupConfig::getGroupName));
+    }
 
 
     public List<AuthGroupConfig> queryByType(String type){

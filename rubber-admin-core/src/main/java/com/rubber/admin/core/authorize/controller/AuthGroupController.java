@@ -22,9 +22,15 @@ public class AuthGroupController {
     private RubberAuthorizeGroupCenter rubberAuthorizeGroupCenter;
 
 
-    @GetMapping("/list")
-    public ResultMsg list(){
-        return ResultMsg.success(rubberAuthorizeGroupCenter.getAllGroupDict());
+    @GetMapping("/apply-tree")
+    public ResultMsg getApplyTree(){
+        return ResultMsg.success(rubberAuthorizeGroupCenter.getAllApplyTree());
+    }
 
+
+
+    @GetMapping("/option-tree")
+    public ResultMsg getOptionTree(){
+        return ResultMsg.success(rubberAuthorizeGroupCenter.getAllOptionTree());
     }
 }

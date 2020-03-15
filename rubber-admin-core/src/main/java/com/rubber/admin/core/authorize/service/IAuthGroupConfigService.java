@@ -1,10 +1,11 @@
 package com.rubber.admin.core.authorize.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.rubber.admin.core.authorize.model.RubberGroupEnums;
 import com.rubber.admin.core.authorize.entity.AuthGroupConfig;
+import com.rubber.admin.core.authorize.model.RubberGroupEnums;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,5 +32,12 @@ public interface IAuthGroupConfigService extends IService<AuthGroupConfig> {
      * @return
      */
     AuthGroupConfig startWithByMember(List<AuthGroupConfig> authGroupConfigs,String key);
+
+
+    /**
+     * 获取操心类型的映射名称
+     * @return 返回当前的值
+     */
+    Map<String,String> getOptionMap();
 
 }

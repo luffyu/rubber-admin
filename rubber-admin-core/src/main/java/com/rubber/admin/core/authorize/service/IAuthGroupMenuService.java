@@ -2,8 +2,10 @@ package com.rubber.admin.core.authorize.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.rubber.admin.core.authorize.entity.AuthGroupMenu;
+import com.rubber.admin.core.exceptions.AdminException;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -29,5 +31,13 @@ public interface IAuthGroupMenuService extends IService<AuthGroupMenu> {
      * @param authGroupMenus 当前族群信息
      * @return 返回菜单信息
      */
-    boolean saveMenuAuthGroup(Integer menuId,List<AuthGroupMenu> authGroupMenus);
+    List<AuthGroupMenu> saveMenuAuthGroup(Integer menuId, Set<String> authGroupMenus) throws AdminException;
+
+
+    /**
+     * 通过菜单id 查询族群的关联关系
+     * @param menuId 活动id
+     * @return 返回权限数组
+     */
+    Set<String> getAuthGroupByMenuId(Integer menuId);
 }

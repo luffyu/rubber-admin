@@ -1,8 +1,11 @@
 package com.rubber.admin.core.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.rubber.admin.core.authorize.AuthorizeKeys;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.exceptions.AdminException;
@@ -17,11 +20,10 @@ import com.rubber.admin.core.system.service.ISysMenuService;
 import com.rubber.admin.core.system.service.ISysRoleMenuService;
 import com.rubber.admin.core.system.service.ISysRoleService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,48 +37,66 @@ import java.util.stream.Collectors;
 @Service
 public class SysRoleMenuServiceImpl extends BaseAdminService<SysRoleMenuMapper, SysRoleMenu> implements ISysRoleMenuService {
 
-    @Resource
-    private ISysRoleService sysRoleService;
-
-    @Resource
-    private ISysMenuService sysMenuService;
 
 
-
+    @Transactional(
+            rollbackFor = Exception.class
+    )
     @Override
-    public void addMenuByRole(SysRoleMenuModel sysRoleMenuModel) throws AdminException {
-        if (sysRoleMenuModel.getRoleId() == null) {
-            throw new RoleException(AdminCode.PARAM_ERROR);
-        }
-        List<SysRoleMenu> sysRoleMenus = new ArrayList<>();
-        SysRole sysRole = sysRoleService.getAndVerifyById(sysRoleMenuModel.getRoleId());
-        //全部的菜单信息
-        Set<Integer> sysMenuIds = sysRoleMenuModel.getMenuIds();
-
-        //验证菜单是否存在
-        if(CollectionUtil.isNotEmpty(sysMenuIds)){
-            List<SysMenu> sysMenus = sysMenuService.queryVerifyByIds(sysMenuIds);
-            List<SysMenu> completionMenuTree = sysMenuService.completionMenuTree(sysMenus);
-            sysRoleMenus = completionMenuTree.stream().map(i -> {
-                return new SysRoleMenu(sysRole.getRoleId(), i.getMenuId());
-            }).collect(Collectors.toList());
-        }
-        doRemoveByRoleId(sysRoleMenuModel.getRoleId());
-        if (CollectionUtil.isNotEmpty(sysRoleMenus)) {
-            if(!saveBatch(sysRoleMenus)){
-                throw new MenuException(SysCode.SYSTEM_ERROR,"保存角色菜单信息失败");
+    public List<SysRoleMenu> addRoleMenuOption(SysRole sysRole) throws RoleException {
+        doRemoveByRoleId(sysRole.getRoleId());
+        List<SysRoleMenu> roleMenus = handleOptionToEntity(sysRole);
+        if(CollUtil.isNotEmpty(roleMenus)){
+            if(!saveBatch(roleMenus)){
+                throw new RoleException(AdminCode.INSTALL_ROLE_MENU_ERROR);
             }
         }
+        return roleMenus;
     }
 
 
-    private void doRemoveByRoleId(Integer roleId) throws MenuException {
+
+    private List<SysRoleMenu> handleOptionToEntity(SysRole sysRole){
+        if (CollUtil.isEmpty(sysRole.getRoleMenuOptions())){
+            return null;
+        }
+        Map<String,Set<String>> menuOption = new HashMap<>();
+        for (String roleMenuOption:sysRole.getRoleMenuOptions()){
+            int i = StrUtil.indexOf(roleMenuOption, AuthorizeKeys.AUTH_LINK_KEY.charAt(0));
+            if (i < 0){
+                menuOption.putIfAbsent(roleMenuOption,new HashSet<>());
+                continue;
+            }
+            String menuId = roleMenuOption.substring(0,i);
+            String option = roleMenuOption.substring(i+1);
+            Set<String> strings = menuOption.get(menuId);
+            if (strings == null){
+                strings = new HashSet<>();
+            }
+            strings.add(option);
+            menuOption.put(menuId,strings);
+        }
+        List<SysRoleMenu> roleMenus = new ArrayList<>();
+        for (String menuId:menuOption.keySet()){
+            SysRoleMenu sysRoleMenu = new SysRoleMenu();
+            sysRoleMenu.setMenuId(Integer.parseInt(menuId));
+            sysRoleMenu.setRoleId(sysRole.getRoleId());
+            sysRoleMenu.setOptionKey(CollUtil.join(menuOption.get(menuId),AuthorizeKeys.MEMBER_LINK_KEY));
+            roleMenus.add(sysRoleMenu);
+        }
+        return roleMenus;
+    }
+
+
+
+
+    private void doRemoveByRoleId(Integer roleId) throws RoleException {
         QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("role_id",roleId);
         int count = count(queryWrapper);
         int delete = getBaseMapper().delete(queryWrapper);
         if(delete != count){
-            throw new MenuException(SysCode.SYSTEM_ERROR,"删除角色菜单信息失败");
+            throw new RoleException(SysCode.SYSTEM_ERROR,"删除角色菜单信息失败");
         }
     }
 

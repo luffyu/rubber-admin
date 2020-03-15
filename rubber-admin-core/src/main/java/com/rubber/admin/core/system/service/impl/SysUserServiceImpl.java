@@ -154,8 +154,8 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
      * @param userInfoModel
      */
     private void doFindSuperUserAllInfo(UserInfoModel userInfoModel){
-        SysMenu rootTree = sysMenuService.getAllTree(StatusEnums.NORMAL);
-        userInfoModel.setSysMenus(rootTree.getChildren());
+        List<SysMenu> allTree = sysMenuService.getAllTree(StatusEnums.NORMAL);
+        userInfoModel.setSysMenus(allTree);
     }
 
 

@@ -20,23 +20,23 @@ public class RequestOriginBean {
     /**
      * 所属于的controller Group
      */
-    private AuthGroupConfig controllerGroup;
+    private AuthGroupConfig applyGroup;
 
     /**
      * 所属于的mapping Group
      */
-    private AuthGroupConfig mappingGroup;
+    private AuthGroupConfig optionGroup;
 
 
     /**
      * 最早原始的controllerKey
      */
-    private String controllerKey;
+    private String applyKey;
 
     /**
      * 最早原始的mappingKey
      */
-    private String mappingKey;
+    private String optionKey;
 
 
 
@@ -44,16 +44,24 @@ public class RequestOriginBean {
      * 获取有效的key值
      * @return 当地的key值信息
      */
-    public String getEffectiveControllerKey(){
-        return controllerGroup == null ? controllerKey : controllerGroup.getGroupKey();
+    public String getEffectiveApplyKey(){
+        return applyGroup == null ? applyKey : applyGroup.getGroupKey();
+    }
+
+    /**
+     * 获取有效的名称值
+     * @return 当地的key值信息
+     */
+    public String getEffectiveApplyName(){
+        return applyGroup == null ? applyKey : applyGroup.getGroupName();
     }
 
     /**
      * 获取有效的key值
      * @return 当地的key值信息
      */
-    public String getEffectiveMappingKey(){
-        return mappingGroup == null ? mappingKey : mappingGroup.getGroupKey();
+    public String getEffectiveOptionKey(){
+        return optionGroup == null ? optionKey : optionGroup.getGroupKey();
     }
 
 
@@ -61,16 +69,17 @@ public class RequestOriginBean {
      * 获取有效的名称值
      * @return 当地的key值信息
      */
-    public String getEffectiveControllerName(){
-        return controllerGroup == null ? controllerKey : controllerGroup.getGroupName();
+    public String getEffectiveOptionName(){
+        return optionGroup == null ? optionKey : optionGroup.getGroupName();
     }
 
-    /**
-     * 获取有效的名称值
-     * @return 当地的key值信息
-     */
-    public String getEffectiveMappingName(){
-        return mappingGroup == null ? mappingKey : mappingGroup.getGroupName();
+
+
+    public String getEffectiveOptionMembers(){
+        return optionGroup == null ? "":optionGroup.getGroupMember();
     }
 
+    public String getEffectiveApplyMembers(){
+        return applyGroup == null ? "":applyGroup.getGroupMember();
+    }
 }

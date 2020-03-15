@@ -3,13 +3,16 @@ package com.rubber.admin.core.system.controller;
 import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.base.BaseAdminController;
 import com.rubber.admin.core.enums.AdminCode;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.plugins.page.PageModel;
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.exception.MenuException;
+import com.rubber.admin.core.system.model.TreeDataModel;
 import com.rubber.admin.core.system.service.ISysMenuService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author luffyu
@@ -41,8 +44,8 @@ public class SysMenuController extends BaseAdminController {
      */
     @GetMapping("/tree")
     public ResultMsg getMenuAllTree(Integer status){
-        SysMenu allTree = sysMenuService.getAllTree(status);
-        return ResultMsg.success(allTree);
+        List<SysMenu> sysMenus = sysMenuService.getAllTree(status);
+        return ResultMsg.success(sysMenus);
     }
 
 
@@ -52,7 +55,7 @@ public class SysMenuController extends BaseAdminController {
      * @return 返回添加菜单的基本信息
      */
     @PostMapping("/add")
-    public ResultMsg addMenu(@RequestBody SysMenu sysMenu) throws MenuException {
+    public ResultMsg addMenu(@RequestBody SysMenu sysMenu) throws AdminException {
         if(sysMenu.getMenuId() != null){
             throw new MenuException(AdminCode.PARAM_ERROR,"保存的菜单id必须为空");
         }
@@ -66,8 +69,8 @@ public class SysMenuController extends BaseAdminController {
      * 更新菜单
      * @return 返回菜单更新的值
      */
-    @PostMapping("/{menuId}/update")
-    public ResultMsg updateMenu(@PathVariable("menuId")Integer menuId,@RequestBody SysMenu sysMenu) throws MenuException {
+    @PostMapping("/update/{menuId}")
+    public ResultMsg updateMenu(@PathVariable("menuId")Integer menuId,@RequestBody SysMenu sysMenu) throws AdminException {
         if(menuId == null || menuId <= 0 ){
             throw new MenuException(AdminCode.PARAM_ERROR,"菜单id不存在");
         }
@@ -83,7 +86,7 @@ public class SysMenuController extends BaseAdminController {
      * 更新菜单
      * @return 返回菜单更新的值
      */
-    @PostMapping("/{menuId}/del")
+    @PostMapping("/del/{menuId}")
     public ResultMsg delMenu(@PathVariable("menuId")Integer menuId) throws MenuException {
         if(menuId == null || menuId <= 0 ){
             throw new MenuException(AdminCode.PARAM_ERROR,"菜单id不存在");
@@ -97,12 +100,24 @@ public class SysMenuController extends BaseAdminController {
      * 获取菜单详情
      * @return 返回菜单更新的值
      */
-    @GetMapping("/{menuId}/info")
+    @GetMapping("/info/{menuId}")
     public ResultMsg getMenu(@PathVariable("menuId")Integer menuId) throws MenuException {
         if(menuId == null || menuId <= 0 ){
             throw new MenuException(AdminCode.PARAM_ERROR,"菜单id不存在");
         }
-        SysMenu sysMenu = sysMenuService.getAndVerifyById(menuId);
+        SysMenu sysMenu = sysMenuService.getInfoByMenuId(menuId);
         return ResultMsg.success(sysMenu);
+    }
+
+
+
+    /**
+     * 获取菜单详情
+     * @return 返回菜单更新的值
+     */
+    @GetMapping("/option-tree")
+    public ResultMsg getOptionTree(Integer menuId) throws MenuException {
+        List<TreeDataModel> menuOptionKey = sysMenuService.getMenuOptionKey(menuId);
+        return ResultMsg.success(menuOptionKey);
     }
 }

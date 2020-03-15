@@ -8,6 +8,7 @@ import com.rubber.admin.core.enums.MenuTypeEnums;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -117,7 +118,17 @@ public class SysMenu extends BaseEntity {
     private List<SysMenu> children ;
 
 
+    /**
+     * 当前菜单所有的权限key
+     */
     @TableField(exist = false)
-    private Set<String> groupAuthMenu;
+    private Set<String> menuOptionGroup;
+
+
+    /**
+     * 当前菜单可以操作的key值
+     */
+    @TableField(exist = false)
+    private HashSet<String> optionKeys;
 
 }

@@ -5,7 +5,6 @@ import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.exception.RoleException;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -24,19 +23,11 @@ public interface ISysRoleService extends IBaseService<SysRole> {
      */
     List<SysRole> findByUserId(Integer userId);
 
-
-    /**
-     * 查询用户的所有角色key值信息
-     * @param userId 用户的id
-     * @return 返回角色信息
-     */
-    Set<String> findRoleNameByUserId(Integer userId);
-
-
     /**
      * 通过角色的id查询用户的角色信息
      * @param roleId 角色id
-     * @return 返回角色信息 否则抛出异常
+     * @return 返回角色信息
+     * @throws RoleException 否则抛出异常
      */
     SysRole getAndVerifyById(Integer roleId) throws RoleException;
 
@@ -45,7 +36,6 @@ public interface ISysRoleService extends IBaseService<SysRole> {
      * 系统的角色
      * @param roleKey 角色key
      * @return 返回系统的稼穑哦
-     * @throws RoleException 角色的异常信息
      */
     SysRole getByRoleKey(String roleKey) ;
 

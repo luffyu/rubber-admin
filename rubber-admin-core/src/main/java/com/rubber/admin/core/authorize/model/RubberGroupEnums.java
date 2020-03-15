@@ -9,13 +9,13 @@ package com.rubber.admin.core.authorize.model;
 public enum  RubberGroupEnums {
 
     /**
-     * controller类型的group
+     * 应用组
      */
-    controller,
+    apply,
 
     /**
-     * mapping类型的group
+     * 操作组
      */
-    mapping;
+    option;
 
 }

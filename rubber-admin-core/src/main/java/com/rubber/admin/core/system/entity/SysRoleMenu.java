@@ -27,6 +27,13 @@ public class SysRoleMenu extends BaseEntity {
     private Integer menuId;
 
 
+    /**
+     * 操作的key值
+     */
+    private String optionKey;
+
+
+
     public SysRoleMenu() {
     }
 

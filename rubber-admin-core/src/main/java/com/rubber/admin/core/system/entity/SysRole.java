@@ -1,11 +1,13 @@
 package com.rubber.admin.core.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.rubber.admin.core.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.rubber.admin.core.base.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * <p>
@@ -75,5 +77,12 @@ public class SysRole extends BaseEntity {
      * 备注
      */
     private String remark;
+
+
+    /**
+     * 可以操作的key值
+     */
+    @TableField(exist = false)
+    private Set<String> roleMenuOptions;
 
 }

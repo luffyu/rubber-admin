@@ -33,7 +33,7 @@ public enum AdminCode implements ICodeHandle {
     SHIRO_AUTH_ERROR("10204","没有操作权限"),
 
     /**
-     * 已  2-**-** 开头
+     * 管理后台已  2-**-** 开头
      */
     /**
      * 201** 用户类型的错误code
@@ -57,6 +57,7 @@ public enum AdminCode implements ICodeHandle {
     ROLE_PRIVILEGE_ILLEGAL("20201","角色权限信息不合法"),
     ROLE_KEY_EXIST("20202","角色的key值已经存在"),
     ROLE_IS_DELETE("20203","角色已经被删除"),
+    INSTALL_ROLE_MENU_ERROR("20204","保存角色关联的菜单信息错误"),
 
     /**
      * 203** 菜单类型的错误
@@ -77,6 +78,12 @@ public enum AdminCode implements ICodeHandle {
      */
     DICT_IS_EXIST("20500","该Key值已经存在"),
     DICT_IS_NOT_EXIST("20501","该Key值已经存在"),
+
+
+    /**
+     * 206** 权限族群类型的错误
+     */
+    AUTH_GROUP_INSTALL_ERROR("20600","权限族群保存异常"),
 
     ;
     /**

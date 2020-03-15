@@ -2,8 +2,7 @@ package com.rubber.admin.core.authorize;
 
 import cn.hutool.core.collection.CollUtil;
 import com.rubber.admin.core.authorize.entity.AuthGroupConfig;
-import com.rubber.admin.core.authorize.model.GroupControllerModel;
-import com.rubber.admin.core.authorize.model.GroupMappingModel;
+import com.rubber.admin.core.authorize.model.GroupOptionApplyTreeModel;
 import com.rubber.admin.core.authorize.model.RequestOriginBean;
 import com.rubber.admin.core.authorize.model.RubberGroupEnums;
 import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
@@ -14,7 +13,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -34,11 +32,13 @@ public class RubberAuthorizeGroupCenter {
      */
     private Map<String,String> urlAuthDict = new ConcurrentHashMap<>(100);
 
-    /**
-     * 当前组映射对象集合
-     */
-    public List<GroupControllerModel> groupDict = new ArrayList<>();
 
+
+    private List<GroupOptionApplyTreeModel> allOptionTree = new ArrayList<>();
+
+
+
+    private List<GroupOptionApplyTreeModel> allApplyTree = new ArrayList<>();
 
     /**
      * 对象锁
@@ -53,61 +53,18 @@ public class RubberAuthorizeGroupCenter {
     IAuthGroupConfigService authGroupConfigService;
 
 
-    /**
-     * 返回一个url 所需要的权限
-     * @param url 当前的url信息
-     * @return 返回url所需要的权限
-     */
-    public String getByUrl(String url){
-        return this.urlAuthDict.get(url);
+
+    public Map<String, String> getUrlAuthDict() {
+        return urlAuthDict;
     }
 
-
-
-    /**
-     * 读取url的权限认证字典
-     * @return
-     */
-    public Map<String,String> getUrlAuthDict(){
-        lock.readLock().lock();
-        try {
-            if (CollUtil.isEmpty(this.urlAuthDict)){
-                initGroupDict(true);
-            }
-            return this.urlAuthDict;
-        }finally {
-            lock.readLock().unlock();
-        }
+    public List<GroupOptionApplyTreeModel> getAllOptionTree() {
+        return allOptionTree;
     }
 
-
-    /**
-     * 获取全部的族群信息
-     * @return 返回当前的数据信息
-     */
-    public List<GroupControllerModel> getAllGroupDict(){
-        lock.readLock().lock();
-        try {
-            if (CollUtil.isEmpty(this.groupDict)){
-                initGroupDict(true);
-            }
-            return this.groupDict;
-        }finally {
-            lock.readLock().unlock();
-        }
+    public List<GroupOptionApplyTreeModel> getAllApplyTree() {
+        return allApplyTree;
     }
-
-
-    /**
-     * 清除缓存
-     */
-    public void clearCache(){
-        groupDict.clear();
-        urlAuthDict.clear();
-
-    }
-
-
 
     /**
      * 初始化族群信息
@@ -116,11 +73,9 @@ public class RubberAuthorizeGroupCenter {
         lock.writeLock().lock();
         try {
             log.info("开始初始化权限组数据信息......");
-            if(reset){
-                clearCache();
-            }
             List<RequestOriginBean> requestOriginBeans = initRequestOriginGroup();
-            initGroupMappingModel(requestOriginBeans);
+            initGroupOptionModel(requestOriginBeans);
+            initGroupApplyModel(requestOriginBeans);
             log.info("初始化权限组数据信息成功......");
         }finally {
             lock.writeLock().unlock();
@@ -137,11 +92,11 @@ public class RubberAuthorizeGroupCenter {
     private List<RequestOriginBean> initRequestOriginGroup(){
         List<RequestOriginBean> requestOriginList = RequestOriginProvider.getRequestOriginBeans();
         if(CollUtil.isNotEmpty(requestOriginList)){
-            List<AuthGroupConfig> groupController = authGroupConfigService.findGroupAndMemberByType(RubberGroupEnums.controller);
-            List<AuthGroupConfig> groupMapping = authGroupConfigService.findGroupAndMemberByType(RubberGroupEnums.mapping);
+            List<AuthGroupConfig> groupApply = authGroupConfigService.findGroupAndMemberByType(RubberGroupEnums.apply);
+            List<AuthGroupConfig> groupOption = authGroupConfigService.findGroupAndMemberByType(RubberGroupEnums.option);
             for (RequestOriginBean requestOriginBean:requestOriginList){
-                handleGroupAuthKey(requestOriginBean,groupController,groupMapping);
-                String authKey = AuthorizeTools.createAuthKey(requestOriginBean.getEffectiveControllerKey(),requestOriginBean.getEffectiveMappingKey());
+                handleGroupAuthKey(requestOriginBean,groupApply,groupOption);
+                String authKey = AuthorizeTools.createAuthKey(requestOriginBean.getApplyKey(),requestOriginBean.getOptionKey());
                 urlAuthDict.put(requestOriginBean.getUrl(),authKey);
             }
         }
@@ -154,52 +109,101 @@ public class RubberAuthorizeGroupCenter {
      *
      * @param requestOriginList 对应的请求原始信息数据
      */
-    private void initGroupMappingModel(List<RequestOriginBean> requestOriginList){
+    private void initGroupOptionModel(List<RequestOriginBean> requestOriginList){
         if(CollUtil.isEmpty(requestOriginList)){
             return;
         }
-        Map<String, List<RequestOriginBean>> collect = requestOriginList.stream().collect(Collectors.groupingBy(RequestOriginBean::getEffectiveControllerKey));
-        for (String key:collect.keySet()){
-            List<RequestOriginBean> controllerRequest = collect.get(key);
-            if(CollUtil.isEmpty(controllerRequest)){
+        Map<String, List<RequestOriginBean>> collect = requestOriginList.stream().collect(Collectors.groupingBy(RequestOriginBean::getEffectiveOptionKey));
+        for (String optionKey:collect.keySet()){
+            List<RequestOriginBean> optionRequest = collect.get(optionKey);
+            if(CollUtil.isEmpty(optionRequest)){
                 continue;
             }
-            GroupControllerModel groupControllerModel = new GroupControllerModel(controllerRequest.get(0));
+            GroupOptionApplyTreeModel optionTreeModel = new GroupOptionApplyTreeModel();
+            optionTreeModel.setKey(optionRequest.get(0).getEffectiveOptionKey());
+            optionTreeModel.setLabel(optionRequest.get(0).getEffectiveOptionName());
 
-            Map<String, List<RequestOriginBean>> mappingRequest = controllerRequest.stream().collect(Collectors.groupingBy(RequestOriginBean::getEffectiveMappingKey));
-            List<GroupMappingModel> groupMappingModels = new ArrayList<>();
-            for(String mappingKey:mappingRequest.keySet()){
-                List<RequestOriginBean> requestOriginBeans = mappingRequest.get(mappingKey);
-                GroupMappingModel mappingModel = new GroupMappingModel(requestOriginBeans.get(0));
-                Set<String> urls = requestOriginBeans.stream().map(RequestOriginBean::getUrl).collect(Collectors.toSet());
-                mappingModel.setUrls(urls);
-                groupMappingModels.add(mappingModel);
+
+            Map<String, List<RequestOriginBean>> applyList = optionRequest.stream().collect(Collectors.groupingBy(RequestOriginBean::getEffectiveApplyKey));
+
+            List<GroupOptionApplyTreeModel> applyTreeModelList = new ArrayList<>();
+            for(String apply:applyList.keySet()){
+                List<RequestOriginBean> applyOriginList = applyList.get(apply);
+                if(CollUtil.isEmpty(applyOriginList)){
+                    continue;
+                }
+                GroupOptionApplyTreeModel applyTreeModel = new GroupOptionApplyTreeModel();
+                applyTreeModel.setKey(apply + AuthorizeKeys.AUTH_LINK_KEY + optionKey);
+                applyTreeModel.setLabel(applyOriginList.get(0).getEffectiveApplyName());
+                applyTreeModel.setRequestUrl(applyOriginList.stream().map(RequestOriginBean::getUrl).collect(Collectors.toSet()));
+
+                applyTreeModelList.add(applyTreeModel);
             }
-            groupControllerModel.setMappingModels(groupMappingModels);
-            groupDict.add(groupControllerModel);
+            optionTreeModel.setChildren(applyTreeModelList);
+            allOptionTree.add(optionTreeModel);
         }
     }
+
+
+
+    private void initGroupApplyModel(List<RequestOriginBean> requestOriginList){
+        if(CollUtil.isEmpty(requestOriginList)){
+            return;
+        }
+        Map<String, List<RequestOriginBean>> collect = requestOriginList.stream().collect(Collectors.groupingBy(RequestOriginBean::getEffectiveApplyKey));
+        for (String applyKey:collect.keySet()){
+            List<RequestOriginBean> applyRequest = collect.get(applyKey);
+            if(CollUtil.isEmpty(applyRequest)){
+                continue;
+            }
+            GroupOptionApplyTreeModel applyTreeModel = new GroupOptionApplyTreeModel();
+            applyTreeModel.setKey(applyRequest.get(0).getEffectiveApplyKey());
+            applyTreeModel.setLabel(applyRequest.get(0).getEffectiveApplyName());
+            applyTreeModel.setMembers(applyRequest.get(0).getEffectiveApplyMembers());
+
+            Map<String, List<RequestOriginBean>> optionList = applyRequest.stream().collect(Collectors.groupingBy(RequestOriginBean::getEffectiveOptionKey));
+            List<GroupOptionApplyTreeModel> optionTreeModelList = new ArrayList<>();
+            for(String option:optionList.keySet()){
+                List<RequestOriginBean> optionOriginList = optionList.get(option);
+                if(CollUtil.isEmpty(optionOriginList)){
+                    continue;
+                }
+
+                GroupOptionApplyTreeModel optionTree = new GroupOptionApplyTreeModel();
+                optionTree.setKey(applyKey + AuthorizeKeys.AUTH_LINK_KEY + option);
+                optionTree.setLabel(optionOriginList.get(0).getEffectiveOptionName());
+                optionTree.setMembers(optionOriginList.get(0).getEffectiveOptionMembers());
+                optionTree.setRequestUrl(optionOriginList.stream().map(RequestOriginBean::getUrl).collect(Collectors.toSet()));
+                optionTreeModelList.add(optionTree);
+            }
+            applyTreeModel.setChildren(optionTreeModelList);
+            allApplyTree.add(applyTreeModel);
+        }
+
+    }
+
+
 
 
     /**
      * 映射族群
      * @param requestOriginBean
-     * @param groupController
-     * @param groupMapping
+     * @param groupApply
+     * @param groupOption
      */
-    private void handleGroupAuthKey(RequestOriginBean requestOriginBean, List<AuthGroupConfig> groupController, List<AuthGroupConfig> groupMapping){
+    private void handleGroupAuthKey(RequestOriginBean requestOriginBean, List<AuthGroupConfig> groupApply, List<AuthGroupConfig> groupOption){
 
-        AuthGroupConfig cGroup = authGroupConfigService.startWithByMember(groupController, requestOriginBean.getControllerKey());
+        AuthGroupConfig cGroup = authGroupConfigService.startWithByMember(groupApply, requestOriginBean.getApplyKey());
         if (cGroup != null){
-            requestOriginBean.setControllerGroup(cGroup);
+            requestOriginBean.setApplyGroup(cGroup);
         }else {
-            requestOriginBean.setControllerGroup(null);
+            requestOriginBean.setApplyGroup(null);
         }
-        AuthGroupConfig mGroup = authGroupConfigService.startWithByMember(groupMapping, requestOriginBean.getMappingKey());
+        AuthGroupConfig mGroup = authGroupConfigService.startWithByMember(groupOption, requestOriginBean.getOptionKey());
         if (mGroup != null){
-            requestOriginBean.setMappingGroup(mGroup);
+            requestOriginBean.setOptionGroup(mGroup);
         }else {
-            requestOriginBean.setMappingGroup(null);
+            requestOriginBean.setOptionGroup(null);
         }
     }
 

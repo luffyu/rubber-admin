@@ -1,8 +1,10 @@
 package com.rubber.admin.core.system.service;
 
 import com.rubber.admin.core.base.IBaseService;
+import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.exception.MenuException;
+import com.rubber.admin.core.system.model.TreeDataModel;
 
 import java.util.List;
 import java.util.Set;
@@ -19,43 +21,27 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
 
 
     /**
-     * 通过userId 查询用户的菜单信息
-     * @param userId 用户的id
-     * @return 用户id所在的菜单信息
-     */
-    SysMenu findMenuByUserId(Integer userId);
-
-    /**
      * 通过角色id查询到用户到菜单信息
      * @param roleIds 用户的id
      * @return
      */
     SysMenu findMenuByRoleId(Set<Integer> roleIds);
 
-    /**
-     * 获取菜单的全目录 从根目录开始往下读取
-     * @return 返回一个跟目录下的所有目录菜单
-     */
-    SysMenu getAllTree(Integer status);
-
-
-    Set<String> findAuthKey(Integer userId);
-
 
     /**
-     * 查询全部的菜单信息
-     * @param status 状态信息
-     * @return 返回状态列表
+     *  获取菜单的全目录 从根目录开始往下读取
+     * @param status 菜单状态
+     * @return 返回符合要的树形菜单结构
      */
-    List<SysMenu> getAll(Integer status);
+    List<SysMenu> getAllTree(Integer status);
 
 
     /**
      * 保存或者更新菜单信息
-     * @param sysMenu 系统的菜单信息
-     * @throws MenuException 菜单的异常
+     * @param sysMenu sysMenu 系统的菜单信息
+     * @throws AdminException 菜单的异常
      */
-    void saveOrUpdateMenu(SysMenu sysMenu) throws MenuException;
+    void saveOrUpdateMenu(SysMenu sysMenu) throws AdminException;
 
 
     /**
@@ -69,24 +55,26 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
     /**
      * 获取并验证一个菜单信息
      * @param menuId menuId
-     * @return
-     * @throws MenuException
+     * @return 返回的一定不为空
+     * @throws MenuException 异常信息 为空或者不存在
      */
     SysMenu getAndVerifyById(Integer menuId) throws MenuException;
 
 
     /**
-     * 补全菜单的树形结构
-     * @return 返回补全之后的菜单信息
+     * 通过菜单id 查询菜单的全部信息
+     * 包含用户 权限信息
+     *
+     * @param menuIds 菜单id
+     * @return 返回菜单详细信息
+     * @throws MenuException 异常信息
      */
-    List<SysMenu> completionMenuTree(List<SysMenu> sysMenus) throws MenuException;
-
+    SysMenu getInfoByMenuId(Integer menuIds) throws MenuException;
 
     /**
-     * 通过菜单id批量查询菜单信息
-     * @param menuIds 菜单ids
-     * @return 返回菜单信息
-     * @throws MenuException
+     * 获取菜单的操作树形结构
+     * @param menuId 菜单id
+     * @return 返回树形结构数据值
      */
-    List<SysMenu> queryVerifyByIds(Set<Integer> menuIds) throws MenuException;
+    List<TreeDataModel> getMenuOptionKey(Integer menuId);
 }

@@ -31,4 +31,12 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @return 返回菜单信息
      */
     List<SysMenu> findByUserId(Integer userId);
+
+
+    /**
+     * 查询菜单的查询信息
+     * @param status 状态值
+     * @return 返回系统菜单
+     */
+    List<SysMenu> queryMenuAndAuthGroup(@Param("status")Integer status);
 }

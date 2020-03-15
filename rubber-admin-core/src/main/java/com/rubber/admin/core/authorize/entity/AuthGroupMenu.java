@@ -31,17 +31,17 @@ public class AuthGroupMenu extends BaseEntity {
     /**
     * 组关键字
     */
-    private String menuId;
+    private Integer menuId;
 
     /**
-    * controller组名称
+    * 操作的key值
     */
-    private String controllerKey;
+    private String optionKey;
 
     /**
-    * mapping组名称
+    * 想关联的应用名称
     */
-    private String mappingKey;
+    private String relatedApply;
 
 
 }

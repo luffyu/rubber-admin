@@ -21,14 +21,21 @@
     </resultMap>
 
 
+    <resultMap id="menuAuthGroup" extends="baseMenuResult" type="com.rubber.admin.core.system.entity.SysMenu">
+        <collection property="optionKeys" ofType="java.lang.String" javaType="java.util.HashSet">
+            <result column="option_key"/>
+        </collection>
+    </resultMap>
+
+
     <sql id="selectMenu">
         select a.menu_id, a.menu_name, a.parent_id, a.seq, a.url, a.menu_type,a.auth_key, a.status, icon, a.create_by, a.create_time, a.update_time,a.update_by
-		from sys_menu as a
     </sql>
 
 
     <select id="findByRoleId" resultMap="baseMenuResult"  parameterType="Integer[]">
         <include refid="selectMenu"/>
+        from sys_menu as a
         left join sys_role_menu as rm on (a.menu_id = rm.menu_id)
         where rm.role_id in
         <foreach collection="roleIds" open="(" separator="," close=")" item="roleId">
@@ -39,9 +46,22 @@
 
     <select id="findByUserId" resultMap="baseMenuResult">
         <include refid="selectMenu"/>
+        from sys_menu as a
         left join sys_role_menu as rm on (a.menu_id = rm.menu_id)
         left join sys_user_role as ur on (rm.role_id = ur.role_id)
         where ur.user_id = #{userId}
+    </select>
+
+
+
+    <select id="queryMenuAndAuthGroup" resultMap="menuAuthGroup">
+        <include refid="selectMenu"/>,agm.option_key
+        from sys_menu as a
+        left join auth_group_menu as agm on (a.menu_id = agm.menu_id)
+        <if test="status != null">
+          WHERE  a.status = #{status}
+        </if>
+        ORDER BY a.seq desc
     </select>
 
 
