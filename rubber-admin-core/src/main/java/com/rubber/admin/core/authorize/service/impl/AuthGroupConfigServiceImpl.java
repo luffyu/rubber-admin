@@ -4,11 +4,13 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.rubber.admin.core.authorize.model.RubberGroupEnums;
+import com.rubber.admin.core.authorize.exception.AuthGroupException;
+import com.rubber.admin.core.authorize.model.RubberGroupTypeEnums;
 import com.rubber.admin.core.authorize.entity.AuthGroupConfig;
 import com.rubber.admin.core.authorize.mapper.AuthGroupConfigMapper;
 import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
 import com.rubber.admin.core.base.BaseAdminService;
+import com.rubber.admin.core.enums.AdminCode;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -30,7 +32,7 @@ public class AuthGroupConfigServiceImpl extends BaseAdminService<AuthGroupConfig
 
 
     @Override
-    public List<AuthGroupConfig> findGroupAndMemberByType(RubberGroupEnums rubberGroupEnums) {
+    public List<AuthGroupConfig> findGroupAndMemberByType(RubberGroupTypeEnums rubberGroupEnums) {
         if (rubberGroupEnums == null){
             return null;
         }
@@ -54,7 +56,7 @@ public class AuthGroupConfigServiceImpl extends BaseAdminService<AuthGroupConfig
 
     @Override
     public Map<String, String> getOptionMap() {
-        List<AuthGroupConfig> authGroupConfigs = queryByType(RubberGroupEnums.option.toString());
+        List<AuthGroupConfig> authGroupConfigs = queryByType(RubberGroupTypeEnums.option.toString());
         if(CollUtil.isEmpty(authGroupConfigs)){
             return new HashMap<>();
         }
@@ -62,9 +64,91 @@ public class AuthGroupConfigServiceImpl extends BaseAdminService<AuthGroupConfig
     }
 
 
-    public List<AuthGroupConfig> queryByType(String type){
+
+
+    @Override
+    public void verifyAndSave(AuthGroupConfig authGroupConfig) throws AuthGroupException {
+        if (authGroupConfig.getGroupId() == null){
+            doSave(authGroupConfig);
+        }else {
+            doUpdate(authGroupConfig);
+        }
+        doAfterSaveGroupConfig();
+
+    }
+
+    @Override
+    public void verifyAndRemove(Integer id) throws AuthGroupException {
+        AuthGroupConfig config = getById(id);
+        if (config == null){
+            throw new AuthGroupException(AdminCode.PARAM_ERROR,"不存在id为{}的数据",id);
+        }
+        removeById(id);
+    }
+
+
+
+
+
+    private void doAfterSaveGroupConfig(){
+
+    }
+
+
+    private void doSave(AuthGroupConfig authGroupConfig) throws AuthGroupException {
+        if (StrUtil.isEmpty(authGroupConfig.getGroupKey())){
+            throw new AuthGroupException(AdminCode.PARAM_ERROR,"key值为空");
+        }
+        AuthGroupConfig byGroupKey = getByGroupKey(authGroupConfig.getGroupKey());
+        if (byGroupKey != null){
+            throw new AuthGroupException(AdminCode.PARAM_ERROR,"key {}值已经存在",authGroupConfig.getGroupKey());
+        }
+        if (!save(authGroupConfig)){
+            throw new AuthGroupException(AdminCode.AUTH_CONFIG_WRITE_ERROR,"组配置信息保存到数据库失败");
+        }
+    }
+
+    private void doUpdate(AuthGroupConfig authGroupConfig) throws AuthGroupException {
+        if (StrUtil.isEmpty(authGroupConfig.getGroupKey())){
+            throw new AuthGroupException(AdminCode.PARAM_ERROR,"Key值为空");
+        }
+        AuthGroupConfig dbGroupConfig = getByGroupKey(authGroupConfig.getGroupKey());
+        if (dbGroupConfig == null){
+            throw new AuthGroupException(AdminCode.PARAM_ERROR,"不存在key值为{}到数据",authGroupConfig.getGroupKey());
+        }
+        if (!authGroupConfig.getGroupKey().equals(dbGroupConfig.getGroupKey())){
+            throw new AuthGroupException(AdminCode.PARAM_ERROR,"Key值{}不能修改",authGroupConfig.getGroupKey());
+        }
+        if (!updateById(authGroupConfig)){
+            throw new AuthGroupException(AdminCode.AUTH_CONFIG_WRITE_ERROR,"组配置信息更新到数据库失败");
+        }
+    }
+
+
+
+
+
+
+    /**
+     * 通过类型查询
+     * @param type 类型
+     * @return 返回对应的list集合
+     */
+    private List<AuthGroupConfig> queryByType(String type){
         QueryWrapper<AuthGroupConfig> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("group_type",type);
         return list(queryWrapper);
+    }
+
+
+    /**
+     * 通过key值读取配置信息
+     * @param key 当前的key值
+     * @return 返回key值信息
+     */
+    private AuthGroupConfig getByGroupKey(String key){
+        QueryWrapper<AuthGroupConfig> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("group_key",key);
+        return getOne(queryWrapper);
     }
 }

@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.rubber.admin.core.authorize.entity.AuthGroupConfig;
 import com.rubber.admin.core.authorize.model.GroupOptionApplyTreeModel;
 import com.rubber.admin.core.authorize.model.RequestOriginBean;
-import com.rubber.admin.core.authorize.model.RubberGroupEnums;
+import com.rubber.admin.core.authorize.model.RubberGroupTypeEnums;
 import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -92,8 +92,8 @@ public class RubberAuthorizeGroupCenter {
     private List<RequestOriginBean> initRequestOriginGroup(){
         List<RequestOriginBean> requestOriginList = RequestOriginProvider.getRequestOriginBeans();
         if(CollUtil.isNotEmpty(requestOriginList)){
-            List<AuthGroupConfig> groupApply = authGroupConfigService.findGroupAndMemberByType(RubberGroupEnums.apply);
-            List<AuthGroupConfig> groupOption = authGroupConfigService.findGroupAndMemberByType(RubberGroupEnums.option);
+            List<AuthGroupConfig> groupApply = authGroupConfigService.findGroupAndMemberByType(RubberGroupTypeEnums.apply);
+            List<AuthGroupConfig> groupOption = authGroupConfigService.findGroupAndMemberByType(RubberGroupTypeEnums.option);
             for (RequestOriginBean requestOriginBean:requestOriginList){
                 handleGroupAuthKey(requestOriginBean,groupApply,groupOption);
                 String authKey = AuthorizeTools.createAuthKey(requestOriginBean.getApplyKey(),requestOriginBean.getOptionKey());

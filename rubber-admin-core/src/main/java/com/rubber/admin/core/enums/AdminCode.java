@@ -84,7 +84,7 @@ public enum AdminCode implements ICodeHandle {
      * 206** 权限族群类型的错误
      */
     AUTH_GROUP_INSTALL_ERROR("20600","权限族群保存异常"),
-
+    AUTH_CONFIG_WRITE_ERROR("20602","组配置写入数据库异常"),
     ;
     /**
      * 业务错误码 000000的结构

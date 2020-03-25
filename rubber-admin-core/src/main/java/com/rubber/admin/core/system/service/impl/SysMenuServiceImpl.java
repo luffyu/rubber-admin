@@ -71,9 +71,6 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
      */
     @Override
     public List<SysMenu> getAllTree(Integer status){
-        if (status == null){
-            status = StatusEnums.NORMAL;
-        }
         List<SysMenu> all = getAll(status);
         return getAllTree(all).getChildren();
     }

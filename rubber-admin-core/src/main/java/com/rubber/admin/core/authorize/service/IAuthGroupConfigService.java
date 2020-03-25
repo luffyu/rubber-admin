@@ -1,8 +1,9 @@
 package com.rubber.admin.core.authorize.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.rubber.admin.core.authorize.entity.AuthGroupConfig;
-import com.rubber.admin.core.authorize.model.RubberGroupEnums;
+import com.rubber.admin.core.authorize.exception.AuthGroupException;
+import com.rubber.admin.core.authorize.model.RubberGroupTypeEnums;
+import com.rubber.admin.core.base.IBaseService;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @author luffyu-auto
  * @since 2020-03-12
  */
-public interface IAuthGroupConfigService extends IService<AuthGroupConfig> {
+public interface IAuthGroupConfigService extends IBaseService<AuthGroupConfig> {
 
 
     /**
@@ -23,7 +24,7 @@ public interface IAuthGroupConfigService extends IService<AuthGroupConfig> {
      * @param rubberGroupEnums 类型
      * @return 返回组key值 和组成员头 map关系图
      */
-    List<AuthGroupConfig> findGroupAndMemberByType(RubberGroupEnums rubberGroupEnums);
+    List<AuthGroupConfig> findGroupAndMemberByType(RubberGroupTypeEnums rubberGroupEnums);
 
 
     /**
@@ -40,4 +41,19 @@ public interface IAuthGroupConfigService extends IService<AuthGroupConfig> {
      */
     Map<String,String> getOptionMap();
 
+
+    /**
+     * 验证并保存参数信息
+     * @param authGroupConfig 权限族群信息
+     * @throws AuthGroupException 异常信息
+     */
+    void verifyAndSave(AuthGroupConfig authGroupConfig) throws AuthGroupException;
+
+
+    /**
+     * 通过id删除
+     * @param id 配置id
+     * @throws AuthGroupException 异常信息
+     */
+    void verifyAndRemove(Integer id) throws AuthGroupException;
 }
