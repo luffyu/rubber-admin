@@ -1,6 +1,6 @@
 package com.rubber.admin.security.config.properties;
 
-import com.rubber.admin.core.plugins.security.MappingUrlOriginHandler;
+import com.rubber.admin.core.authorize.RequestOriginProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -55,7 +55,7 @@ public class RubberPropertiesUtils {
      * @return 返回Application的基本信息
      */
     public static ApplicationContext getApplicationContext() {
-        return MappingUrlOriginHandler.getApplicationContext();
+        return RequestOriginProvider.getApplicationContext();
     }
 
 

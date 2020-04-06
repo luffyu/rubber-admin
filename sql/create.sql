@@ -11,7 +11,7 @@
  Target Server Version : 50727
  File Encoding         : 65001
 
- Date: 03/04/2020 17:44:56
+ Date: 06/04/2020 20:55:08
 */
 
 SET NAMES utf8mb4;
@@ -64,7 +64,7 @@ CREATE TABLE `auth_group_menu` (
   `related_apply` varchar(255) NOT NULL DEFAULT '' COMMENT '相关应用关键字，多个关键字用英文,隔开',
   PRIMARY KEY (`id`),
   KEY `idx_meun` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='权限族和菜单管理表';
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COMMENT='权限族和菜单管理表';
 
 -- ----------------------------
 -- Records of auth_group_menu
@@ -76,6 +76,22 @@ INSERT INTO `auth_group_menu` VALUES (28, '16', 'add', 'auth');
 INSERT INTO `auth_group_menu` VALUES (29, '16', 'update', 'auth');
 INSERT INTO `auth_group_menu` VALUES (30, '16', 'select', 'auth');
 INSERT INTO `auth_group_menu` VALUES (31, '16', 'delete', 'auth');
+INSERT INTO `auth_group_menu` VALUES (32, '2', 'add', 'menu');
+INSERT INTO `auth_group_menu` VALUES (33, '2', 'update', 'menu');
+INSERT INTO `auth_group_menu` VALUES (34, '2', 'select', 'auth,menu');
+INSERT INTO `auth_group_menu` VALUES (35, '2', 'delete', 'menu');
+INSERT INTO `auth_group_menu` VALUES (36, '3', 'add', 'role');
+INSERT INTO `auth_group_menu` VALUES (37, '3', 'update', 'role');
+INSERT INTO `auth_group_menu` VALUES (38, '3', 'select', 'role,auth,menu');
+INSERT INTO `auth_group_menu` VALUES (39, '3', 'delete', 'role');
+INSERT INTO `auth_group_menu` VALUES (40, '4', 'add', 'user');
+INSERT INTO `auth_group_menu` VALUES (41, '4', 'update', 'user');
+INSERT INTO `auth_group_menu` VALUES (42, '4', 'select', 'role,user');
+INSERT INTO `auth_group_menu` VALUES (43, '4', 'delete', 'user');
+INSERT INTO `auth_group_menu` VALUES (44, '14', 'add', 'auth');
+INSERT INTO `auth_group_menu` VALUES (45, '14', 'update', 'auth');
+INSERT INTO `auth_group_menu` VALUES (46, '14', 'select', 'auth');
+INSERT INTO `auth_group_menu` VALUES (47, '14', 'delete', 'auth');
 COMMIT;
 
 -- ----------------------------
@@ -139,77 +155,13 @@ CREATE TABLE `sys_menu` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 0, '#', 'M', NULL, 0, 0, 'el-icon-lx-home', NULL, NULL, 1, '2020-01-16 11:26:45', '');
-INSERT INTO `sys_menu` VALUES (2, '菜单管理', 1, 7, '/sys/menu-view', 'C', NULL, 0, 0, '#', NULL, NULL, 1, '2020-03-14 11:22:40', '');
-INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 6, '/sys/role-view', 'C', NULL, 0, 0, 'tag', NULL, NULL, 1, '2020-01-31 18:00:20', '');
-INSERT INTO `sys_menu` VALUES (4, '用户管理', 1, 4, '/sys/user-view', 'C', NULL, 0, 0, '#', NULL, NULL, 1, '2020-01-31 18:00:25', '');
+INSERT INTO `sys_menu` VALUES (2, '菜单管理', 1, 7, '/sys/menu-view', 'C', NULL, 0, 0, '#', NULL, NULL, 1, '2020-04-05 15:59:04', '');
+INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 6, '/sys/role-view', 'C', NULL, 0, 0, 'tag', NULL, NULL, 1, '2020-04-05 15:59:57', '');
+INSERT INTO `sys_menu` VALUES (4, '用户管理', 1, 4, '/sys/user-view', 'C', NULL, 0, 0, '#', NULL, NULL, 1, '2020-04-05 16:00:22', '');
 INSERT INTO `sys_menu` VALUES (6, '部门管理', 1, 3, '/sys/dept-view', 'C', NULL, 0, 0, '#', 1, '2019-11-05 18:05:59', 1, '2020-02-01 13:27:08', '这是一个词而是');
-INSERT INTO `sys_menu` VALUES (13, '权限字典', 1, 2, '/sys/permission-dict-view', 'C', NULL, -1, 0, '#', 1, '2020-01-31 17:29:25', 1, '2020-03-25 15:44:06', '');
-INSERT INTO `sys_menu` VALUES (14, '业务列表', 17, 0, '/sys/authorize-view', 'C', NULL, 0, 0, '#', 1, '2020-03-13 15:04:31', 1, '2020-03-25 15:52:03', '');
-INSERT INTO `sys_menu` VALUES (15, '测试', 1, 10, '/test/tt', 'C', NULL, -1, 0, '#', 1, '2020-03-13 21:14:32', 1, '2020-03-25 15:43:44', '');
+INSERT INTO `sys_menu` VALUES (14, '业务列表', 17, 0, '/sys/authorize-view', 'C', NULL, 0, 0, '#', 1, '2020-03-13 15:04:31', 1, '2020-04-05 16:00:51', '');
 INSERT INTO `sys_menu` VALUES (16, '权限配置', 17, 11, '/sys/authorize-config', 'C', NULL, 0, 0, '', 1, '2020-03-19 10:51:03', 1, '2020-03-25 15:55:45', '');
 INSERT INTO `sys_menu` VALUES (17, '权限管理', 1, 11, '#', 'M', NULL, 0, 0, '#', 1, '2020-03-25 15:48:57', 1, '2020-03-25 15:49:37', '');
-COMMIT;
-
--- ----------------------------
--- Table structure for sys_menu_permission
--- ----------------------------
-DROP TABLE IF EXISTS `sys_menu_permission`;
-CREATE TABLE `sys_menu_permission` (
-  `mp_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `menu_id` int(11) DEFAULT '0' COMMENT '菜单id',
-  `button_key` varchar(50) DEFAULT '' COMMENT '菜单里面的按钮Id',
-  `button_name` varchar(255) DEFAULT NULL COMMENT '按钮名称',
-  `basic_module` varchar(50) DEFAULT '' COMMENT '关联的权限一级目录',
-  `basic_unit` varchar(50) DEFAULT '' COMMENT '关联的权限二级目录',
-  PRIMARY KEY (`mp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='菜单权限配置关联表';
-
--- ----------------------------
--- Records of sys_menu_permission
--- ----------------------------
-BEGIN;
-INSERT INTO `sys_menu_permission` VALUES (2, 2, 'add', NULL, 'menu', 'add');
-INSERT INTO `sys_menu_permission` VALUES (3, 2, 'add', NULL, 'permission', 'add,select');
-COMMIT;
-
--- ----------------------------
--- Table structure for sys_permission_dict
--- ----------------------------
-DROP TABLE IF EXISTS `sys_permission_dict`;
-CREATE TABLE `sys_permission_dict` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `dict_key` varchar(100) NOT NULL COMMENT '字典关键值',
-  `dict_name` varchar(50) DEFAULT NULL COMMENT '字典名称',
-  `dict_value` varchar(255) DEFAULT NULL COMMENT '字典值',
-  `dict_type` varchar(100) DEFAULT NULL COMMENT '字典类型',
-  `status` tinyint(3) DEFAULT '0' COMMENT '状态（0正常 -1停用）',
-  `create_by` int(11) DEFAULT NULL COMMENT '创建人id',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` int(11) DEFAULT NULL COMMENT '最后一次更新人id',
-  `update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
-  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`),
-  KEY `idx_pri_key` (`dict_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='权限字典名称';
-
--- ----------------------------
--- Records of sys_permission_dict
--- ----------------------------
-BEGIN;
-INSERT INTO `sys_permission_dict` VALUES (1, 'select', '查询', 'list,query,get,find,page,info,download,export,select', 'basic_unit', 0, NULL, NULL, NULL, NULL, '');
-INSERT INTO `sys_permission_dict` VALUES (2, 'edit', '编辑', 'edit,update,modify,mod', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (3, 'add', '新增', 'add,save,install,saving,copy', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (4, 'delete', '删除', 'del,delete,remove,rf', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (5, 'verify', '审核', 'auth,online,offline,verify', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (6, 'upload', '上传', 'upload,import', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (7, 'download', '下载', 'down,download,export', 'basic_unit', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (8, 'menu', '菜单管理', 'menu', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (9, 'permission', '权限管理', 'permission', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (10, 'role', '角色管理', 'role', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (11, 'user', '用户管理', 'user', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (12, 'dept', '部门权限', 'dept', 'basic_module', 0, NULL, NULL, 1, '2020-02-01 16:39:15', NULL);
-INSERT INTO `sys_permission_dict` VALUES (13, 'monitor', '监控', 'monitor', 'basic_module', 0, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_permission_dict` VALUES (15, 'u', '用户基础权限', 'login,u,error,test', 'basic_module', 0, NULL, NULL, 1, '2020-02-01 16:43:34', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -219,7 +171,6 @@ DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
   `role_name` varchar(30) NOT NULL COMMENT '角色名称',
-  `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
   `seq` tinyint(3) unsigned DEFAULT '0' COMMENT '显示顺序',
   `status` tinyint(3) DEFAULT '0' COMMENT '状态（0正常 -1停用）',
   `del_flag` tinyint(3) DEFAULT '0' COMMENT '删除标志（0代表存在 -1代表删除）',
@@ -235,9 +186,8 @@ CREATE TABLE `sys_role` (
 -- Records of sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_role` VALUES (1, '系统管理员', 'admin', 1, 0, 0, 1, '2019-11-07 16:50:51', 1, '2019-11-07 16:50:55', '备注');
-INSERT INTO `sys_role` VALUES (2, '开发人员', 'developers', 1, 0, 0, 1, '2019-11-05 17:18:26', 1, '2020-01-17 19:34:24', '开发人员测-2试');
-INSERT INTO `sys_role` VALUES (5, '测试', 'test', 12, 0, 0, 1, '2020-01-17 19:34:33', 1, '2020-03-15 18:08:36', NULL);
+INSERT INTO `sys_role` VALUES (1, '系统管理员', 1, 0, 0, 1, '2019-11-07 16:50:51', 1, '2020-04-05 17:51:54', '备注');
+INSERT INTO `sys_role` VALUES (2, '开发人员', 1, 0, 0, 1, '2019-11-05 17:18:26', 1, '2020-04-05 17:52:08', '开发人员测-2试');
 COMMIT;
 
 -- ----------------------------
@@ -272,33 +222,15 @@ CREATE TABLE `sys_role_menu` (
 -- Records of sys_role_menu
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_role_menu` VALUES (5, 2, '');
-INSERT INTO `sys_role_menu` VALUES (5, 15, 'add');
-COMMIT;
-
--- ----------------------------
--- Table structure for sys_role_permission
--- ----------------------------
-DROP TABLE IF EXISTS `sys_role_permission`;
-CREATE TABLE `sys_role_permission` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `role_id` varchar(100) DEFAULT NULL COMMENT '角色id',
-  `module` varchar(50) DEFAULT NULL COMMENT '权限模块key',
-  `unit_array` varchar(255) DEFAULT NULL COMMENT '权限单元操作key数组',
-  `create_by` int(11) DEFAULT NULL COMMENT '创建人id',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` int(11) DEFAULT NULL COMMENT '最后一次更新人id',
-  `update_time` datetime DEFAULT NULL COMMENT '最好一个更新时间',
-  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`),
-  KEY `idx_role` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='角色权限列表';
-
--- ----------------------------
--- Records of sys_role_permission
--- ----------------------------
-BEGIN;
-INSERT INTO `sys_role_permission` VALUES (23, '1', 'menu', 'add,select,edit,delete', 1, '2019-11-07 16:26:04', NULL, NULL, NULL);
+INSERT INTO `sys_role_menu` VALUES (1, 1, '');
+INSERT INTO `sys_role_menu` VALUES (1, 2, 'add,select,update,delete');
+INSERT INTO `sys_role_menu` VALUES (1, 3, 'add,select,update,delete');
+INSERT INTO `sys_role_menu` VALUES (1, 4, 'add,select,update,delete');
+INSERT INTO `sys_role_menu` VALUES (1, 6, '');
+INSERT INTO `sys_role_menu` VALUES (1, 14, 'add,select,update,delete');
+INSERT INTO `sys_role_menu` VALUES (1, 16, 'add,select,update,delete');
+INSERT INTO `sys_role_menu` VALUES (1, 17, '');
+INSERT INTO `sys_role_menu` VALUES (2, 4, 'select');
 COMMIT;
 
 -- ----------------------------
@@ -336,7 +268,7 @@ CREATE TABLE `sys_user` (
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` VALUES (1, '超级管理员', NULL, 'admin', '$2a$10$DddJsIctDNwGHiucMB90HegUa4iX.oszYhfQe8hXQ1nCANZfMeBeW', '$2a$04$FKmd8XmZ4xBp0vlTPAZ1NO', NULL, NULL, NULL, NULL, '2020-03-25 15:39:08', '127.0.0.1', 172, 0, 0, 1, NULL, NULL, NULL, NULL, '2020-03-25 15:39:09', 166);
+INSERT INTO `sys_user` VALUES (1, '超级管理员', NULL, 'admin', '$2a$10$DddJsIctDNwGHiucMB90HegUa4iX.oszYhfQe8hXQ1nCANZfMeBeW', '$2a$04$FKmd8XmZ4xBp0vlTPAZ1NO', NULL, NULL, NULL, NULL, '2020-04-05 15:57:18', '127.0.0.1', 174, 0, 0, 1, NULL, NULL, NULL, NULL, '2020-04-05 15:57:18', 168);
 INSERT INTO `sys_user` VALUES (2, '路飞-2', 13, 'luffyu', '$2a$10$DddJsIctDNwGHiucMB90HegUa4iX.oszYhfQe8hXQ1nCANZfMeBeW', '$2a$04$FKmd8XmZ4xBp0vlTPAZ1NO', 'qw', 'qw', NULL, 1, '2019-11-07 16:35:16', '0:0:0:0:0:0:0:1', 41, 0, 0, 0, NULL, NULL, NULL, 1, '2020-02-01 14:58:32', 41);
 INSERT INTO `sys_user` VALUES (7, '测试用户', 12, 'test', '$2a$10$XHY/x7OFv5WpraIJDKuJW.cxwdnzbTUHtP9oRtRpfc.70zf9peQRm', '$2a$06$dzSKy4DQOCcPEj5whgJHNe', '0', '1212', NULL, 0, NULL, NULL, 0, -1, 0, 0, NULL, 1, '2020-02-01 13:44:14', 1, '2020-02-01 15:06:51', 0);
 COMMIT;

@@ -5,6 +5,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.rubber.admin.core.authorize.AuthorizeTools;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
@@ -12,24 +13,23 @@ import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.plugins.cache.CacheAble;
 import com.rubber.admin.core.plugins.cache.ICacheProvider;
 import com.rubber.admin.core.plugins.encrypt.IEncryptHandler;
-import com.rubber.admin.core.plugins.security.PermissionUtils;
 import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysUser;
-import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.exception.UserException;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
-import com.rubber.admin.core.system.model.PermissionBean;
 import com.rubber.admin.core.system.model.SysUserRoleModel;
 import com.rubber.admin.core.system.model.UserInfoModel;
-import com.rubber.admin.core.system.service.*;
+import com.rubber.admin.core.system.service.ISysMenuService;
+import com.rubber.admin.core.system.service.ISysRoleService;
+import com.rubber.admin.core.system.service.ISysUserRoleService;
+import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -52,8 +52,6 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     @Resource
     private ISysRoleService sysRoleService;
 
-    @Resource
-    private ISysRolePermissionService sysRolePermissionService;
 
     @Resource
     private ISysUserRoleService sysUserRoleService;
@@ -117,7 +115,7 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     public UserInfoModel getUserAllInfo(Integer userId) throws AdminException {
         UserInfoModel userInfoModel = this.getUserInfo(userId);
 
-        if(userInfoModel.getSysUser().getSuperUser() == PermissionUtils.SUPER_ADMIN_FLAG){
+        if(userInfoModel.getSysUser().getSuperUser() == AuthorizeTools.SUPER_ADMIN_FLAG){
             doFindSuperUserAllInfo(userInfoModel);
             return userInfoModel;
         }
@@ -130,8 +128,7 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         SysMenu rootMenu = sysMenuService.findMenuByRoleId(roleIds);
         userInfoModel.setSysMenus(rootMenu.getChildren());
 
-        List<PermissionBean> rolesPermission = sysRolePermissionService.getRolesPermission(roleIds);
-        userInfoModel.setPermissions(rolesPermission);
+        // TODO: 2020/4/4 获取用户的权限信息
 
         return userInfoModel;
     }
@@ -166,27 +163,28 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
             return;
         }
         //如果是超级系统管理员则不用调用
-        if(sysUser.getSuperUser() == PermissionUtils.SUPER_ADMIN_FLAG){
+        if(sysUser.getSuperUser() == AuthorizeTools.SUPER_ADMIN_FLAG){
             return;
         }
         List<SysRole> userRole = sysRoleService.findByUserId(sysUser.getUserId());
-        Set<Integer> roleIds = null;
-        //获取菜单信息
-        if(CollectionUtil.isNotEmpty(userRole)){
-            roleIds = userRole.stream().map(SysRole::getRoleId).collect(Collectors.toSet());
-            Set<String> roleKeys = userRole.stream().map(SysRole::getRoleKey).collect(Collectors.toSet());
-            sysUser.setRoleKeys(roleKeys);
-        }
-        try {
-            List<PermissionBean> rolesPermission = sysRolePermissionService.getRolesPermission(roleIds,false);
-            if(CollectionUtil.isNotEmpty(rolesPermission)){
-                List<PermissionBean.UnitBean> collect = rolesPermission.stream().map(PermissionBean::getUnitBeans).flatMap(Collection::stream).collect(Collectors.toList());
-                Set<String> authorizeKey = collect.stream().map(PermissionBean.UnitBean::getAuthorizeKey).collect(Collectors.toSet());
-                sysUser.setPermissions(authorizeKey);
-            }
-        } catch (RoleException e) {
-            e.printStackTrace();
-        }
+//        Set<Integer> roleIds = null;
+//        //获取菜单信息
+//        if(CollectionUtil.isNotEmpty(userRole)){
+//            roleIds = userRole.stream().map(SysRole::getRoleId).collect(Collectors.toSet());
+//            Set<String> roleKeys = userRole.stream().map(SysRole::getRoleKey).collect(Collectors.toSet());
+//            sysUser.setRoleKeys(roleKeys);
+//        }
+        // TODO: 2020/4/4 设置用户的权限
+//        try {
+//            List<PermissionBean> rolesPermission = sysRolePermissionService.getRolesPermission(roleIds,false);
+//            if(CollectionUtil.isNotEmpty(rolesPermission)){
+//                List<PermissionBean.UnitBean> collect = rolesPermission.stream().map(PermissionBean::getUnitBeans).flatMap(Collection::stream).collect(Collectors.toList());
+//                Set<String> authorizeKey = collect.stream().map(PermissionBean.UnitBean::getAuthorizeKey).collect(Collectors.toSet());
+//                sysUser.setPermissions(authorizeKey);
+//            }
+//        } catch (RoleException e) {
+//            e.printStackTrace();
+//        }
     }
 
 

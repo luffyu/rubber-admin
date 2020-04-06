@@ -38,10 +38,6 @@ public class UserInfoModel implements Serializable {
      */
     private List<SysRole> sysRoles;
 
-    /**
-     * 用户的权限列表信息
-     */
-    private List<PermissionBean> permissions;
 
     public UserInfoModel() {
     }

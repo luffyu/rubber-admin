@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.authorize.model.RequestOriginBean;
-import com.rubber.admin.core.plugins.security.PermissionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -49,9 +48,17 @@ public class RequestOriginProvider implements ApplicationContextAware {
     private RubberAuthorizeGroupCenter rubberAuthorizeGroupCenter;
 
 
+    private static ApplicationContext applicationContext;
+
+
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        RequestOriginProvider.applicationContext = applicationContext;
+
         initRequestOriginBean(applicationContext);
 
         rubberAuthorizeGroupCenter.initGroupDict(false);
@@ -136,7 +143,7 @@ public class RequestOriginProvider implements ApplicationContextAware {
             }
         }
         String urlHeadKey = AuthorizeTools.getUrlHeadKey(url);
-        return StrUtil.nullToDefault(urlHeadKey, PermissionUtils.DEFAULT_MODEL_KEY);
+        return StrUtil.nullToDefault(urlHeadKey, AuthorizeTools.DEFAULT_MODEL_KEY);
     }
 
 }

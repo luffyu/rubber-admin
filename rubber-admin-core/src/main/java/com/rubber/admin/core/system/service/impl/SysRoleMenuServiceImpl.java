@@ -1,30 +1,21 @@
 package com.rubber.admin.core.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.authorize.AuthorizeKeys;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
-import com.rubber.admin.core.exceptions.AdminException;
-import com.rubber.admin.core.system.entity.SysMenu;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysRoleMenu;
-import com.rubber.admin.core.system.exception.MenuException;
 import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.mapper.SysRoleMenuMapper;
-import com.rubber.admin.core.system.model.SysRoleMenuModel;
-import com.rubber.admin.core.system.service.ISysMenuService;
 import com.rubber.admin.core.system.service.ISysRoleMenuService;
-import com.rubber.admin.core.system.service.ISysRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -54,6 +45,31 @@ public class SysRoleMenuServiceImpl extends BaseAdminService<SysRoleMenuMapper, 
         return roleMenus;
     }
 
+
+
+    @Override
+    public List<SysRoleMenu> queryByRoleId(Integer roleId) {
+        if (roleId == null || roleId <=0){
+            return null;
+        }
+        QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id",roleId);
+        return list(queryWrapper);
+    }
+
+    @Override
+    public List<SysRoleMenu> queryByRoleId(Set<Integer> roleIds) {
+        if (roleIds == null || roleIds.size() <=0){
+            return null;
+        }
+        if (roleIds.size() == 1){
+            Integer roleId = roleIds.iterator().next();
+            return queryByRoleId(roleId);
+        }
+        QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("role_id",roleIds);
+        return list(queryWrapper);
+    }
 
 
     private List<SysRoleMenu> handleOptionToEntity(SysRole sysRole){

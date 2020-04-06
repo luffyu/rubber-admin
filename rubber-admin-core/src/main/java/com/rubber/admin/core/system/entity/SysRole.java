@@ -34,11 +34,6 @@ public class SysRole extends BaseEntity {
     private String roleName;
 
     /**
-     * 角色权限字符串
-     */
-    private String roleKey;
-
-    /**
      * 显示顺序
      */
     private Integer seq;

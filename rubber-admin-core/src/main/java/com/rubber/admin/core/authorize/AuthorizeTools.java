@@ -4,6 +4,9 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.util.StringUtils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * <p></p>
  *
@@ -31,8 +34,42 @@ public class AuthorizeTools extends AuthorizeKeys{
     }
 
 
+    /**
+     * 生成权限进行
+     * @param apply 业务信息
+     * @param option 操作信息
+     * @return 返回权限的key
+     */
+    public static String createAuthKey(String apply,String option){
+        return apply + AUTH_LINK_KEY + option;
+    }
 
-    public static String createAuthKey(String controllerKey,String mappingKey){
-        return controllerKey + AUTH_LINK_KEY + mappingKey;
+
+    /**
+     * 生成权限进行
+     * @param applies 业务信息
+     * @param option 操作信息
+     * @return 返回权限的key
+     */
+    public static Set<String> createAuth(String[] applies,String option){
+        Set<String> auths = new HashSet<>();
+        for (String apply:applies){
+            auths.add(createAuthKey(apply,option));
+        }
+        return auths;
+    }
+
+    /**
+     * 生成权限进行
+     * @param apply 业务信息
+     * @param options 操作信息
+     * @return 返回权限的key
+     */
+    public static Set<String> createAuth(String apply,String[] options){
+        Set<String> auths = new HashSet<>();
+        for (String option:options){
+            auths.add(createAuthKey(apply,option));
+        }
+        return auths;
     }
 }

@@ -29,4 +29,21 @@ public class AuthorizeKeys {
      */
     public static final String MEMBER_LINK_KEY = ",";
 
+
+    /**
+     * 默认的模块权限
+     */
+    public static final String DEFAULT_MODEL_KEY = "common";
+
+
+    /**
+     * 超级管理员的权限
+     */
+    public static final int SUPER_ADMIN_FLAG = 1;
+
+    /**
+     * 下划线链接字符
+     */
+    public static final String UNDER_LINE_KEY = "_";
+
 }

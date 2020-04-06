@@ -32,11 +32,21 @@ public class AuthGroupMenuServiceImpl extends BaseAdminService<AuthGroupMenuMapp
 
     @Override
     public List<AuthGroupMenu> queryByMenuId(Integer menuId) {
-        if (menuId == null){
+        if (menuId == null || menuId <= 0 ){
             return null;
         }
         QueryWrapper<AuthGroupMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("menu_id",menuId);
+        return list(queryWrapper);
+    }
+
+    @Override
+    public List<AuthGroupMenu> queryByMenuId(Set<Integer> menuIds) {
+        if (menuIds == null || menuIds.size() <= 0){
+            return null;
+        }
+        QueryWrapper<AuthGroupMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("menu_id",menuIds);
         return list(queryWrapper);
     }
 

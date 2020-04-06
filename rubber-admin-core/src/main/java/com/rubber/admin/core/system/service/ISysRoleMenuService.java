@@ -6,6 +6,7 @@ import com.rubber.admin.core.system.entity.SysRoleMenu;
 import com.rubber.admin.core.system.exception.RoleException;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -27,4 +28,18 @@ public interface ISysRoleMenuService extends IBaseService<SysRoleMenu> {
      */
     List<SysRoleMenu> addRoleMenuOption(SysRole sysRole) throws RoleException;
 
+
+    /**
+     * 通过角色id 查询角色关联的菜单信息
+     * @param roleId 角色id
+     * @return 返回菜单信息
+     */
+    List<SysRoleMenu> queryByRoleId(Integer roleId);
+
+    /**
+     * 批量查询出角色关联的菜单信息
+     * @param roleIds 角色信息
+     * @return 返回菜单信息
+     */
+    List<SysRoleMenu> queryByRoleId(Set<Integer> roleIds);
 }

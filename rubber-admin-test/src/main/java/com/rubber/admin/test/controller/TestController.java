@@ -2,11 +2,9 @@ package com.rubber.admin.test.controller;
 
 import cn.hutool.luffyu.util.result.ResultMsg;
 import com.rubber.admin.core.system.model.SysUserRoleModel;
-import com.rubber.admin.core.system.service.impl.SysPermissionDictServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -16,9 +14,6 @@ import java.util.Date;
 @RestController
 @RequestMapping("/test")
 public class TestController {
-
-    @Resource
-    SysPermissionDictServiceImpl sysPrivilegeDictService;
 
     @RequestMapping("/sys-time")
     public String getSysTime(){

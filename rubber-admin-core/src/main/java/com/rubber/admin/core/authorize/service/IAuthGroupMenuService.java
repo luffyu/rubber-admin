@@ -26,6 +26,14 @@ public interface IAuthGroupMenuService extends IService<AuthGroupMenu> {
 
 
     /**
+     * 通过菜单id 查询全部的配置信息
+     * @param menuIds 菜单id
+     * @return 返回查询的角色信息
+     */
+    List<AuthGroupMenu> queryByMenuId(Set<Integer> menuIds);
+
+
+    /**
      * 保存菜单用户的关联关系
      * @param menuId 菜单id
      * @param authGroupMenus 当前族群信息

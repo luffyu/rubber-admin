@@ -3,8 +3,10 @@ package com.rubber.admin.core.system.service;
 import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.exception.RoleException;
+import com.rubber.admin.core.system.model.RoleOptionAuthorize;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -33,14 +35,6 @@ public interface ISysRoleService extends IBaseService<SysRole> {
 
 
     /**
-     * 系统的角色
-     * @param roleKey 角色key
-     * @return 返回系统的稼穑哦
-     */
-    SysRole getByRoleKey(String roleKey) ;
-
-
-    /**
      * 保存或者更新用户的角色信息
      * @param sysRole 系统的角色信息
      * @return 返回true表示更新成功 false表示更新失败
@@ -55,5 +49,13 @@ public interface ISysRoleService extends IBaseService<SysRole> {
      * @throws RoleException 异常的信息
      */
     void delRoleById(Integer roleId) throws RoleException;
+
+
+    /**
+     * 通过角色id 获取 权限信息
+     * @param roleId 角色id
+     * @return 返回角色的权限信息
+     */
+    List<RoleOptionAuthorize> queryRoleAuthorizeKeys(Set<Integer> roleId);
 
 }
