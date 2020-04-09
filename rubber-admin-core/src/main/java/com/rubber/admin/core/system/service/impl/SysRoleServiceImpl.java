@@ -117,6 +117,25 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
         return getRoleAuthorizeKeys(roleMenus);
     }
 
+
+    @Override
+    public Map<Integer, Set<String>> margeRoleMenuOptions(List<RoleOptionAuthorize> roleOptionAuthorizes) {
+        if (CollUtil.isEmpty(roleOptionAuthorizes)){
+            return new HashMap<>(2);
+        }
+        Map<Integer,Set<String>> map = new HashMap<>(roleOptionAuthorizes.size() * 2);
+        for (RoleOptionAuthorize roleOptionAuthorize:roleOptionAuthorizes){
+            Set<String> options = map.get(roleOptionAuthorize.getMenuId());
+            if (options == null){
+                options = roleOptionAuthorize.getOptionKeys();
+            }else {
+                options.addAll(roleOptionAuthorize.getOptionKeys());
+            }
+            map.put(roleOptionAuthorize.getMenuId(),options);
+        }
+        return map;
+    }
+
     /**
      * 处理查询的角色关联的菜单信息
      * @param roleMenus 角色的菜单信息

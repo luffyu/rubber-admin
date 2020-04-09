@@ -6,13 +6,17 @@ import com.rubber.admin.core.authorize.model.GroupOptionApplyTreeModel;
 import com.rubber.admin.core.authorize.model.RequestOriginBean;
 import com.rubber.admin.core.authorize.model.RubberGroupTypeEnums;
 import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
+import com.rubber.admin.core.system.entity.SysUser;
+import com.rubber.admin.core.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -30,15 +34,15 @@ public class RubberAuthorizeGroupCenter {
     /**
      * 当前url的对接认证
      */
-    private Map<String,String> urlAuthDict = new ConcurrentHashMap<>(100);
+    private static Map<String,String> urlAuthDict = new ConcurrentHashMap<>(100);
 
 
 
-    private List<GroupOptionApplyTreeModel> allOptionTree = new ArrayList<>();
+    private static List<GroupOptionApplyTreeModel> allOptionTree = new ArrayList<>();
 
 
 
-    private List<GroupOptionApplyTreeModel> allApplyTree = new ArrayList<>();
+    private static List<GroupOptionApplyTreeModel> allApplyTree = new ArrayList<>();
 
     /**
      * 对象锁
@@ -52,11 +56,12 @@ public class RubberAuthorizeGroupCenter {
     @Resource
     IAuthGroupConfigService authGroupConfigService;
 
+    @Resource
+    private ISysUserService iSysUserService;
 
 
-    public Map<String, String> getUrlAuthDict() {
-        return urlAuthDict;
-    }
+    private static ISysUserService sysUserService;
+
 
     public List<GroupOptionApplyTreeModel> getAllOptionTree() {
         return allOptionTree;
@@ -76,6 +81,7 @@ public class RubberAuthorizeGroupCenter {
             List<RequestOriginBean> requestOriginBeans = initRequestOriginGroup();
             initGroupOptionModel(requestOriginBeans);
             initGroupApplyModel(requestOriginBeans);
+            sysUserService = iSysUserService;
             log.info("初始化权限组数据信息成功......");
         }finally {
             lock.writeLock().unlock();
@@ -96,7 +102,7 @@ public class RubberAuthorizeGroupCenter {
             List<AuthGroupConfig> groupOption = authGroupConfigService.findGroupAndMemberByType(RubberGroupTypeEnums.option);
             for (RequestOriginBean requestOriginBean:requestOriginList){
                 handleGroupAuthKey(requestOriginBean,groupApply,groupOption);
-                String authKey = AuthorizeTools.createAuthKey(requestOriginBean.getApplyKey(),requestOriginBean.getOptionKey());
+                String authKey = AuthorizeTools.createAuthKey(requestOriginBean.getEffectiveApplyKey(),requestOriginBean.getEffectiveOptionKey());
                 urlAuthDict.put(requestOriginBean.getUrl(),authKey);
             }
         }
@@ -207,5 +213,34 @@ public class RubberAuthorizeGroupCenter {
         }
     }
 
+
+    /**
+     * 获取权限信息
+     * @param httpServletRequest
+     * @return
+     */
+    private static String getUrlAuthorizeKey(HttpServletRequest httpServletRequest){
+        String url = httpServletRequest.getServletPath();
+        return urlAuthDict.get(url);
+    }
+
+
+    /**
+     * 权限认证
+     * @param httpServletRequest
+     * @param sysUser
+     * @return
+     */
+    public static boolean verifyUserRequestAuthorize(HttpServletRequest httpServletRequest, SysUser sysUser){
+        if (sysUser.getSuperUser() != null && sysUser.getSuperUser() ==  AuthorizeTools.SUPER_ADMIN_FLAG){
+            return true;
+        }
+        String urlAuthorizeKey = getUrlAuthorizeKey(httpServletRequest);
+        Set<String> authorizeKeys = sysUserService.getAuthorizeKeys(sysUser.getUserId());
+        if (CollUtil.isEmpty(authorizeKeys)){
+            return false;
+        }
+        return authorizeKeys.contains(urlAuthorizeKey);
+    }
 
 }

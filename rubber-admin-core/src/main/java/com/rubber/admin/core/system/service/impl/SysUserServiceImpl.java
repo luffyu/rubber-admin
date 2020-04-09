@@ -1,5 +1,6 @@
 package com.rubber.admin.core.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rubber.admin.core.authorize.AuthorizeTools;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
+import com.rubber.admin.core.enums.MenuTypeEnums;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.plugins.cache.CacheAble;
@@ -18,6 +20,7 @@ import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.exception.UserException;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
+import com.rubber.admin.core.system.model.RoleOptionAuthorize;
 import com.rubber.admin.core.system.model.SysUserRoleModel;
 import com.rubber.admin.core.system.model.UserInfoModel;
 import com.rubber.admin.core.system.service.ISysMenuService;
@@ -30,9 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -114,28 +115,14 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     @Override
     public UserInfoModel getUserAllInfo(Integer userId) throws AdminException {
         UserInfoModel userInfoModel = this.getUserInfo(userId);
-
-        if(userInfoModel.getSysUser().getSuperUser() == AuthorizeTools.SUPER_ADMIN_FLAG){
-            doFindSuperUserAllInfo(userInfoModel);
-            return userInfoModel;
-        }
-
-        Set<Integer> roleIds = null;
-        //获取菜单信息
-        if(CollectionUtil.isNotEmpty(userInfoModel.getSysRoles())){
-            roleIds = userInfoModel.getSysRoles().stream().map(SysRole::getRoleId).collect(Collectors.toSet());
-        }
-        SysMenu rootMenu = sysMenuService.findMenuByRoleId(roleIds);
-        userInfoModel.setSysMenus(rootMenu.getChildren());
-
-        // TODO: 2020/4/4 获取用户的权限信息
-
+        findUserMenuOptions(userInfoModel);
         return userInfoModel;
     }
 
 
     @Override
     public UserInfoModel getUserInfo(Integer userId) throws AdminException {
+        //获取用户的基本信息
         SysUser sysUser = getAndVerifyById(userId);
         UserInfoModel userInfoModel = new UserInfoModel(sysUser);
 
@@ -147,12 +134,71 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     }
 
     /**
+     * 查询菜单信息
+     * @param userInfoModel
+     * @return
+     */
+    private List<SysMenu> findUserMenuOptions(UserInfoModel userInfoModel){
+        if(userInfoModel.getSysUser().getSuperUser() == AuthorizeTools.SUPER_ADMIN_FLAG){
+            doFindSuperUserAllInfo(userInfoModel);
+            return userInfoModel.getSysMenus();
+        }
+        Set<Integer> roleIds = null;
+        //获取菜单信息
+        if(CollectionUtil.isNotEmpty(userInfoModel.getSysRoles())){
+            roleIds = userInfoModel.getSysRoles().stream().map(SysRole::getRoleId).collect(Collectors.toSet());
+        }
+        //查询菜单
+        SysMenu rootMenu = sysMenuService.findMenuByRoleId(roleIds);
+        List<SysMenu> children = rootMenu.getChildren();
+        if (children != null){
+            //查询权限信息
+            List<RoleOptionAuthorize> roleOptionAuthorizes = sysRoleService.queryRoleAuthorizeKeys(roleIds);
+            if (CollectionUtil.isNotEmpty(roleOptionAuthorizes)){
+                Map<Integer, Set<String>> optionMap = sysRoleService.margeRoleMenuOptions(roleOptionAuthorizes);
+                for (SysMenu sysMenu:children){
+                    reForOptionsList(sysMenu,optionMap);
+                }
+            }
+            userInfoModel.setSysMenus(children);
+        }
+        return children;
+    }
+    private void reForOptionsList(SysMenu sysMenu, Map<Integer, Set<String>> optionMap){
+        Set<String> options = optionMap.get(sysMenu.getMenuId());
+        if (MenuTypeEnums.C.equals(sysMenu.getMenuType()) && options == null){
+            options = new HashSet<>();
+        }
+        sysMenu.setOptionKeys(options);
+        if (CollUtil.isNotEmpty(sysMenu.getChildren())){
+            sysMenu.getChildren().forEach(i->reForOptionsList(i,optionMap));
+        }
+    }
+
+
+
+
+    /**
      * 如果是超级管理员则直接返回全部目录
      * @param userInfoModel
      */
     private void doFindSuperUserAllInfo(UserInfoModel userInfoModel){
         List<SysMenu> allTree = sysMenuService.getAllTree(StatusEnums.NORMAL);
+        Set<String> options = new HashSet<>();
+        options.add("ALL");
+        for (SysMenu sysMenu:allTree){
+            reForSuperUserList(sysMenu,options);
+        }
         userInfoModel.setSysMenus(allTree);
+    }
+    private void reForSuperUserList(SysMenu sysMenu,Set<String> value){
+        if (MenuTypeEnums.C.equals(sysMenu.getMenuType())){
+            sysMenu.setOptionKeys(value);
+        }
+        List<SysMenu> children = sysMenu.getChildren();
+        if (CollUtil.isNotEmpty(children)){
+            children.forEach(i->reForSuperUserList(i,value));
+        }
     }
 
 
@@ -230,6 +276,28 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         if(!updateById(sysUser)){
             throw new UserException(SysCode.SYSTEM_ERROR,"删除用户信息异常");
         }
+    }
+
+
+    @Override
+    public Set<String> getAuthorizeKeys(Integer userId) {
+        List<SysRole> sysRoles = sysRoleService.findByUserId(userId);
+        if (CollUtil.isEmpty(sysRoles)){
+            return null;
+        }
+        Set<Integer> roles = sysRoles.stream().map(SysRole::getRoleId).collect(Collectors.toSet());
+        List<RoleOptionAuthorize> roleOptionAuthorizes = sysRoleService.queryRoleAuthorizeKeys(roles);
+        if (CollUtil.isEmpty(roleOptionAuthorizes)){
+            return null;
+        }
+        Set<String> authorizes = new HashSet<>();
+        for (RoleOptionAuthorize roleOptionAuthorize:roleOptionAuthorizes){
+            if (CollUtil.isEmpty(roleOptionAuthorize.getAuthorizeKeys())){
+                continue;
+            }
+            authorizes.addAll(roleOptionAuthorize.getAuthorizeKeys());
+        }
+        return authorizes;
     }
 
 

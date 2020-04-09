@@ -6,6 +6,7 @@ import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.model.RoleOptionAuthorize;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -57,5 +58,13 @@ public interface ISysRoleService extends IBaseService<SysRole> {
      * @return 返回角色的权限信息
      */
     List<RoleOptionAuthorize> queryRoleAuthorizeKeys(Set<Integer> roleId);
+
+
+    /**
+     * 合并相同的菜单操作项
+     * @param roleOptionAuthorizes 查询出来的权限信息
+     * @return
+     */
+    Map<Integer,Set<String>> margeRoleMenuOptions(List<RoleOptionAuthorize> roleOptionAuthorizes);
 
 }

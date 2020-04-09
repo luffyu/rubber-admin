@@ -72,7 +72,7 @@ public class SysUserController extends BaseAdminController {
 
 
     /**
-     * 更新角色的信息
+     * 删除用户的全部信息
      * @param userId 角色id
      * @return
      */
@@ -88,7 +88,7 @@ public class SysUserController extends BaseAdminController {
 
 
     /**
-     * 更新角色的信息
+     * 获取用户的全部信息
      * @param userId 角色id
      * @return
      */

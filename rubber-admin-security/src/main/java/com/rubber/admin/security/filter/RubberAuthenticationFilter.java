@@ -1,6 +1,6 @@
 package com.rubber.admin.security.filter;
 
-import com.rubber.admin.core.authorize.AuthorizeTools;
+import com.rubber.admin.core.authorize.RubberAuthorizeGroupCenter;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
@@ -53,8 +53,8 @@ public class RubberAuthenticationFilter extends OncePerRequestFilter {
         if(sysUser == null){
             throw new AuthenticationCredentialsNotFoundException("Permission denied");
         }
-        if(sysUser.getSuperUser() == null || sysUser.getSuperUser() != AuthorizeTools.SUPER_ADMIN_FLAG){
-//
+        if(!RubberAuthorizeGroupCenter.verifyUserRequestAuthorize(httpServletRequest,sysUser)){
+            throw new AuthenticationCredentialsNotFoundException("Permission denied");
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
 

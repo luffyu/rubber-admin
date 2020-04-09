@@ -6,6 +6,8 @@ import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.core.system.exception.UserException;
 import com.rubber.admin.core.system.model.UserInfoModel;
 
+import java.util.Set;
+
 /**
  * <p>
  * 用户表 服务类
@@ -98,5 +100,13 @@ public interface ISysUserService extends IBaseService<SysUser> {
      * @throws UserException 异常的信息
      */
     void delUser(Integer userId) throws UserException;
+
+
+    /**
+     * 通过用户id 查询用户的全部权限信息
+     * @param userId 角色id
+     * @return 返回权限信息
+     */
+    Set<String> getAuthorizeKeys(Integer userId);
 
 }
