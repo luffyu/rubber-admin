@@ -273,7 +273,7 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     public void delUser(Integer userId) throws UserException {
         SysUser sysUser = getAndVerifyById(userId);
         sysUser.setDelFlag(StatusEnums.DELETE);
-        if(!updateById(sysUser)){
+        if(!removeById(userId)){
             throw new UserException(SysCode.SYSTEM_ERROR,"删除用户信息异常");
         }
     }

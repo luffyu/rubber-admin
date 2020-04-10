@@ -84,6 +84,7 @@ public class SysRoleMenuServiceImpl extends BaseAdminService<SysRoleMenuMapper, 
                 continue;
             }
             String menuId = roleMenuOption.substring(0,i);
+            //校验合法性 并返回菜单的父级菜单？？？
             String option = roleMenuOption.substring(i+1);
             Set<String> strings = menuOption.get(menuId);
             if (strings == null){

@@ -58,7 +58,7 @@ public class SysUserController extends BaseAdminController {
      * @param userInfoModel 用户的基本信息
      * @return
      */
-    @PostMapping("/{userId}/update")
+    @PostMapping("/update/{userId}")
     public ResultMsg updateUser(@PathVariable("userId")Integer userId,@RequestBody UserInfoModel userInfoModel) throws AdminException {
         if(userId == null || userInfoModel.getSysUser() == null || userId <= 0){
             throw new UserException(AdminCode.PARAM_ERROR,"用户id为空");
@@ -76,7 +76,7 @@ public class SysUserController extends BaseAdminController {
      * @param userId 角色id
      * @return
      */
-    @PostMapping("/{userId}/del")
+    @PostMapping("/del/{userId}")
     public ResultMsg delUser(@PathVariable("userId")Integer userId) throws RoleException, UserException {
         if(userId == null || userId <= 0){
             throw new UserException(AdminCode.PARAM_ERROR,"用户id为空");

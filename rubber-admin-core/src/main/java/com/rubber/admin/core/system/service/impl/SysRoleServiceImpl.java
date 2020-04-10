@@ -61,6 +61,42 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
 
     @Override
     public SysRole getAndVerifyById(Integer roleId) throws RoleException {
+        SysRole byId = getAndVerifyNull(roleId);
+        if (byId.getDelFlag() == StatusEnums.DISABLE){
+            throw new RoleException(AdminCode.ROLE_IS_DELETE);
+        }
+        return byId;
+    }
+
+
+    @Override
+    public SysRole getInfoById(Integer roleId) throws RoleException {
+        SysRole sysRole = getAndVerifyNull(roleId);
+        Set<String> menus = new HashSet<>();
+        List<SysRoleMenu> roleMenus = iSysRoleMenuService.queryByRoleId(sysRole.getRoleId());
+        if (!CollUtil.isEmpty(roleMenus)){
+            for (SysRoleMenu sysRoleMenu:roleMenus){
+                String optionKey = sysRoleMenu.getOptionKey();
+                if (StrUtil.isEmpty(optionKey)){
+                    continue;
+                }
+                String[] split = optionKey.split(AuthorizeKeys.MEMBER_LINK_KEY);
+                for (String s:split){
+                    menus.add(sysRoleMenu.getMenuId() + AuthorizeKeys.AUTH_LINK_KEY + s);
+                }
+            }
+        }
+        sysRole.setRoleMenuOptions(menus);
+        return sysRole;
+    }
+
+    /**
+     * 获取角色信息并验证
+     * @param roleId 角色id
+     * @return
+     * @throws RoleException
+     */
+    private SysRole getAndVerifyNull(Integer roleId) throws RoleException {
         if(roleId == null){
             throw new RoleException(AdminCode.ROLE_NOT_EXIST);
         }
@@ -68,11 +104,10 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
         if(byId == null){
             throw new RoleException(AdminCode.ROLE_NOT_EXIST);
         }
-        if (byId.getDelFlag() == StatusEnums.DISABLE){
-            throw new RoleException(AdminCode.ROLE_IS_DELETE);
-        }
         return byId;
     }
+
+
 
 
     private SysRole getByRoleKey(String roleName)  {

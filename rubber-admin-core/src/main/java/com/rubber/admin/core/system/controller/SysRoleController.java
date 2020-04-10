@@ -56,7 +56,7 @@ public class SysRoleController extends BaseAdminController {
      * @param sysRole 需要更新的角色实体信息
      * @return
      */
-    @PostMapping("/{roleId}/update")
+    @PostMapping("/update/{roleId}")
     public ResultMsg updateRole(@PathVariable("roleId")Integer roleId,@RequestBody SysRole sysRole) throws RoleException {
         if(roleId == null || roleId <= 0 ){
             throw new RoleException(AdminCode.PARAM_ERROR,"角色id不存在");
@@ -74,7 +74,7 @@ public class SysRoleController extends BaseAdminController {
      * @param roleId 角色信息
      * @return
      */
-    @PostMapping("/{roleId}/del")
+    @PostMapping("/del/{roleId}")
     public ResultMsg delRole(@PathVariable("roleId")Integer roleId) throws RoleException {
         if(roleId == null || roleId <= 0 ){
             throw new RoleException(AdminCode.PARAM_ERROR,"角色id不存在");
@@ -89,12 +89,12 @@ public class SysRoleController extends BaseAdminController {
      * @param roleId 角色信息
      * @return
      */
-    @GetMapping("/{roleId}/info")
+    @GetMapping("/info/{roleId}")
     public ResultMsg getRole(@PathVariable("roleId")Integer roleId) throws RoleException {
         if(roleId == null || roleId <= 0 ){
             throw new RoleException(AdminCode.PARAM_ERROR,"角色id不存在");
         }
-        SysRole sysRole = iSysRoleService.getAndVerifyById(roleId);
+        SysRole sysRole = iSysRoleService.getInfoById(roleId);
         return ResultMsg.success(sysRole);
     }
 

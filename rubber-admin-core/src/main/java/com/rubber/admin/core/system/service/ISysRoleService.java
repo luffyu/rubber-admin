@@ -36,6 +36,15 @@ public interface ISysRoleService extends IBaseService<SysRole> {
 
 
     /**
+     * 通过角色id 查询角色的详细信息
+     * @param roleId 角色id
+     * @return 返回角色的详细信息 包括关联的信息
+     * @throws RoleException 异常信息
+     */
+    SysRole getInfoById(Integer roleId) throws RoleException;
+
+
+    /**
      * 保存或者更新用户的角色信息
      * @param sysRole 系统的角色信息
      * @return 返回true表示更新成功 false表示更新失败
