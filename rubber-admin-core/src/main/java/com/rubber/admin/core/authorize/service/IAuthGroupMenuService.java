@@ -48,4 +48,12 @@ public interface IAuthGroupMenuService extends IService<AuthGroupMenu> {
      * @return 返回权限数组
      */
     Set<String> getAuthGroupByMenuId(Integer menuId);
+
+
+    /**
+     * 通过菜单id删除信息
+     * @param menuId
+     * @return
+     */
+    boolean removeByMenuId(Integer menuId);
 }

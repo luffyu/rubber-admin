@@ -44,7 +44,7 @@ public class SysMenuController extends BaseAdminController {
      */
     @GetMapping("/tree")
     public ResultMsg getMenuAllTree(Integer status){
-        List<SysMenu> sysMenus = sysMenuService.getAllTree(status);
+        SysMenu sysMenus = sysMenuService.getRootAllTree(status);
         return ResultMsg.success(sysMenus);
     }
 

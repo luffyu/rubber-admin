@@ -58,13 +58,14 @@ public enum AdminCode implements ICodeHandle {
     ROLE_NAME_EXIST("20202","角色已经存在"),
     ROLE_IS_DELETE("20203","角色已经被删除"),
     INSTALL_ROLE_MENU_ERROR("20204","保存角色关联的菜单信息错误"),
+    ROLE_DELETE_ERROR("20205","角色删除失败"),
 
     /**
      * 203** 菜单类型的错误
      */
     MENU_NOT_EXIST("20300","菜单不存在"),
     MENU_HAVE_CHILD("20301","菜单存在子菜单"),
-
+    MENU_DELETE_ERROR("20302","删除菜单错误"),
 
 
     /**

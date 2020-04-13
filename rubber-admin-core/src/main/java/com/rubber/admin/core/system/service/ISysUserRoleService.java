@@ -5,6 +5,8 @@ import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysUserRole;
 import com.rubber.admin.core.system.model.SysUserRoleModel;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户和角色关联表 服务类
@@ -36,4 +38,12 @@ public interface ISysUserRoleService extends IBaseService<SysUserRole> {
      * @return 返回角色的id
      */
     SysUserRoleModel getRoleByUserId(Integer userId);
+
+
+    /**
+     * 检测角色是否有关联的用户的信息
+     * @param roleId
+     * @return
+     */
+    List<SysUserRole> getListByRoleId(Integer roleId);
 }

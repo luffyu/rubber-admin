@@ -149,10 +149,18 @@ public class AuthGroupMenuServiceImpl extends BaseAdminService<AuthGroupMenuMapp
      * @param menuId 菜单id
      * @return 返回菜单信息
      */
-    private boolean removeByMenuId(Integer menuId){
+    @Override
+    public boolean removeByMenuId(Integer menuId){
+        if (menuId == null){
+            return false;
+        }
         QueryWrapper<AuthGroupMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("menu_id",menuId);
-        return remove(queryWrapper);
+        int delete = baseMapper.delete(queryWrapper);
+        if (delete <= 0 && count(queryWrapper) > 0){
+            return false;
+        }
+        return true;
     }
 
 

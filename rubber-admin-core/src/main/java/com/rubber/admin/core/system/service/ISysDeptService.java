@@ -4,8 +4,6 @@ import com.rubber.admin.core.base.IBaseService;
 import com.rubber.admin.core.system.entity.SysDept;
 import com.rubber.admin.core.system.exception.DeptException;
 
-import java.util.List;
-
 /**
  * <p>
  * 部门表 服务类
@@ -16,12 +14,11 @@ import java.util.List;
  */
 public interface ISysDeptService extends IBaseService<SysDept> {
 
-
     /**
      * 获取部门列表的菜单结构信息
      * @return 返回菜单的结构信息
      */
-    List<SysDept> treeList();
+    SysDept rootTreeList();
 
     /**
      * 保存或者更新部门信息

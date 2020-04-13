@@ -33,7 +33,7 @@ public class SysDeptServiceImpl extends BaseAdminService<SysDeptMapper, SysDept>
 
 
     @Override
-    public List<SysDept> treeList() {
+    public SysDept rootTreeList() {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("seq");
         List<SysDept> list = list(queryWrapper);
@@ -45,16 +45,23 @@ public class SysDeptServiceImpl extends BaseAdminService<SysDeptMapper, SysDept>
      * @param list 结果信息
      * @return
      */
-    public List<SysDept> handleListToTree(List<SysDept> list){
+    public SysDept handleListToTree(List<SysDept> list){
+        SysDept rootDept = getRootDept();
         if(CollUtil.isEmpty(list)){
-            return null;
+            return rootDept;
         }
         ArrayHashMap<Integer,SysDept> arrayHashMap = new ArrayHashMap<>();
         list.forEach(i -> arrayHashMap.putAndAdd(i.getParentId(),i));
+        findChildren(rootDept,arrayHashMap);
+        return rootDept;
+    }
+
+
+    private SysDept getRootDept(){
         SysDept rootDept = new SysDept();
         rootDept.setDeptId(0);
-        findChildren(rootDept,arrayHashMap);
-        return rootDept.getChildren();
+        rootDept.setDeptName("根部门");
+        return rootDept;
     }
     /**
      * 查询出list的结果信息

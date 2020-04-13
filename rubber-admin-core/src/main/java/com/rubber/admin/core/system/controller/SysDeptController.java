@@ -49,7 +49,7 @@ public class SysDeptController extends BaseAdminController {
      */
     @GetMapping("/tree")
     public ResultMsg tree(){
-        return ResultMsg.success(sysDeptService.treeList());
+        return ResultMsg.success(sysDeptService.rootTreeList());
     }
 
 
@@ -73,7 +73,7 @@ public class SysDeptController extends BaseAdminController {
      * 更新部门
      * @return 返回部门更新的值
      */
-    @PostMapping("/{deptId}/update")
+    @PostMapping("/update/{deptId}")
     public ResultMsg updateDept(@PathVariable("deptId")Integer deptId,@RequestBody SysDept sysDept) throws DeptException {
         if(deptId == null || deptId <= 0 ){
             throw new DeptException(AdminCode.PARAM_ERROR,"部门id不存在");
@@ -90,7 +90,7 @@ public class SysDeptController extends BaseAdminController {
      * 更新部门
      * @return 返回部门更新的值
      */
-    @PostMapping("/{deptId}/del")
+    @PostMapping("/del/{deptId}")
     public ResultMsg delDept(@PathVariable("deptId")Integer deptId) throws DeptException {
         if(deptId == null || deptId <= 0 ){
             throw new DeptException(AdminCode.PARAM_ERROR,"部门id不存在");

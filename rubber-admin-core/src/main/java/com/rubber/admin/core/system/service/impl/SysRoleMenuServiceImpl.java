@@ -72,6 +72,32 @@ public class SysRoleMenuServiceImpl extends BaseAdminService<SysRoleMenuMapper, 
     }
 
 
+    @Override
+    public boolean removeByRoleId(Integer roleId) {
+        if (roleId == null){
+            return false;
+        }
+        QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("role_id",roleId);
+        int delete = getBaseMapper().delete(queryWrapper);
+        if (delete <= 0 && count(queryWrapper) > 0){
+            return false;
+        }
+        return true;
+    }
+
+
+    @Override
+    public List<SysRoleMenu> queryByMenuId(Integer menuId) {
+        if (menuId == null){
+            return null;
+        }
+        QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("menu_id",menuId);
+        return list(queryWrapper);
+    }
+
+
     private List<SysRoleMenu> handleOptionToEntity(SysRole sysRole){
         if (CollUtil.isEmpty(sysRole.getRoleMenuOptions())){
             return null;

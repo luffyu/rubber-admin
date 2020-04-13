@@ -103,4 +103,15 @@ public class SysUserRoleServiceImpl extends BaseAdminService<SysUserRoleMapper, 
         }
         return sysUserRoleModel;
     }
+
+
+    @Override
+    public List<SysUserRole> getListByRoleId(Integer roleId) {
+        if (roleId == null){
+            return null;
+        }
+        QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id",roleId);
+        return list(queryWrapper);
+    }
 }

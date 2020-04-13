@@ -29,11 +29,11 @@ public interface ISysMenuService extends IBaseService<SysMenu> {
 
 
     /**
-     *  获取菜单的全目录 从根目录开始往下读取
-     * @param status 菜单状态
-     * @return 返回符合要的树形菜单结构
+     * 获取全部的树形菜单
+     * @param status 菜单结构信息
+     * @return
      */
-    List<SysMenu> getAllTree(Integer status);
+    SysMenu getRootAllTree(Integer status);
 
 
     /**

@@ -2,7 +2,6 @@ package com.rubber.admin.core.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.luffyu.util.ArrayHashMap;
 import cn.hutool.luffyu.util.result.code.SysCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -15,15 +14,16 @@ import com.rubber.admin.core.enums.MenuTypeEnums;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.exceptions.AdminException;
 import com.rubber.admin.core.system.entity.SysMenu;
+import com.rubber.admin.core.system.entity.SysRoleMenu;
 import com.rubber.admin.core.system.exception.MenuException;
 import com.rubber.admin.core.system.mapper.SysMenuMapper;
 import com.rubber.admin.core.system.model.TreeDataModel;
 import com.rubber.admin.core.system.service.ISysMenuService;
+import com.rubber.admin.core.system.service.ISysRoleMenuService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -47,6 +47,9 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
     @Resource
     private IAuthGroupConfigService iAuthGroupConfigService;
 
+    @Resource
+    private ISysRoleMenuService iSysRoleMenuService;
+
 
     /**
      * 获取某个角色的菜单结构
@@ -65,14 +68,11 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
     }
 
 
-    /**
-     * 获取菜单的树形结构
-     * @return 返回菜单的数型结构
-     */
+
     @Override
-    public List<SysMenu> getAllTree(Integer status){
+    public SysMenu getRootAllTree(Integer status) {
         List<SysMenu> all = getAll(status);
-        return getAllTree(all).getChildren();
+        return getAllTree(all);
     }
 
 
@@ -134,11 +134,21 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         if(dbMenu == null){
             throw new MenuException(AdminCode.MENU_NOT_EXIST,"菜单{}不存在",menuId);
         }
+        //看菜单是否被角色关联
+        List<SysRoleMenu> roleMenus = iSysRoleMenuService.queryByMenuId(menuId);
+        if (!CollUtil.isEmpty(roleMenus)){
+            throw new MenuException(AdminCode.MENU_DELETE_ERROR,"菜单被{}个角色关联",roleMenus.size());
+        }
         //查询有没有子目录
         int childNum = countChildNum(dbMenu.getMenuId());
         if(childNum > 0){
-            throw new MenuException(AdminCode.MENU_HAVE_CHILD,"菜单{}存在{}子目录，无法删除",menuId,childNum);
+            throw new MenuException(AdminCode.MENU_HAVE_CHILD,"菜单{}存在{}个子目录，无法删除",menuId,childNum);
         }
+        //删除菜单的关联信息
+        if(!iAuthGroupMenuService.removeByMenuId(menuId)){
+            throw new MenuException(AdminCode.MENU_DELETE_ERROR,"删除菜单关联权限信息失败");
+        }
+        //删除菜单
         if(!removeById(menuId)){
             throw new MenuException(SysCode.SYSTEM_ERROR,"删除菜单信息失败");
         }
@@ -229,33 +239,6 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         return treeDataModel;
     }
 
-    /**
-     *
-     * @param sysMenus
-     * @return
-     * @throws MenuException
-     */
-    private Map<Integer, SysMenu> completionMenuTree(Map<Integer, SysMenu> sysMenus) throws MenuException {
-        if(MapUtil.isEmpty(sysMenus)){
-            return sysMenus;
-        }
-        SysMenu completionParentMenu = null;
-        for(SysMenu sysMenu:sysMenus.values()){
-            if(sysMenu.getParentId() == 0){
-                continue;
-            }
-            if (sysMenus.get(sysMenu.getParentId()) == null){
-                completionParentMenu = getAndVerifyById(sysMenu.getParentId());
-                break;
-            }
-        }
-        if(completionParentMenu != null){
-            sysMenus.put(completionParentMenu.getMenuId(),completionParentMenu);
-            completionMenuTree(sysMenus);
-        }
-        return sysMenus;
-    }
-
 
 
     /**
@@ -324,26 +307,6 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
         }
     }
 
-    /**
-     * 从菜单中返回用户到权限字段
-     * @param sysMenus 菜单信息
-     * @return 返回用户到权限字段
-     */
-    private Set<String> findUserAuthKey(List<SysMenu> sysMenus){
-        if(!CollectionUtils.isEmpty(sysMenus)){
-            Set<String> authKeys = new HashSet<>(sysMenus.size());
-            sysMenus.forEach(sysMenu -> {
-                String authKey = sysMenu.getAuthKey();
-                if(!StringUtils.isEmpty(authKey)){
-                    authKeys.add(authKey);
-                }
-            });
-            return authKeys;
-        }
-        return new HashSet<>(1);
-
-    }
-
 
     /**
      * 获取根菜单目录
@@ -352,7 +315,7 @@ public class SysMenuServiceImpl extends BaseAdminService<SysMenuMapper, SysMenu>
     public static SysMenu getRoot(){
         SysMenu sysMenu = new SysMenu();
         sysMenu.setMenuId(0);
-        sysMenu.setMenuName("Root");
+        sysMenu.setMenuName("根目录");
         sysMenu.setStatus(StatusEnums.NORMAL);
         sysMenu.setMenuType(MenuTypeEnums.M);
         return sysMenu;

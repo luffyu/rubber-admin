@@ -14,11 +14,13 @@ import com.rubber.admin.core.enums.AdminCode;
 import com.rubber.admin.core.enums.StatusEnums;
 import com.rubber.admin.core.system.entity.SysRole;
 import com.rubber.admin.core.system.entity.SysRoleMenu;
+import com.rubber.admin.core.system.entity.SysUserRole;
 import com.rubber.admin.core.system.exception.RoleException;
 import com.rubber.admin.core.system.mapper.SysRoleMapper;
 import com.rubber.admin.core.system.model.RoleOptionAuthorize;
 import com.rubber.admin.core.system.service.ISysRoleMenuService;
 import com.rubber.admin.core.system.service.ISysRoleService;
+import com.rubber.admin.core.system.service.ISysUserRoleService;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +47,8 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
     @Resource
     private IAuthGroupMenuService iAuthGroupMenuService;
 
+    @Resource
+    private ISysUserRoleService iSysUserRoleService;
 
     /**
      * 通过用户的id查询角色信息
@@ -140,8 +144,17 @@ public class SysRoleServiceImpl extends BaseAdminService<SysRoleMapper, SysRole>
     @Override
     public void delRoleById(Integer roleId) throws RoleException {
         SysRole dbRole = getAndVerifyById(roleId);
+        //验证角色是否有关联的用户信息
+        List<SysUserRole> listByRoleId = iSysUserRoleService.getListByRoleId(roleId);
+        if (!CollUtil.isEmpty(listByRoleId)){
+            throw new RoleException(AdminCode.ROLE_DELETE_ERROR,"删除的角色[{}]被用户关联，无法删除",dbRole.getRoleName());
+        }
+        //删除角色关联的菜单
+        if (!iSysRoleMenuService.removeByRoleId(roleId)){
+            throw new RoleException(AdminCode.ROLE_DELETE_ERROR,"删除角色[{}]关联的菜单失败",dbRole.getRoleName());
+        }
         if(!removeById(roleId)){
-            throw new RoleException(AdminCode.ROLE_NOT_EXIST,"删除角色信息失败",dbRole);
+            throw new RoleException(AdminCode.ROLE_DELETE_ERROR,"删除角色{}信息失败",dbRole.getRoleName());
         }
     }
 

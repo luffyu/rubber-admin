@@ -42,4 +42,20 @@ public interface ISysRoleMenuService extends IBaseService<SysRoleMenu> {
      * @return 返回菜单信息
      */
     List<SysRoleMenu> queryByRoleId(Set<Integer> roleIds);
+
+    /**
+     * 通过角色id删除角色信息
+     * @param roleId 角色id
+     * @return 返回是否删除成功
+     */
+    boolean removeByRoleId(Integer roleId);
+
+
+    /**
+     * 通过菜单id删除信息
+     * @param menuId 菜单信息
+     * @return 返回list信息
+     */
+    List<SysRoleMenu> queryByMenuId(Integer menuId);
+
 }
