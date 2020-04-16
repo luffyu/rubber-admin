@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,8 @@ import java.util.Set;
  * <p>
  *     权限mapping的提供者
  *     通过Application的上下文 获取到 当前容器中的全部的Url
+ *
+ *     是最原始的基础数据
  * </p>
  *
  * @author luffyu
@@ -43,11 +44,6 @@ public class RequestOriginProvider implements ApplicationContextAware {
         return requestOriginBeans;
     }
 
-
-    @Resource
-    private RubberAuthorizeGroupCenter rubberAuthorizeGroupCenter;
-
-
     private static ApplicationContext applicationContext;
 
 
@@ -58,10 +54,8 @@ public class RequestOriginProvider implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         RequestOriginProvider.applicationContext = applicationContext;
-
+        //初始化记载bean
         initRequestOriginBean(applicationContext);
-
-        rubberAuthorizeGroupCenter.initGroupDict(false);
     }
 
 
