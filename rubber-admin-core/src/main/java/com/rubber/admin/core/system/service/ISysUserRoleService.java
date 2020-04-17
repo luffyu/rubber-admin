@@ -20,6 +20,8 @@ public interface ISysUserRoleService extends IBaseService<SysUserRole> {
 
     /**
      * 设置用户的角色信息
+     * @param sysUserRoleModel 用户的角色参数信息
+     * @throws AdminException 异常信息
      */
     void saveUserRole(SysUserRoleModel sysUserRoleModel) throws AdminException;
 

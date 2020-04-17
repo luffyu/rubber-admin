@@ -29,8 +29,8 @@ public interface IAuthGroupConfigService extends IBaseService<AuthGroupConfig> {
 
     /**
      * 通过成员匹配元素信息
-     * @param key
-     * @return
+     * @param key 关键字key
+     * @return 返回符合要求的族群信息
      */
     AuthGroupConfig startWithByMember(List<AuthGroupConfig> authGroupConfigs,String key);
 

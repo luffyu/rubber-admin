@@ -53,8 +53,8 @@ public class RubberUserLoginService {
      * @param sysUser 用户的基本信息
      */
     private void doLoginAfter(LoginBean loginBean,SysUser sysUser,HttpServletRequest request){
-        String clientIP = ServletUtil.getClientIP(request);
-        sysUser.setLoginIp(clientIP);
+        String clientIp = ServletUtil.getClientIP(request);
+        sysUser.setLoginIp(clientIp);
         sysUser.addCount();
         sysUser.setLoginTime(loginBean.getLoginTime());
         sysUserService.updateById(sysUser);

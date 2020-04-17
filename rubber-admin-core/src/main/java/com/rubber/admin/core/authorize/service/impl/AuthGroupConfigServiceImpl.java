@@ -66,7 +66,7 @@ public class AuthGroupConfigServiceImpl extends BaseAdminService<AuthGroupConfig
     public Map<String, String> getOptionMap() {
         List<AuthGroupConfig> authGroupConfigs = queryByType(RubberGroupTypeEnums.option.toString());
         if(CollUtil.isEmpty(authGroupConfigs)){
-            return new HashMap<>();
+            return new HashMap<>(2);
         }
         return authGroupConfigs.stream().collect(Collectors.toMap(AuthGroupConfig::getGroupKey,AuthGroupConfig::getGroupName));
     }

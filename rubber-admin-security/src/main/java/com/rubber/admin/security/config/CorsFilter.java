@@ -18,7 +18,7 @@ import java.io.IOException;
 @SuppressWarnings("Duplicates")
 @Order(value = 1)
 @WebFilter
-public class CORSFilter implements Filter {
+public class CorsFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {

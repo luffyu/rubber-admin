@@ -102,7 +102,7 @@ public class SysRoleMenuServiceImpl extends BaseAdminService<SysRoleMenuMapper, 
         if (CollUtil.isEmpty(sysRole.getRoleMenuOptions())){
             return null;
         }
-        Map<String,Set<String>> menuOption = new HashMap<>();
+        Map<String,Set<String>> menuOption = new HashMap<>(20);
         for (String roleMenuOption:sysRole.getRoleMenuOptions()){
             int i = StrUtil.indexOf(roleMenuOption, AuthorizeKeys.AUTH_LINK_KEY.charAt(0));
             if (i < 0){

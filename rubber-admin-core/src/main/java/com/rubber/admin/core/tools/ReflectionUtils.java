@@ -115,7 +115,7 @@ public class ReflectionUtils {
      * @return
      */
     public static Map<String,Class<?>> getDBEntityFieldsName(Class<?> clz) {
-        Map<String,Class<?>> map = new HashMap<>();
+        Map<String,Class<?>> map = new HashMap<>(20);
         Field[] fields = clz.getDeclaredFields();
         for(Field field:fields){
             TableField tableField = field.getAnnotation(TableField.class);

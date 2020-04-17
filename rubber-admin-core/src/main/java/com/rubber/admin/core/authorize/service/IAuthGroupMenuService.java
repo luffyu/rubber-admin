@@ -38,6 +38,7 @@ public interface IAuthGroupMenuService extends IService<AuthGroupMenu> {
      * @param menuId 菜单id
      * @param authGroupMenus 当前族群信息
      * @return 返回菜单信息
+     * @throws AdminException 异常信息
      */
     List<AuthGroupMenu> saveMenuAuthGroup(Integer menuId, Set<String> authGroupMenus) throws AdminException;
 

@@ -35,7 +35,7 @@ public class AuthGroupConfigController extends BaseAdminController {
      */
     @GetMapping("/view-info")
     public ResultMsg getViewInfo(){
-        Map<String,Object> groupConfigInfo = new HashMap<>();
+        Map<String,Object> groupConfigInfo = new HashMap<>(4);
         groupConfigInfo.put("type", RubberGroupTypeEnums.getGroupTypeInfo());
         return ResultMsg.success(groupConfigInfo);
     }
