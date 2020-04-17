@@ -1,7 +1,7 @@
 package com.rubber.admin.core.authorize.controller;
 
 import cn.hutool.luffyu.util.result.ResultMsg;
-import com.rubber.admin.core.authorize.RubberAuthorizeGroupCenter;
+import com.rubber.admin.core.authorize.RubberAuthorizeGroupContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,18 +19,18 @@ public class AuthGroupController {
 
 
     @Autowired
-    private RubberAuthorizeGroupCenter rubberAuthorizeGroupCenter;
+    private RubberAuthorizeGroupContext rubberAuthorizeGroupContext;
 
 
     @GetMapping("/apply-tree")
     public ResultMsg getApplyTree(){
-        return ResultMsg.success(rubberAuthorizeGroupCenter.getAllApplyTree());
+        return ResultMsg.success(rubberAuthorizeGroupContext.getAllApplyTree());
     }
 
 
 
     @GetMapping("/option-tree")
     public ResultMsg getOptionTree(){
-        return ResultMsg.success(rubberAuthorizeGroupCenter.getAllOptionTree());
+        return ResultMsg.success(rubberAuthorizeGroupContext.getAllOptionTree());
     }
 }

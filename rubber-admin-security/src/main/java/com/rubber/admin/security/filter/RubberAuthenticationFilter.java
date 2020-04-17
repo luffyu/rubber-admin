@@ -1,9 +1,11 @@
 package com.rubber.admin.security.filter;
 
-import com.rubber.admin.core.authorize.RubberAuthorizeGroupCenter;
+import com.rubber.admin.core.authorize.RequestOriginProvider;
+import com.rubber.admin.core.authorize.RubberAuthorizeGroupContext;
 import com.rubber.admin.core.system.entity.SysUser;
 import com.rubber.admin.security.config.properties.RubberPropertiesUtils;
 import com.rubber.admin.security.login.bean.LoginUserDetail;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,7 +22,13 @@ import java.io.IOException;
 public class RubberAuthenticationFilter extends OncePerRequestFilter {
 
     private static RubberAuthenticationFilter filer = new RubberAuthenticationFilter();
+
+    private static RubberAuthorizeGroupContext rubberAuthorizeGroupContext;
+
+
     private RubberAuthenticationFilter() {
+        ApplicationContext applicationContext = RequestOriginProvider.getApplicationContext();
+        rubberAuthorizeGroupContext = applicationContext.getBean(RubberAuthorizeGroupContext.class);
     }
     /**
      * 返回一个单例的模式
@@ -53,7 +61,7 @@ public class RubberAuthenticationFilter extends OncePerRequestFilter {
         if(sysUser == null){
             throw new AuthenticationCredentialsNotFoundException("Permission denied");
         }
-        if(!RubberAuthorizeGroupCenter.verifyUserRequestAuthorize(httpServletRequest,sysUser)){
+        if(!rubberAuthorizeGroupContext.verifyUserRequestAuthorize(httpServletRequest,sysUser)){
             throw new AuthenticationCredentialsNotFoundException("Permission denied");
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);

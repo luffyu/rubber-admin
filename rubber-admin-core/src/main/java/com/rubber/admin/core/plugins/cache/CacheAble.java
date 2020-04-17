@@ -8,11 +8,11 @@ public interface CacheAble {
 
     /**
      * 缓存信息的版本
+     * 如果缓存的版本进行了修改 那么上一个版本的全部缓存值都会失效
+     *
      * @return 返回缓存信息的版本
      */
     int getCacheVersion();
-
-
 
     /**
      * 设置缓存信息的版本

@@ -9,7 +9,6 @@ import com.rubber.admin.core.plugins.cache.CacheAble;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Set;
 
 /**
  * <p>
@@ -137,18 +136,6 @@ public class SysUser extends BaseEntity implements CacheAble {
      */
     private Integer version;
 
-    /**
-     * 用户的权限列表
-     */
-    @TableField(exist = false)
-    private Set<String> permissions;
-
-
-    /**
-     * 用户的角色信息
-     */
-    @TableField(exist = false)
-    private Set<String> roleKeys;
 
     /**
      * 缓存的版本号

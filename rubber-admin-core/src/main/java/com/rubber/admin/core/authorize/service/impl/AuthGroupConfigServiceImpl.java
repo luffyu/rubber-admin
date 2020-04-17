@@ -4,15 +4,18 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.rubber.admin.core.authorize.exception.AuthGroupException;
-import com.rubber.admin.core.authorize.model.RubberGroupTypeEnums;
+import com.rubber.admin.core.authorize.RubberAuthorizeGroupContext;
 import com.rubber.admin.core.authorize.entity.AuthGroupConfig;
+import com.rubber.admin.core.authorize.exception.AuthGroupException;
 import com.rubber.admin.core.authorize.mapper.AuthGroupConfigMapper;
+import com.rubber.admin.core.authorize.model.RubberGroupTypeEnums;
 import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
 import com.rubber.admin.core.base.BaseAdminService;
 import com.rubber.admin.core.enums.AdminCode;
+import com.rubber.admin.core.plugins.cache.ICacheProvider;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,11 @@ import java.util.stream.Collectors;
 @Service
 public class AuthGroupConfigServiceImpl extends BaseAdminService<AuthGroupConfigMapper, AuthGroupConfig> implements IAuthGroupConfigService {
 
+    @Resource
+    private ICacheProvider iCacheProvider;
+
+    @Resource
+    private RubberAuthorizeGroupContext rubberAuthorizeGroupContext;
 
 
     @Override
@@ -87,11 +95,14 @@ public class AuthGroupConfigServiceImpl extends BaseAdminService<AuthGroupConfig
     }
 
 
-
-
-
+    /**
+     * 更新族群配置信息之后的操作
+     */
     private void doAfterSaveGroupConfig(){
-
+        //处置版本信息
+        rubberAuthorizeGroupContext.initGroupDict(true);
+        //更新版本
+        iCacheProvider.incrVersion();
     }
 
 

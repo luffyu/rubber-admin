@@ -22,11 +22,13 @@ import com.rubber.admin.core.system.exception.UserException;
 import com.rubber.admin.core.system.mapper.SysUserMapper;
 import com.rubber.admin.core.system.model.RoleOptionAuthorize;
 import com.rubber.admin.core.system.model.SysUserRoleModel;
+import com.rubber.admin.core.system.model.UserAuthorizeModel;
 import com.rubber.admin.core.system.model.UserInfoModel;
 import com.rubber.admin.core.system.service.ISysMenuService;
 import com.rubber.admin.core.system.service.ISysRoleService;
 import com.rubber.admin.core.system.service.ISysUserRoleService;
 import com.rubber.admin.core.system.service.ISysUserService;
+import com.rubber.admin.core.tools.CacheCommonKeys;
 import com.rubber.admin.core.tools.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -278,18 +280,38 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         }
     }
 
-
     @Override
-    public Set<String> getAuthorizeKeys(Integer userId) {
+    public Set<String> getAuthorizeKeys(Integer userId){
+        if (userId == null){
+            return null;
+        }
+        String cacheKey = CacheCommonKeys.getByUserId(userId.toString());
+        CacheAble cacheAble = cacheProvider.findByKey(cacheKey);
+        if (cacheAble == null || cacheProvider.version() != cacheAble.getCacheVersion()){
+            UserAuthorizeModel authorizeUserInfo = getAuthorizeUserInfo(userId);
+            cacheProvider.update(authorizeUserInfo,10000L);
+            return authorizeUserInfo.getAuthorizeKeys();
+        }
+        return ((UserAuthorizeModel)cacheAble).getAuthorizeKeys();
+    }
+
+    /**
+     * 获取用户的权限基础信息
+     * @param userId 角色id
+     * @return
+     * @throws UserException
+     */
+    private UserAuthorizeModel getAuthorizeUserInfo(Integer userId)  {
         List<SysRole> sysRoles = sysRoleService.findByUserId(userId);
         if (CollUtil.isEmpty(sysRoles)){
-            return null;
+            return new UserAuthorizeModel(userId);
         }
         Set<Integer> roles = sysRoles.stream().map(SysRole::getRoleId).collect(Collectors.toSet());
         List<RoleOptionAuthorize> roleOptionAuthorizes = sysRoleService.queryRoleAuthorizeKeys(roles);
         if (CollUtil.isEmpty(roleOptionAuthorizes)){
-            return null;
+            return new UserAuthorizeModel(userId);
         }
+        UserAuthorizeModel userAuthorizeModel = new UserAuthorizeModel(userId);
         Set<String> authorizes = new HashSet<>();
         for (RoleOptionAuthorize roleOptionAuthorize:roleOptionAuthorizes){
             if (CollUtil.isEmpty(roleOptionAuthorize.getAuthorizeKeys())){
@@ -297,7 +319,8 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
             }
             authorizes.addAll(roleOptionAuthorize.getAuthorizeKeys());
         }
-        return authorizes;
+        userAuthorizeModel.setAuthorizeKeys(authorizes);
+        return userAuthorizeModel;
     }
 
 

@@ -44,6 +44,7 @@ public interface ICacheProvider {
 
     /**
      * 更新version
+     * 更新了版本之前，上一个版本的缓存全部都会失效
      */
     int incrVersion();
 

@@ -7,6 +7,7 @@ import com.rubber.admin.core.authorize.model.RequestOriginBean;
 import com.rubber.admin.core.authorize.model.RubberGroupTypeEnums;
 import com.rubber.admin.core.authorize.service.IAuthGroupConfigService;
 import com.rubber.admin.core.system.entity.SysUser;
+import com.rubber.admin.core.system.service.ISysUserService;
 import com.rubber.admin.core.tools.RubberTools;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Component
-public class RubberAuthorizeGroupCenter implements ApplicationListener<ContextRefreshedEvent> {
+public class RubberAuthorizeGroupContext implements ApplicationListener<ContextRefreshedEvent> {
 
     /**
      * 当前系统中的全部url请求所需要的权限信息
@@ -80,6 +81,11 @@ public class RubberAuthorizeGroupCenter implements ApplicationListener<ContextRe
     @Resource
     IAuthGroupConfigService authGroupConfigService;
 
+    /**
+     * 当前的用户service
+     */
+    @Resource
+    private ISysUserService iSysUserService;
 
 
     @Override
@@ -244,8 +250,8 @@ public class RubberAuthorizeGroupCenter implements ApplicationListener<ContextRe
 
     /**
      * 获取权限信息
-     * @param httpServletRequest
-     * @return
+     * @param httpServletRequest 当前的http请求
+     * @return 返回当前请求的权限字段
      */
     public String getUrlAuthorizeKey(HttpServletRequest httpServletRequest){
         lock.readLock().lock();
@@ -257,10 +263,18 @@ public class RubberAuthorizeGroupCenter implements ApplicationListener<ContextRe
         }
     }
 
+    /**
+     * 获取全部的操作树结构
+     * @return  获取全部的操作树结构
+     */
     public List<GroupOptionApplyTreeModel> getAllOptionTree() {
         return allOptionTree;
     }
 
+    /**
+     * 获取全部的操作业务结构
+     * @return 获取全部的操作业务结构
+     */
     public List<GroupOptionApplyTreeModel> getAllApplyTree() {
         return allApplyTree;
     }
@@ -268,22 +282,20 @@ public class RubberAuthorizeGroupCenter implements ApplicationListener<ContextRe
 
     /**
      * 权限认证
-     * @param httpServletRequest
-     * @param sysUser
-     * @return
+     * @param httpServletRequest 当前的http请求
+     * @param sysUser 当前的登陆用户
+     * @return 返回用户的基本信息
      */
-    public static boolean verifyUserRequestAuthorize(HttpServletRequest httpServletRequest, SysUser sysUser){
+    public boolean verifyUserRequestAuthorize(HttpServletRequest httpServletRequest, SysUser sysUser){
         if (sysUser.getSuperUser() != null && sysUser.getSuperUser() ==  AuthorizeTools.SUPER_ADMIN_FLAG){
             return true;
         }
-        /*String urlAuthorizeKey = getUrlAuthorizeKey(httpServletRequest);
-        //Set<String> authorizeKeys = sysUserService.getAuthorizeKeys(sysUser.getUserId());
-        Set<String> authorizeKeys = new HashSet<>();
+        String urlAuthorizeKey = getUrlAuthorizeKey(httpServletRequest);
+        Set<String> authorizeKeys = iSysUserService.getAuthorizeKeys(sysUser.getUserId());
         if (CollUtil.isEmpty(authorizeKeys)){
             return false;
         }
-        return authorizeKeys.contains(urlAuthorizeKey);*/
-        return true;
+        return authorizeKeys.contains(urlAuthorizeKey);
     }
 
 }

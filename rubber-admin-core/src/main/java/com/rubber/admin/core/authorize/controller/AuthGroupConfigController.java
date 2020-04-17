@@ -64,7 +64,7 @@ public class AuthGroupConfigController extends BaseAdminController {
     }
 
 
-    @PostMapping("/{groupId}/update")
+    @PostMapping("/update/{groupId}")
     public ResultMsg update(@PathVariable("groupId")Integer groupId,@RequestBody AuthGroupConfig authGroupConfig) throws  AuthGroupException {
         if(groupId == null || groupId <= 0 || !groupId.equals(authGroupConfig.getGroupId())){
             throw new AuthGroupException(AdminCode.PARAM_ERROR,"用户id为空");
@@ -74,7 +74,7 @@ public class AuthGroupConfigController extends BaseAdminController {
     }
 
 
-    @PostMapping("/{groupId}/delete")
+    @PostMapping("/delete/{groupId}")
     public ResultMsg delete(@PathVariable("groupId")Integer groupId) throws  AuthGroupException {
         if(groupId == null || groupId <= 0){
             throw new AuthGroupException(AdminCode.PARAM_ERROR,"用户id为空");
