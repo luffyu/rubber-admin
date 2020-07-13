@@ -1,6 +1,7 @@
 package com.rubber.admin.core.authorize;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.rubber.admin.core.authorize.entity.AuthGroupConfig;
 import com.rubber.admin.core.authorize.model.GroupOptionApplyTreeModel;
 import com.rubber.admin.core.authorize.model.RequestOriginBean;
@@ -13,10 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -50,7 +55,7 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Component
-public class RubberAuthorizeGroupContext implements ApplicationListener<ContextRefreshedEvent> {
+public class RubberAuthorizeGroupContext implements ApplicationListener<ContextRefreshedEvent>{
 
     /**
      * 当前系统中的全部url请求所需要的权限信息
@@ -86,6 +91,12 @@ public class RubberAuthorizeGroupContext implements ApplicationListener<ContextR
      */
     @Resource
     private ISysUserService iSysUserService;
+
+
+    /**
+     * url的比较方法
+     */
+    private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
 
     @Override
@@ -254,13 +265,12 @@ public class RubberAuthorizeGroupContext implements ApplicationListener<ContextR
      * @return 返回当前请求的权限字段
      */
     public String getUrlAuthorizeKey(HttpServletRequest httpServletRequest){
-        lock.readLock().lock();
-        try {
-            String url = httpServletRequest.getServletPath();
-            return urlAuthDict.get(url);
-        }finally {
-            lock.readLock().unlock();
+        String url = httpServletRequest.getServletPath();
+        String authKey = urlAuthDict.get(url);
+        if (StrUtil.isBlank(authKey)){
+             authKey = getAuthKeyByMatchUrl(url);
         }
+        return authKey;
     }
 
     /**
@@ -296,6 +306,22 @@ public class RubberAuthorizeGroupContext implements ApplicationListener<ContextR
             return false;
         }
         return authorizeKeys.contains(urlAuthorizeKey);
+    }
+
+
+    /**
+     * 比较url的匹配controller
+     * @param url 当前比较的url
+     * @return 返回权限值
+     */
+    private String getAuthKeyByMatchUrl(String url){
+        for (Map.Entry<String,String> data: urlAuthDict.entrySet()){
+            String key = data.getKey();
+            if (antPathMatcher.match(key,url)){
+                return data.getValue();
+            }
+        }
+        return null;
     }
 
 }
