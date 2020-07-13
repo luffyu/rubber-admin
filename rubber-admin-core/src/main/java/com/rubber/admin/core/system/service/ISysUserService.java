@@ -72,6 +72,18 @@ public interface ISysUserService extends IBaseService<SysUser> {
 
 
     /**
+     * 获取用户的基本信息
+     * 包括角色 部门
+     * @param userId  用户id
+     * @param verify 是否验证用户的状态
+     * @return 返回用户的基本信息
+     * @throws AdminException 异常信息
+     */
+    UserInfoModel getUserInfo(Integer userId,boolean verify) throws AdminException;
+
+
+
+    /**
      * 设置用户的权限
      * @param sysUser 用户信息
      */

@@ -55,7 +55,7 @@ public class RubberAuthorizeGroupContext implements ApplicationListener<ContextR
     /**
      * 当前系统中的全部url请求所需要的权限信息
      */
-    private static Map<String,String> urlAuthDict = new ConcurrentHashMap<>(100);
+    private static Map<String,String> urlAuthDict = new ConcurrentHashMap<>(128);
 
 
     /**

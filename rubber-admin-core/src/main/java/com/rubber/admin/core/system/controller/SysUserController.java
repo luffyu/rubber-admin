@@ -97,7 +97,7 @@ public class SysUserController extends BaseAdminController {
         if(userId == null || userId <= 0){
             throw new UserException(AdminCode.PARAM_ERROR,"用户id为空");
         }
-        UserInfoModel userInfo = sysUserService.getUserInfo(userId);
+        UserInfoModel userInfo = sysUserService.getUserInfo(userId,false);
         return ResultMsg.success(userInfo);
     }
 }

@@ -136,6 +136,28 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
     }
 
     /**
+     * 获取用户的基本信息
+     * 包括角色 部门
+     *
+     * @param userId 用户id
+     * @param verify 是否验证用户的状态
+     * @return 返回用户的基本信息
+     * @throws AdminException 异常信息
+     */
+    @Override
+    public UserInfoModel getUserInfo(Integer userId, boolean verify) throws AdminException {
+        //获取用户的基本信息
+        SysUser sysUser = getAndVerifyNullById(userId);
+        UserInfoModel userInfoModel = new UserInfoModel(sysUser);
+
+        //获取用户的角色信息
+        List<SysRole> userRole = sysRoleService.findByUserId(userId);
+        userInfoModel.setSysRoles(userRole);
+
+        return userInfoModel;
+    }
+
+    /**
      * 查询菜单信息
      * @param userInfoModel
      * @return
