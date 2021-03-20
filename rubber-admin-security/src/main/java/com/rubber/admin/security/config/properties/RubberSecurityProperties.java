@@ -38,6 +38,17 @@ public class RubberSecurityProperties {
      */
     private Map<String,Set<String>> rolePatterns;
 
+    /**
+     * 是否开启接口认证
+     */
+    private boolean openInterfaceAuth = true;
+
+
+    /**
+     * 放行静态资源
+     */
+    private String ignoring;
+
 
     /**
      * 登陆的url
