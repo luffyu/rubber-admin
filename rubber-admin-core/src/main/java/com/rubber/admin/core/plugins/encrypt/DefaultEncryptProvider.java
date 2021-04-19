@@ -43,4 +43,17 @@ public class DefaultEncryptProvider implements IEncryptHandler {
     }
 
 
+    public static void main(String[] args) {
+        DefaultEncryptProvider provider = new DefaultEncryptProvider();
+        String salt = provider.createSalt(6);
+
+        System.out.println("salt>>>>>"+salt);
+
+        String pass = null;
+        String ss = provider.encrypt(pass,"$2a$06$io7aOXBV6Y2E8Vzrw5BZLu");
+        System.out.println("加密>>>>>"+ss);
+
+
+    }
+
 }

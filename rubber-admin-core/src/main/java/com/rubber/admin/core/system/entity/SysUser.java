@@ -47,7 +47,6 @@ public class SysUser extends BaseEntity implements CacheAble {
     /**
      * 密码
      */
-    @JsonIgnore
     private String loginPwd;
 
     /**

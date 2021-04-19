@@ -98,6 +98,9 @@ public class SysUserController extends BaseAdminController {
             throw new UserException(AdminCode.PARAM_ERROR,"用户id为空");
         }
         UserInfoModel userInfo = sysUserService.getUserInfo(userId,false);
+        if (userInfo != null && userInfo.getSysUser() != null){
+            userInfo.getSysUser().setLoginPwd(null);
+        }
         return ResultMsg.success(userInfo);
     }
 }

@@ -375,8 +375,9 @@ public class SysUserServiceImpl extends BaseAdminService<SysUserMapper, SysUser>
         }
         //是否修改用户的密码
         if(StrUtil.isNotEmpty(sysUser.getLoginPwd())){
-            dbUser.setLoginPwd(sysUser.getLoginPwd());
             doCreateUserPsw(sysUser);
+            dbUser.setSalt(sysUser.getSalt());
+            dbUser.setLoginPwd(sysUser.getLoginPwd());
         }
         dbUser.setStatus(sysUser.getStatus());
         dbUser.setUserName(sysUser.getUserName());
